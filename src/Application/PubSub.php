@@ -5,8 +5,9 @@ namespace App\Application;
 use App\Domain\Service\Catalog\OrderService;
 use App\Domain\Traits\HasParameters;
 use App\Domain\Traits\HasRenderer;
+use Illuminate\Cache\ArrayStore as ArrayCache;
+use Illuminate\Cache\FileStore as FileCache;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
 
 class PubSub
 {
@@ -15,7 +16,9 @@ class PubSub
 
     protected ContainerInterface $container;
 
-    protected Cache $cache;
+    protected ArrayCache $arrayCache;
+
+    protected FileCache $fileCache;
 
     protected array $subscribers = [];
 
@@ -23,7 +26,8 @@ class PubSub
     {
         $this->container = $container;
         $this->renderer = $container->get('view');
-        $this->cache = $container->get(Cache::class);
+        $this->arrayCache = $container->get(ArrayCache::class);
+        $this->fileCache = $container->get(FileCache::class);
 
         // todo come up with a new place for it
         // ----------------------------------------------------

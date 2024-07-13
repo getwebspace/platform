@@ -28,8 +28,9 @@ return function (ContainerBuilder $containerBuilder): void {
         },
     ]);
 
-    // eloquent database
+    // laravel parts
     $containerBuilder->addDefinitions([
+        // database
         \Illuminate\Database\Connection::class => function (ContainerInterface $c): \Illuminate\Database\Connection {
             $settings = $c->get('database');
 
@@ -49,22 +50,16 @@ return function (ContainerBuilder $containerBuilder): void {
 
             return $capsule->getConnection();
         },
-    ]);
 
-    // simfony cache
-    $containerBuilder->addDefinitions([
-        \Symfony\Component\Cache\Adapter\ArrayAdapter::class => function (ContainerInterface $c): \Symfony\Component\Cache\Adapter\ArrayAdapter {
-            $cache = new Symfony\Component\Cache\Adapter\ArrayAdapter(0, false);
-            $cache->setLogger($c->get(\Psr\Log\LoggerInterface::class));
-
-            return $cache;
+        // array cache
+        \Illuminate\Cache\ArrayStore::class => function (ContainerInterface $c): \Illuminate\Cache\ArrayStore {
+            return new \Illuminate\Cache\ArrayStore;
         },
-        \Symfony\Component\Cache\Adapter\FilesystemAdapter::class => function (ContainerInterface $c): \Symfony\Component\Cache\Adapter\FilesystemAdapter {
-            $cache = new Symfony\Component\Cache\Adapter\FilesystemAdapter('', 0, CACHE_DIR);
-            $cache->setLogger($c->get(\Psr\Log\LoggerInterface::class));
 
-            return $cache;
-        },
+        // file cache
+        \Illuminate\Cache\FileStore::class => function (ContainerInterface $c): \Illuminate\Cache\FileStore {
+            return new \Illuminate\Cache\FileStore(new \Illuminate\Filesystem\Filesystem(), CACHE_DIR);
+        }
     ]);
 
     // tnt search

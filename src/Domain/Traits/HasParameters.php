@@ -11,7 +11,6 @@ use Psr\Container\ContainerInterface;
  */
 trait HasParameters
 {
-    private static ?Collection $parameters = null;
 
     /**
      * Returns the value of the parameter by the passed key
@@ -19,9 +18,7 @@ trait HasParameters
      */
     protected function parameter(mixed $name = null, mixed $default = null): mixed
     {
-        $parameters = $this->cache->get('params', function () {
-            return $this->container->get(ParameterService::class)->read();
-        });
+        $parameters = $this->from_cache();
 
         if ($parameters) {
             if ($name === null) {
@@ -48,9 +45,7 @@ trait HasParameters
     protected function parameter_set(string $name, mixed $value): array
     {
         $parameterService = $this->container->get(ParameterService::class);
-        $parameters = $this->cache->get('params', function () use ($parameterService) {
-            return $parameterService->read();
-        });
+        $parameters = $this->from_cache();
 
         if (($parameter = $parameters->firstWhere('name', $name)) !== null) {
             $parameterService->update($parameter, ['name' => $name, 'value' => $value]);
@@ -59,5 +54,18 @@ trait HasParameters
         }
 
         return [$name => $value];
+    }
+
+    private function from_cache(): ?Collection
+    {
+        $parameters = $this->arrayCache->get('params');
+
+        if (!$parameters) {
+            $parameters = $this->container->get(ParameterService::class)->read();
+
+            $this->arrayCache->forever('params', $parameters);
+        }
+
+        return $parameters;
     }
 }

@@ -9,8 +9,9 @@ use App\Domain\Service\User\Exception\TokenNotFoundException;
 use App\Domain\Service\User\TokenService as UserTokenService;
 use App\Domain\Service\User\UserService;
 use App\Domain\Traits\HasParameters;
+use Illuminate\Cache\ArrayStore as ArrayCache;
+use Illuminate\Cache\FileStore as FileCache;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
 
 abstract class AbstractAuthProvider
 {
@@ -18,7 +19,9 @@ abstract class AbstractAuthProvider
 
     protected ContainerInterface $container;
 
-    protected Cache $cache;
+    protected ArrayCache $arrayCache;
+
+    protected FileCache $fileCache;
 
     protected UserService $userService;
 
@@ -27,7 +30,8 @@ abstract class AbstractAuthProvider
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->cache = $container->get(Cache::class);
+        $this->arrayCache = $container->get(ArrayCache::class);
+        $this->fileCache = $container->get(FileCache::class);
         $this->userService = $container->get(UserService::class);
         $this->userTokenService = $container->get(UserTokenService::class);
     }

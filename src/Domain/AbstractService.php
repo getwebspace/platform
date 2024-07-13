@@ -4,8 +4,9 @@ namespace App\Domain;
 
 use App\Domain\Traits\HasParameters;
 use Illuminate\Database\Connection as DataBase;
+use Illuminate\Cache\ArrayStore as ArrayCache;
+use Illuminate\Cache\FileStore as FileCache;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
 
 abstract class AbstractService
 {
@@ -15,7 +16,9 @@ abstract class AbstractService
 
     protected DataBase $db;
 
-    protected Cache $cache;
+    protected ArrayCache $arrayCache;
+
+    protected FileCache $fileCache;
 
     protected static array $default_read = [
         'order' => [],
@@ -23,11 +26,12 @@ abstract class AbstractService
         'offset' => null,
     ];
 
-    public function __construct(ContainerInterface $container, DataBase $db, Cache $cache)
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->db = $db;
-        $this->cache = $cache;
+        $this->db = $container->get(DataBase::class);
+        $this->arrayCache = $container->get(ArrayCache::class);
+        $this->fileCache = $container->get(FileCache::class);
     }
 
     abstract public function create(array $data = []);

@@ -4,11 +4,11 @@ namespace App\Domain;
 
 use App\Domain\Traits\HasParameters;
 use Illuminate\Database\Connection as DataBase;
+use Illuminate\Cache\ArrayStore as ArrayCache;
+use Illuminate\Cache\FileStore as FileCache;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Request;
-use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter as FileCache;
 
 abstract class AbstractMiddleware
 {
@@ -18,16 +18,16 @@ abstract class AbstractMiddleware
 
     protected DataBase $db;
 
-    protected Cache $cache;
+    protected ArrayCache $arrayCache;
 
-    protected FileCache $persistentCache;
+    protected FileCache $fileCache;
 
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
         $this->db = $container->get(DataBase::class);
-        $this->cache = $container->get(Cache::class);
-        $this->persistentCache = $container->get(FileCache::class);
+        $this->arrayCache = $container->get(ArrayCache::class);
+        $this->fileCache = $container->get(FileCache::class);
     }
 
     abstract public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response;
