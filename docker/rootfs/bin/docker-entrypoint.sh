@@ -16,7 +16,7 @@ shutdown() {
   sleep 0.5
 
   # kill any other processes still running in the container
-  for _pid  in $(ps -eo pid | grep -v PID  | tr -d ' ' | grep -v '^1$' | head -n -6); do
+  for _pid in $(ps -eo pid | grep -v PID | tr -d ' ' | grep -v '^1$' | head -n -6); do
     timeout -t 5 /bin/sh -c "kill $_pid && wait $_pid || kill -9 $_pid"
   done
   exit
@@ -25,16 +25,13 @@ shutdown() {
 echo "Starting startup scripts in /docker-entrypoint-init.d ..."
 
 for script in $(find /docker-entrypoint-init.d/ -executable -type f); do
-
-    echo >&2 "*** Running: $script"
-    $script
-    retval=$?
-    if [ $retval != 0 ];
-    then
-        echo >&2 "*** Failed with return value: $?"
-        exit $retval
-    fi
-
+  echo >&2 "*** Running: $script"
+  $script
+  retval=$?
+  if [ $retval != 0 ]; then
+    echo >&2 "*** Failed with return value: $?"
+    exit $retval
+  fi
 done
 echo "Finished startup scripts in /docker-entrypoint-init.d"
 
@@ -47,7 +44,7 @@ echo "wait for processes to start...."
 
 sleep 5
 for _srv in $(ls -1 /etc/service); do
-    sv status $_srv
+  sv status $_srv
 done
 
 # catch shutdown signals
