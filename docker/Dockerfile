@@ -3,7 +3,7 @@ FROM php:8.3-fpm-alpine3.20
 MAINTAINER Aleksey Ilyin <alksily@getwebspace.org>
 
 LABEL org.opencontainers.image.source="https://github.com/getwebspace/platform"
-LABEL org.opencontainers.image.description="Lightweight container with Nginx & PHP-FPM based on Alpine Linux for WebSpace Engine"
+LABEL org.opencontainers.image.description="Optimised container with nginx & PHP-FPM based on Alpine Linux for WebSpace Engine"
 LABEL org.opencontainers.image.licenses="MIT"
 
 # Set args
@@ -20,10 +20,10 @@ ENV COMMIT_BRANCH=${VERSION} \
     PLATFORM_HOME="/var/container"
 
 # Copy configs
-COPY --chown=www-data docker/rootfs/ /
+COPY docker/rootfs/ /
 
 # Copy platform files
-COPY --chown=www-data:www-data --chmod=755 . ${PLATFORM_HOME}
+COPY --chmod=755 . ${PLATFORM_HOME}
 
 # Set homedir as work
 WORKDIR ${PLATFORM_HOME}
@@ -31,6 +31,7 @@ WORKDIR ${PLATFORM_HOME}
 # Install packages and dependencies
 RUN set -x \
     && apk add --update --no-cache \
+        dcron \
         runit \
         nginx \
         libzip-dev \
@@ -61,10 +62,8 @@ RUN set -x \
     && php -v \
     && php -m \
     \
-    # Make sure files/folders needed by the processes are accessible when they run under the www-data user
-    && chown -R www-data:www-data /run \
-    && chown -R www-data:www-data /var/lib/nginx \
-    && chown -R www-data:www-data /var/log/nginx \
+    # Make sure exists files/folders and set correct permissions
+    && mkdir -p /etc/cron.d \
     && chmod -R 0755 /etc/service \
     && chmod 0755 /bin/docker-entrypoint.sh \
     \
@@ -75,18 +74,18 @@ RUN set -x \
     \
     # Install platform
     && composer install ${NO_DEV} --no-suggest --no-progress \
-    && chown -R www-data:www-data ${PLATFORM_HOME} \
     && chmod -R 0755 ${PLATFORM_HOME} \
+    && chmod -R 0777 ${PLATFORM_HOME}/bin \
     && chmod -R 0777 ${PLATFORM_HOME}/plugin \
     && chmod -R 0776 ${PLATFORM_HOME}/public/uploads \
     && chmod -R 0777 ${PLATFORM_HOME}/public/resource \
     && chmod -R 0777 ${PLATFORM_HOME}/theme \
-    && chmod -R 0777 ${PLATFORM_HOME}/var
-
-# Switch to use a non-root user from here on
-USER www-data
+    && chmod -R 0777 ${PLATFORM_HOME}/var \
+    \
+    # Add cron task
+    && echo "* * * * * /usr/local/bin/php ${PLATFORM_HOME}/bin/cron_worker.php >> ${PLATFORM_HOME}/var/log/cron.log 2>&1" > /etc/crontabs/root
 
 # Set ports
-EXPOSE 80/tcp
+EXPOSE 80
 
 CMD ["/bin/docker-entrypoint.sh"]

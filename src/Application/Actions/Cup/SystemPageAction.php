@@ -107,7 +107,7 @@ class SystemPageAction extends AbstractAction
     {
         $fileAccess = [
             BASE_DIR => 0o755,
-            BIN_DIR => 0o755,
+            BIN_DIR => 0o777,
             CONFIG_DIR => 0o755,
             PLUGIN_DIR => 0o777,
             PUBLIC_DIR => 0o755,
