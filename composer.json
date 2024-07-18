@@ -25,7 +25,7 @@
         "illuminate/database": "^v11.15.0",
         "illuminate/collections": "^v11.15.0",
         "illuminate/filesystem": "^11.15.0",
-        "illuminate/cache": "^11.15",
+        "illuminate/cache": "^v11.15.0",
         "firebase/php-jwt": "^v6.10.1",
         "alksily/support": "^2.0.0",
         "twig/twig": "v3.8.0",
