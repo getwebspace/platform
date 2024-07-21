@@ -14,8 +14,6 @@ abstract class AbstractSchedule
 {
     use HasParameters;
 
-    public const TITLE = '';
-
     protected ContainerInterface $container;
 
     protected LoggerInterface $logger;
@@ -44,7 +42,7 @@ abstract class AbstractSchedule
 
     abstract public function run();
 
-    public function shouldRun($schedule): bool
+    public function isShouldRun($schedule): bool
     {
         $currentTime = datetime();
         $currentMinute = (int) $currentTime->format('i');
@@ -62,21 +60,24 @@ abstract class AbstractSchedule
             $this->matches($dayOfWeek, $currentDayOfWeek);
     }
 
-    public function matches($cronPart, $currentPart): bool
+    protected function matches($cronPart, $currentPart): bool
     {
         if ($cronPart === '*') {
             return true;
         }
 
         $parts = explode(',', $cronPart);
+
         foreach ($parts as $part) {
             if (str_contains($part, '-')) {
                 list($start, $end) = explode('-', $part);
+
                 if ($currentPart >= $start && $currentPart <= $end) {
                     return true;
                 }
             } elseif (str_contains($part, '/')) {
                 list($base, $interval) = explode('/', $part);
+
                 if ($base === '*') {
                     $base = 0;
                 }

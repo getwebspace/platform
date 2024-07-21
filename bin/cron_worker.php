@@ -31,7 +31,7 @@ foreach ($scheduler->get() as $scheduled) {
     /** @var \App\Domain\AbstractSchedule $job */
     $job = $scheduled['job'];
 
-    if ($job->shouldRun($schedule)) {
+    if ($job->isShouldRun($schedule)) {
         $job->run();
     }
 }
