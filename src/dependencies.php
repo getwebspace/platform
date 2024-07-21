@@ -84,6 +84,52 @@ return function (ContainerBuilder $containerBuilder): void {
         },
     ]);
 
+    // scheduler
+    $containerBuilder->addDefinitions([
+        'scheduler' => function (ContainerInterface $c) {
+            return new class($c) {
+                private ContainerInterface $container;
+
+                private Collection $jobs;
+
+                final public function __construct(ContainerInterface $container)
+                {
+                    $this->container = $container;
+                    $this->jobs = collect();
+                }
+
+                /**
+                 * Register job
+                 */
+                final public function register(\App\Domain\AbstractSchedule|string $job, $schedule = '* * * * *'): bool
+                {
+                    if (is_object($job)) {
+                        $class_name = get_class($job);
+                    } else {
+                        $class_name = $job;
+                        $job = new $job($this->container);
+                    }
+
+                    if (!$this->jobs->has($class_name)) {
+                        $this->jobs[$class_name] = [
+                            'schedule' => $schedule,
+                            'job' => $job,
+                        ];
+
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                final public function get(): Collection
+                {
+                    return $this->jobs;
+                }
+            };
+        },
+    ]);
+
     // plugins
     $containerBuilder->addDefinitions([
         'plugin' => function (ContainerInterface $c) {

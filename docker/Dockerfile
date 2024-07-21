@@ -83,7 +83,7 @@ RUN set -x \
     && chmod -R 0777 ${PLATFORM_HOME}/var \
     \
     # Add cron task
-    && echo "* * * * * /usr/local/bin/php ${PLATFORM_HOME}/bin/cron_worker.php >> ${PLATFORM_HOME}/var/log/cron.log 2>&1" > /etc/crontabs/root
+    && echo "* * * * * /usr/local/bin/php ${PLATFORM_HOME}/bin/cron_worker.php >/dev/null 2>&1" > /etc/crontabs/root
 
 # Set ports
 EXPOSE 80
