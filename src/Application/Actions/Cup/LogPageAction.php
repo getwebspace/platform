@@ -8,23 +8,23 @@ class LogPageAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        return $this->respondWithTemplate('cup/logs.twig', [
-            'files' => [
-                'app.log' => $this->getFileContents('app.log'),
-            ],
-        ]);
-    }
+        $files = [];
 
-    protected function getFileContents($filename, $lines = 500): string
-    {
-        if (file_exists(LOG_DIR . '/' . $filename)) {
-            $file = file(LOG_DIR . '/' . $filename);
-
-            if ($file) {
-                return implode(PHP_EOL, array_map('trim', array_slice($file, 0 - $lines)));
+        foreach (glob(LOG_DIR . '/app-*.log') as $path) {
+            if (file_exists($path)) {
+                $files[basename($path)] = $this->getFileContents($path);
             }
         }
 
-        return '';
+        return $this->respondWithTemplate('cup/logs.twig', [
+            'files' => $files,
+        ]);
+    }
+
+    private function getFileContents($path, $lines = 1000): string
+    {
+        $file = file($path);
+
+        return implode(PHP_EOL, array_map('trim', array_slice($file, 0 - $lines)));
     }
 }
