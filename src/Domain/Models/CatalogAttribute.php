@@ -5,7 +5,6 @@ namespace App\Domain\Models;
 use App\Domain\Casts\AddressUrl;
 use App\Domain\Casts\Boolean;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
@@ -22,7 +21,6 @@ use Illuminate\Support\Collection;
  */
 class CatalogAttribute extends Model
 {
-    use HasFactory;
     use HasUuids;
 
     protected $table = 'catalog_attribute';

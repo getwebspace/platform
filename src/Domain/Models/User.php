@@ -14,7 +14,6 @@ use App\Domain\Casts\User\Status as UserStatus;
 use App\Domain\Casts\Uuid;
 use App\Domain\Traits\HasFiles;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -56,7 +55,6 @@ use Illuminate\Support\Collection;
  */
 class User extends Model
 {
-    use HasFactory;
     use HasUuids;
     use HasFiles;
 

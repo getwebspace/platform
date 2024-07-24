@@ -6,7 +6,6 @@ use App\Domain\Casts\Json;
 use App\Domain\Casts\Uuid;
 use App\Domain\Traits\HasFiles;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -20,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class FormData extends Model
 {
-    use HasFactory;
     use HasUuids;
     use HasFiles;
 

@@ -5,7 +5,6 @@ namespace App\Domain\Models;
 use App\Domain\Casts\Email;
 use App\Domain\Casts\GuestBook\Status as GuestBookStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -19,7 +18,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class GuestBook extends Model
 {
-    use HasFactory;
     use HasUuids;
 
     protected $table = 'guestbook';

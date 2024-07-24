@@ -6,7 +6,6 @@ use App\Domain\Casts\AddressUrl;
 use App\Domain\Casts\Boolean;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
@@ -26,7 +25,6 @@ use Illuminate\Support\Collection;
  */
 class Form extends Model
 {
-    use HasFactory;
     use HasUuids;
 
     protected $table = 'form';

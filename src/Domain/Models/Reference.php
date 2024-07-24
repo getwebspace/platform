@@ -6,7 +6,6 @@ use App\Domain\Casts\Boolean;
 use App\Domain\Casts\Json;
 use App\Domain\Casts\Reference\Type as ReferenceType;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -19,7 +18,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Reference extends Model
 {
-    use HasFactory;
     use HasUuids;
 
     protected $table = 'reference';

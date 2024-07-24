@@ -7,7 +7,6 @@ use App\Domain\Casts\Meta;
 use App\Domain\Casts\Page\Type as PageType;
 use App\Domain\Traits\HasFiles;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -22,7 +21,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Page extends Model
 {
-    use HasFactory;
     use HasUuids;
     use HasFiles;
 

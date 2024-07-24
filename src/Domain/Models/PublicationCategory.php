@@ -10,7 +10,6 @@ use App\Domain\Casts\Sort;
 use App\Domain\Casts\Uuid;
 use App\Domain\Traits\HasFiles;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -33,7 +32,6 @@ use Illuminate\Support\Collection;
  */
 class PublicationCategory extends Model
 {
-    use HasFactory;
     use HasUuids;
     use HasFiles;
 

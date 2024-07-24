@@ -6,7 +6,6 @@ use App\Domain\Casts\Decimal;
 use App\Domain\Casts\Json;
 use App\Domain\Casts\Task\Status as TaskStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -21,7 +20,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Task extends Model
 {
-    use HasFactory;
     use HasUuids;
 
     protected $table = 'task';

@@ -7,7 +7,6 @@ use App\Domain\Casts\Email;
 use App\Domain\Casts\Phone;
 use App\Domain\Casts\Uuid;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -34,7 +33,6 @@ use Illuminate\Support\Collection;
  */
 class CatalogOrder extends Model
 {
-    use HasFactory;
     use HasUuids;
 
     protected $table = 'catalog_order';
