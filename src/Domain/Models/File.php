@@ -156,6 +156,12 @@ class File extends Model
 
     public function toArray(): array
     {
+        $path = [];
+
+        foreach (['big', 'middle', 'small'] as $size) {
+            $path[$size] = $this->public_path($size);
+        }
+
         return [
             'uuid' => $this->uuid,
             'name' => $this->name,
@@ -168,6 +174,8 @@ class File extends Model
             'private' => $this->private,
             'order' => $this->pivot->order ?? 1,
             'comment' => $this->pivot->comment ?? '',
+            'link' => $this->public_path(),
+            'path' => $path,
         ];
     }
 }
