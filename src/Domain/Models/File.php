@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $size
  * @property string $salt
  * @property string $hash
- * @property bool $private
  * @property \DateTime $date
  */
 class File extends Model
@@ -37,7 +36,6 @@ class File extends Model
         'size',
         'salt',
         'hash',
-        'private',
         'date',
     ];
 
@@ -50,7 +48,6 @@ class File extends Model
         'size' => 'int',
         'salt' => 'string',
         'hash' => 'string',
-        'private' => Boolean::class,
         'date' => 'datetime',
     ];
 
@@ -61,7 +58,6 @@ class File extends Model
         'size' => '',
         'salt' => '',
         'hash' => '',
-        'private' => false,
         'date' => 'now',
     ];
 
@@ -171,7 +167,6 @@ class File extends Model
             'salt' => $this->salt,
             'hash' => $this->hash,
             'date' => $this->date,
-            'private' => $this->private,
             'order' => $this->pivot->order ?? 1,
             'comment' => $this->pivot->comment ?? '',
             'link' => $this->public_path(),
