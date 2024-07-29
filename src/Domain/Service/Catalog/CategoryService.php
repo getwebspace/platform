@@ -32,7 +32,7 @@ class CategoryService extends AbstractService
         }
 
         // if address generation is enabled
-        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && blank($data['address'])) {
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {
             $category->address = implode('/', array_filter([$category->parent->address ?? '', $category->title ?? uniqid()], fn ($el) => (bool) $el));
         }
 
@@ -173,7 +173,7 @@ class CategoryService extends AbstractService
             $entity->fill($data);
 
             // if address generation is enabled
-            if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && blank($data['address'])) {
+            if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {
                 $entity->address = implode('/', array_filter([$entity->parent->address ?? '', $entity->title ?? uniqid()], fn ($el) => (bool) $el));
             }
 

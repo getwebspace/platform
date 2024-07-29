@@ -30,6 +30,11 @@ class PageService extends AbstractService
             throw new MissingTitleValueException();
         }
 
+        // if address generation is enabled
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {
+            $page->address = $page->title ?? uniqid();
+        }
+
         if (Page::firstWhere(['title' => $page->title]) !== null) {
             throw new TitleAlreadyExistsException();
         }
@@ -135,6 +140,11 @@ class PageService extends AbstractService
 
         if (is_object($entity) && is_a($entity, Page::class)) {
             $entity->fill($data);
+
+            // if address generation is enabled
+            if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {
+                $entity->address = $entity->title ?? uniqid();
+            }
 
             if ($entity->isDirty('title')) {
                 $found = Page::firstWhere(['title' => $entity->title]);

@@ -37,7 +37,7 @@ class ProductService extends AbstractService
         }
 
         // if address generation is enabled
-        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && blank($data['address'])) {
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {
             $product->address = implode('/', array_filter([$product->category->address ?? '', $product->title ?? uniqid()], fn ($el) => (bool) $el));
         }
 
@@ -206,7 +206,7 @@ class ProductService extends AbstractService
             $entity->fill($data);
 
             // if address generation is enabled
-            if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && blank($data['address'])) {
+            if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {
                 $entity->address = implode('/', array_filter([$entity->category->address ?? '', $entity->title ?? uniqid()], fn ($el) => (bool) $el));
             }
 

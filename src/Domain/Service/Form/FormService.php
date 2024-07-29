@@ -28,6 +28,11 @@ class FormService extends AbstractService
             throw new MissingTitleValueException();
         }
 
+        // if address generation is enabled
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {
+            $form->address = $page->title ?? uniqid();
+        }
+
         if (Form::firstWhere(['title' => $form->title]) !== null) {
             throw new TitleAlreadyExistsException();
         }
@@ -127,6 +132,11 @@ class FormService extends AbstractService
 
         if (is_object($entity) && is_a($entity, Form::class)) {
             $entity->fill($data);
+
+            // if address generation is enabled
+            if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {
+                $entity->address = $page->title ?? uniqid();
+            }
 
             if ($entity->isDirty('title')) {
                 $found = Form::firstWhere(['title' => $entity->title]);
