@@ -3,7 +3,7 @@
 ![License](https://img.shields.io/github/license/getwebspace/platform)
 ![Visitors](https://visitor-badge.glitch.me/badge?page_id=getwebspace.platform)
 
-## WebSpace Engine
+## WebSpace Platform (WSE)
 
 [Website](https://getwebspace.org/) |
 [Documentation](https://github.com/getwebspace/platform/wiki) |
@@ -14,8 +14,8 @@
 
 ![Demo site](image.jpeg)
 
-A simple yet powerful e-commerce platform, this free, open-source, multi-user site engine
-offers extensive functionality, making it ideal for online stores, mass media, and blogs.
+Multi-user online stores designed for those who dislike complex online constructs.
+Built on open source technology, it provides both flexibility and accessibility.
 
 <details>
   <summary>Features</summary>
