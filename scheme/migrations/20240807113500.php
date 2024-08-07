@@ -10,8 +10,8 @@ final class V20240807113500 extends AbstractMigration
     {
         // remove old indexes and add new composite index
         $table = $this->table('reference');
-        $table->removeIndexByName('title')->update();
-        $table->removeIndexByName('type')->update();
+        $table->removeIndex('title')->update();
+        $table->removeIndex('type')->update();
         $table->addIndex(['type', 'title'], ['unique' => true])->update();
     }
 }
