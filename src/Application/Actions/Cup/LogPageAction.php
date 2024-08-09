@@ -17,7 +17,7 @@ class LogPageAction extends AbstractAction
         }
 
         return $this->respondWithTemplate('cup/logs.twig', [
-            'files' => $files,
+            'files' => array_reverse($files),
         ]);
     }
 
