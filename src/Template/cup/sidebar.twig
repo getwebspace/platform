@@ -177,7 +177,6 @@
                             $buf.find('small.date').text(
                                 moment
                                     .tz(task.date, 'YYYY-MM-DD hh:mm:ss', 'utc')
-                                    .tz('{{ parameter('common_timezone', 'Europe/Kiev') }}')
                                     .format('{{ parameter('common_date_format', 'j-m-Y, H:i')|dfm }}')
                             );
 
