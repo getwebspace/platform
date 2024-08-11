@@ -722,10 +722,9 @@
                             if (res) {
                                 if (res.redirect) {
                                     triggerEvent('cart:checkout:after', data);
-                                    this.cartRemoveAll();
 
                                     // flexibility
-                                    setTimeout(() => location = res.redirect, options.cart.delay);
+                                    setTimeout(() => {this.cartRemoveAll(); location = res.redirect;}, options.cart.delay);
                                 } else if (res.errors) {
                                     for(let name in res.errors) {
                                         $(getSelector('cart-data'))
