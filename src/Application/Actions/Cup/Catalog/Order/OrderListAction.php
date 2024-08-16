@@ -29,12 +29,12 @@ class OrderListAction extends CatalogAction
 
         // filter by status
         if ($data['status']) {
-            $query->andWhere('status_uuid', $data['status']);
+            $query->where('status_uuid', $data['status']);
         }
 
         // filter by payment
         if ($data['payment']) {
-            $query->andWhere('payment_uuid', $data['payment']);
+            $query->where('payment_uuid', $data['payment']);
         }
 
         $query->orderBy('serial', 'desc');
