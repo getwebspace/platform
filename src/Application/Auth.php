@@ -94,7 +94,7 @@ class Auth
         $user = $this->providers[$provider]->register($data);
 
         if ($user) {
-            $this->container->get(\App\Application\PubSub::class)->publish('common:user:register', $user);
+            $this->container->get(\App\Application\PubSub::class)->publish('auth:user:register', $user);
 
             return [
                 'user' => $user,
