@@ -23,7 +23,7 @@ class UserSubscribeAction extends UserAction
                     $output['status'] = 201;
                     $output['description'] = 'subscribed';
                     $this->userSubscriberService->create(['email' => $email]);
-                    $this->container->get(\App\Application\PubSub::class)->publish('common:subscribe', 'subscribe');
+                    $this->container->get(\App\Application\PubSub::class)->publish('common:user:subscribe', 'subscribe');
 
                     break;
 
@@ -34,7 +34,7 @@ class UserSubscribeAction extends UserAction
 
                     if ($subscribe) {
                         $this->userSubscriberService->delete($subscribe);
-                        $this->container->get(\App\Application\PubSub::class)->publish('common:subscribe', 'unsubscribe');
+                        $this->container->get(\App\Application\PubSub::class)->publish('common:user:subscribe', 'unsubscribe');
                     }
 
                     break;
