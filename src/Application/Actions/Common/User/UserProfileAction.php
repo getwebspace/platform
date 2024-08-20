@@ -47,6 +47,8 @@ class UserProfileAction extends UserAction
                     ]
                 );
 
+                $this->container->get(\App\Application\PubSub::class)->publish('common:user:edit', $user);
+
                 return $this->respondWithRedirect('/user/profile');
             } catch (EmailAlreadyExistsException|WrongEmailValueException $e) {
                 $this->addError('email', $e->getMessage());
