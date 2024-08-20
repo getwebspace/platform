@@ -87,9 +87,11 @@ class OpenAuthProvider extends AbstractAuthProvider
                     ]);
                 } catch (UserNotFoundException $e) {
                     $data = [
-                        'email' => $info['email'],
-                        'firstname' => $info['firstname'],
-                        'lastname' => $info['lastname'],
+                        'username' => $info['username'] ?? '',
+                        'email' => $info['email'] ?? '',
+                        'phone' => $info['phone'] ?? '',
+                        'firstname' => $info['firstname'] ?? '',
+                        'lastname' => $info['lastname'] ?? '',
                     ];
 
                     $user = $this->userService->create($data);
