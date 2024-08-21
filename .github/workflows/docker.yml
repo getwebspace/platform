@@ -40,8 +40,15 @@ jobs:
                       VERSION=${{ env.VERSION }}
                       COMMIT=${{ github.sha }}
 
+            - name: Install Make
+              run: sudo apt install -y make docker-compose
+
             - name: Run tests
-              run: make run-test
+              run: |
+                make up
+                make run-test
+                make lint
+                make down
 
     push:
         runs-on: ubuntu-latest
