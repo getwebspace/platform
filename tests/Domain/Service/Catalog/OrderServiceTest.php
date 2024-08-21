@@ -245,8 +245,8 @@ class OrderServiceTest extends TestCase
             'status_uuid' => $this->getRandomStatus()->uuid,
             'payment_uuid' => $this->getRandomPayment()->uuid,
             'comment' => $this->getFaker()->text,
-            'shipping' => $this->getFaker()->dateTime,
-            'date' => $this->getFaker()->dateTime,
+            'date' => datetime('now')->format('Y-m-d H:i:s'),
+            'shipping' => datetime('now')->format('Y-m-d H:i:s'),
             'external_id' => $this->getFaker()->word,
             'export' => $this->getFaker()->word,
         ];
