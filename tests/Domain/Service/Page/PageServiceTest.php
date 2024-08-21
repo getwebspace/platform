@@ -117,7 +117,7 @@ class PageServiceTest extends TestCase
     {
         $this->expectException(PageNotFoundException::class);
 
-        $this->service->read(['title' => $this->getFaker()->word]);
+        $this->service->read(['title' => 'non existing page']);
     }
 
     public function testUpdateSuccess(): void
