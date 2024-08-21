@@ -18,7 +18,7 @@ use tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * #[CoversNothing]
  */
 class OrderServiceTest extends TestCase
 {

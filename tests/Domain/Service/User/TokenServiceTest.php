@@ -12,7 +12,7 @@ use tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * #[CoversNothing]
  */
 class TokenServiceTest extends TestCase
 {

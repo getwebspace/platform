@@ -17,7 +17,7 @@ use tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * #[CoversNothing]
  */
 class PublicationServiceTest extends TestCase
 {

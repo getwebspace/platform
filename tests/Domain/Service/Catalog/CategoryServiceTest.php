@@ -13,7 +13,7 @@ use tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * #[CoversNothing]
  */
 class CategoryServiceTest extends TestCase
 {

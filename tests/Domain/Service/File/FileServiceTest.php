@@ -10,7 +10,7 @@ use tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * #[CoversNothing]
  */
 class FileServiceTest extends TestCase
 {

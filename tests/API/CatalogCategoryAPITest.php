@@ -8,7 +8,7 @@ use tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * #[CoversNothing]
  */
 class CatalogCategoryAPITest extends TestCase
 {

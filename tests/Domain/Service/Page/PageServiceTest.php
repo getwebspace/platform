@@ -14,7 +14,7 @@ use tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * #[CoversNothing]
  */
 class PageServiceTest extends TestCase
 {
