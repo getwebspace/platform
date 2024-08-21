@@ -1,74 +1,54 @@
 name: Docker builder
 
 on:
-    push:
-        tags:
-            - '*'
+  push:
+    tags:
+      - '*'
 
 env:
-    REGISTRY: ghcr.io
-    IMAGE_NAME: ${{ github.repository }}
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        name: Build and test Docker container
-        steps:
-            - name: Check out the repo
-              uses: actions/checkout@v3
+  build:
+    runs-on: ubuntu-latest
+    name: Build base container
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
 
-            - name: Set tag name environment variables
-              id: setup_env
-              run: |
-                  echo "NAME=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-                  echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
-                  echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
+      - name: Set tag name environment variable
+        id: setup_env
+        run: |
+          echo "NAME=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+          echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
+          echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
-            - name: Build Docker image
-              id: build_image
-              uses: docker/build-push-action@v3
-              with:
-                  context: .
-                  file: docker/Dockerfile
-                  tags: |
-                      ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-                      ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
-                  build-args: |
-                      NO_DEV=--no-dev
-                      NAME=${{ env.NAME }}
-                      BRANCH=${{ env.BRANCH }}
-                      VERSION=${{ env.VERSION }}
-                      COMMIT=${{ github.sha }}
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Install Make
-              run: sudo apt install -y make docker-compose
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-            - name: Run tests
-              run: |
-                make up
-                make run-test
-                make lint
-                make down
-
-    push:
-        runs-on: ubuntu-latest
-        needs: build
-        if: success()
-        name: Push Docker container
-        steps:
-            - name: Log in to the Container registry
-              uses: docker/login-action@v2
-              with:
-                  registry: ${{ env.REGISTRY }}
-                  username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
-
-            - name: Push Docker image
-              uses: docker/build-push-action@v3
-              with:
-                  context: .
-                  file: docker/Dockerfile
-                  push: true
-                  tags: |
-                      ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
-                      ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          file: docker/Dockerfile
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.setup_env.outputs.VERSION }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          build-args: |
+            NO_DEV=--no-dev
+            NAME=${{ steps.setup_env.outputs.NAME }}
+            BRANCH=${{ steps.setup_env.outputs.BRANCH }}
+            VERSION=${{ steps.setup_env.outputs.VERSION }}
+            COMMIT=${{ github.sha }}
