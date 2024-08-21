@@ -4,7 +4,7 @@ use Phinx\Migration\AbstractMigration;
 
 final class V20240414153158 extends AbstractMigration
 {
-    public function change(): void
+    public function up(): void
     {
         // create table params
         $table = $this->table('params', ['id' => false, 'primary_key' => 'name']);
@@ -395,5 +395,33 @@ final class V20240414153158 extends AbstractMigration
             ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
             ->addIndex('status')
             ->create();
+    }
+
+    public function down(): void
+    {
+        $this->table('params')->drop()->save();
+        $this->table('user')->drop()->save();
+        $this->table('user_group')->drop()->save();
+        $this->table('user_token')->drop()->save();
+        $this->table('user_integration')->drop()->save();
+        $this->table('user_subscriber')->drop()->save();
+        $this->table('page')->drop()->save();
+        $this->table('form')->drop()->save();
+        $this->table('form_data')->drop()->save();
+        $this->table('publication_category')->drop()->save();
+        $this->table('publication')->drop()->save();
+        $this->table('catalog_category')->drop()->save();
+        $this->table('catalog_product')->drop()->save();
+        $this->table('catalog_product_related')->drop()->save();
+        $this->table('catalog_attribute')->drop()->save();
+        $this->table('catalog_attribute_category')->drop()->save();
+        $this->table('catalog_attribute_product')->drop()->save();
+        $this->table('catalog_order')->drop()->save();
+        $this->table('catalog_order_product')->drop()->save();
+        $this->table('guestbook')->drop()->save();
+        $this->table('file')->drop()->save();
+        $this->table('file_related')->drop()->save();
+        $this->table('reference')->drop()->save();
+        $this->table('task')->drop()->save();
     }
 }

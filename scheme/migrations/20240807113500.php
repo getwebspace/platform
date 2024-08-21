@@ -6,12 +6,21 @@ use Phinx\Migration\AbstractMigration;
 
 final class V20240807113500 extends AbstractMigration
 {
-    public function change(): void
+    public function up(): void
     {
         // remove old indexes and add new composite index
         $table = $this->table('reference');
-        $table->removeIndex('title')->update();
-        $table->removeIndex('type')->update();
-        $table->addIndex(['type', 'title'], ['unique' => true])->update();
+        $table->removeIndex('title')->save();
+        $table->removeIndex('type')->save();
+        $table->addIndex(['type', 'title'], ['unique' => true])->save();
+    }
+
+    public function down(): void
+    {
+        // remove new index
+        $table = $this->table('reference');
+        $table
+            ->removeIndex(['type', 'title'], ['unique' => true])
+            ->save();
     }
 }
