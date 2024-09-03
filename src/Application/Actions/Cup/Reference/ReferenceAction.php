@@ -60,8 +60,8 @@ abstract class ReferenceAction extends AbstractAction
             case 'manufacturer':
                 return ReferenceType::MANUFACTURER;
 
-            case 'order-dispatch':
-            case 'order-invoice':
+            case 'documents':
+                return ReferenceType::DOCUMENT;
 
             default:
                 return ReferenceType::TEXT;

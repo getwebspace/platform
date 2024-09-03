@@ -8,16 +8,14 @@
                 'create': 'Create a new order',
                 'update': 'Edit order'
             } only %}
-            {% if order %}
+
+            {% if order and document_list.count() %}
                 <div class="ml-md-auto py-2 py-md-0">
-                    <a href="/cup/catalog/order/{{ order.uuid }}/invoice" class="btn btn-secondary">
-                        <i class="fas fa-file-invoice"></i>
-                        {{ 'Invoice'|locale }}
-                    </a>
-                    <a href="/cup/catalog/order/{{ order.uuid }}/dispatch" class="btn btn-secondary">
-                        <i class="fas fa-dolly"></i>
-                        {{ 'Shipping'|locale }}
-                    </a>
+                    {% for document in document_list %}
+                        <a href="/cup/catalog/order/{{ order.uuid }}/document/{{ document.uuid }}" class="btn btn-secondary">
+                            {{ document.title|locale }}
+                        </a>
+                    {% endfor %}
                 </div>
             {% endif %}
         </div>

@@ -59,6 +59,7 @@ class OrderUpdateAction extends CatalogAction
                     'groups' => $this->userGroupService->read(),
                     'status_list' => $this->referenceService->read(['type' => ReferenceType::ORDER_STATUS, 'status' => true, 'order' => ['order' => 'asc']]),
                     'payment_list' => $this->referenceService->read(['type' => ReferenceType::PAYMENT, 'status' => true, 'order' => ['order' => 'asc']]),
+                    'document_list' => $this->referenceService->read(['type' => ReferenceType::DOCUMENT, 'status' => true, 'order' => ['order' => 'asc']]),
                 ]);
             } catch (OrderNotFoundException $e) {
                 // nothing

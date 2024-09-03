@@ -20,6 +20,7 @@ class Type extends Enum
     public const ADDRESS_FORMAT = 'address_format';
     public const SOCIAL_NETWORK = 'social_network';
     public const MANUFACTURER = 'manufacturer';
+    public const DOCUMENT = 'document';
 
     public const LIST = [
         self::TEXT,
@@ -36,5 +37,6 @@ class Type extends Enum
         self::ADDRESS_FORMAT,
         self::SOCIAL_NETWORK,
         self::MANUFACTURER,
+        self::DOCUMENT,
     ];
 }
