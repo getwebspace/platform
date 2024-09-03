@@ -28,7 +28,7 @@ class ProductExportAction extends CatalogAction
     protected function action(): \Slim\Psr7\Response
     {
         // Fields
-        $fields = trim($this->parameter('catalog_export_columns', \App\Domain\References\Catalog::IMPORT_EXPORT_FIELDS_DEFAULT));
+        $fields = trim($this->parameter('catalog_export_columns', implode(PHP_EOL, \App\Domain\References\Catalog::IMPORT_EXPORT_FIELDS_DEFAULT)));
 
         if ($fields) {
             $fields = array_map('trim', explode(PHP_EOL, $fields));
