@@ -3,9 +3,9 @@
 namespace App\Domain;
 
 use App\Domain\Traits\HasParameters;
-use Illuminate\Database\Connection as DataBase;
 use Illuminate\Cache\ArrayStore as ArrayCache;
 use Illuminate\Cache\FileStore as FileCache;
+use Illuminate\Database\Connection as DataBase;
 use Psr\Container\ContainerInterface;
 use Twig\Extension\ExtensionInterface;
 

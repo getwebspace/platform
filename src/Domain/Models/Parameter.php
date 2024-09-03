@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Parameter extends Model
 {
-
     protected $table = 'params';
 
     protected $primaryKey = 'name';

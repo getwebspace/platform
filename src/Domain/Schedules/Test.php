@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Schedules;
 
@@ -8,6 +8,6 @@ class Test extends AbstractSchedule
 {
     public function run(): void
     {
-        //$this->logger->info(date('Y-m-d H:i:s') . " - Running LogJob\n");
+        // $this->logger->info(date('Y-m-d H:i:s') . " - Running LogJob\n");
     }
 }

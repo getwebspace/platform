@@ -4,9 +4,9 @@ namespace App\Domain;
 
 use App\Domain\Service\Task\TaskService;
 use App\Domain\Traits\HasParameters;
-use Illuminate\Database\Connection as DataBase;
 use Illuminate\Cache\ArrayStore as ArrayCache;
 use Illuminate\Cache\FileStore as FileCache;
+use Illuminate\Database\Connection as DataBase;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -51,13 +51,13 @@ abstract class AbstractSchedule
         $currentMonth = (int) $currentTime->format('n');
         $currentDayOfWeek = (int) $currentTime->format('N');
 
-        list($minute, $hour, $dayOfMonth, $month, $dayOfWeek) = explode(' ', $schedule);
+        [$minute, $hour, $dayOfMonth, $month, $dayOfWeek] = explode(' ', $schedule);
 
-        return $this->matches($minute, $currentMinute) &&
-            $this->matches($hour, $currentHour) &&
-            $this->matches($dayOfMonth, $currentDay) &&
-            $this->matches($month, $currentMonth) &&
-            $this->matches($dayOfWeek, $currentDayOfWeek);
+        return $this->matches($minute, $currentMinute)
+            && $this->matches($hour, $currentHour)
+            && $this->matches($dayOfMonth, $currentDay)
+            && $this->matches($month, $currentMonth)
+            && $this->matches($dayOfWeek, $currentDayOfWeek);
     }
 
     protected function matches($cronPart, $currentPart): bool
@@ -70,13 +70,13 @@ abstract class AbstractSchedule
 
         foreach ($parts as $part) {
             if (str_contains($part, '-')) {
-                list($start, $end) = explode('-', $part);
+                [$start, $end] = explode('-', $part);
 
                 if ($currentPart >= $start && $currentPart <= $end) {
                     return true;
                 }
             } elseif (str_contains($part, '/')) {
-                list($base, $interval) = explode('/', $part);
+                [$base, $interval] = explode('/', $part);
 
                 if ($base === '*') {
                     $base = 0;

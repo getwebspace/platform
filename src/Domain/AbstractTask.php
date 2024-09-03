@@ -6,9 +6,9 @@ use App\Domain\Models\Task;
 use App\Domain\Service\Task\TaskService;
 use App\Domain\Traits\HasParameters;
 use App\Domain\Traits\HasRenderer;
-use Illuminate\Database\Connection as DataBase;
 use Illuminate\Cache\ArrayStore as ArrayCache;
 use Illuminate\Cache\FileStore as FileCache;
+use Illuminate\Database\Connection as DataBase;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 

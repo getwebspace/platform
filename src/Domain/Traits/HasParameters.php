@@ -11,7 +11,6 @@ use Psr\Container\ContainerInterface;
  */
 trait HasParameters
 {
-
     /**
      * Returns the value of the parameter by the passed key
      * If an array of keys is passed, returns an array of found keys and their values

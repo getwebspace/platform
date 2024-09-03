@@ -22,7 +22,7 @@ $logger = $container->get(\Psr\Log\LoggerInterface::class);
 $scheduler = $container->get('scheduler');
 
 // add jobs
-//$scheduler->register(\App\Domain\Schedules\Test::class, '*/5 * * * *');
+// $scheduler->register(\App\Domain\Schedules\Test::class, '*/5 * * * *');
 
 // check jobs
 foreach ($scheduler->get() as $scheduled) {

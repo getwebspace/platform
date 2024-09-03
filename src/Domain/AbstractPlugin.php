@@ -5,6 +5,8 @@ namespace App\Domain;
 use App\Domain\Traits\HasParameters;
 use App\Domain\Traits\HasRenderer;
 use App\Domain\Traits\HasStorage;
+use Illuminate\Cache\ArrayStore as ArrayCache;
+use Illuminate\Cache\FileStore as FileCache;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Slim\App;
@@ -12,8 +14,6 @@ use Slim\Interfaces\RouteCollectorInterface;
 use Slim\Interfaces\RouteInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
-use Illuminate\Cache\ArrayStore as ArrayCache;
-use Illuminate\Cache\FileStore as FileCache;
 
 abstract class AbstractPlugin
 {

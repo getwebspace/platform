@@ -53,13 +53,13 @@ return function (ContainerBuilder $containerBuilder): void {
 
         // array cache
         \Illuminate\Cache\ArrayStore::class => function (ContainerInterface $c): \Illuminate\Cache\ArrayStore {
-            return new \Illuminate\Cache\ArrayStore;
+            return new \Illuminate\Cache\ArrayStore();
         },
 
         // file cache
         \Illuminate\Cache\FileStore::class => function (ContainerInterface $c): \Illuminate\Cache\FileStore {
             return new \Illuminate\Cache\FileStore(new \Illuminate\Filesystem\Filesystem(), CACHE_DIR);
-        }
+        },
     ]);
 
     // tnt search
@@ -100,6 +100,8 @@ return function (ContainerBuilder $containerBuilder): void {
 
                 /**
                  * Register job
+                 *
+                 * @param mixed $schedule
                  */
                 final public function register(\App\Domain\AbstractSchedule|string $job, $schedule = '* * * * *'): bool
                 {
@@ -213,7 +215,7 @@ return function (ContainerBuilder $containerBuilder): void {
             $logger = new \Monolog\Logger($settings['name']);
             $rotatingHandler = new \Monolog\Handler\RotatingFileHandler($settings['path'], 5, $settings['level']);
 
-            $dateFormat = "Y-m-d H:i:s";
+            $dateFormat = 'Y-m-d H:i:s';
             $outputFormat = "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n";
             $formatter = new \Monolog\Formatter\LineFormatter($outputFormat, $dateFormat);
 

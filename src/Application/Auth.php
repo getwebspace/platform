@@ -180,7 +180,8 @@ class Auth
                     'ip' => $ip,
                     'comment' => $comment,
                 ]);
-            break;
+
+                break;
 
             default:
                 $token->update([

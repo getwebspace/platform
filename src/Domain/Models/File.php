@@ -3,7 +3,6 @@
 namespace App\Domain\Models;
 
 use App\Application\i18n;
-use App\Domain\Casts\Boolean;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
