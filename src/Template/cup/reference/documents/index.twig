@@ -28,7 +28,7 @@
                         {% block thead %}
                             <div class="col col-sm-1 d-none d-sm-block">#</div>
                             <div class="col">{{ 'Title'|locale }}</div>
-                            <div class="col-2">{{ 'Group'|locale }}</div>
+                            <div class="col-2">{{ 'Target'|locale }}</div>
                             <div class="col-4 col-sm-3 text-right"></div>
                         {% endblock %}
 
@@ -45,7 +45,7 @@
                                             {% endif %}
                                         </div>
                                     </div>
-                                    <div class="col-2">{{ _(item.value.group) }}</div>
+                                    <div class="col-2">{{ _(item.value.target) }}</div>
                                     <div class="col-4 col-sm-3 text-right">
                                         <form action="/cup/reference/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete this element?'|locale }}');">
                                             <div class="btn-group">
