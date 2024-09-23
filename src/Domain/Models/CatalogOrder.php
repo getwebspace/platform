@@ -140,11 +140,20 @@ class CatalogOrder extends Model
                     return [
                         'title' => $item->title,
                         'address' => $item->address,
-                        'price' => $item->pivot->price ?? 0,
-                        'price_type' => $item->pivot->price_type ?? 'price',
-                        'count' => $item->pivot->count ?? 1,
-                        'discount' => $item->pivot->discount ?? 0,
-                        'tax' => $item->pivot->tax ?? 0,
+
+                        'price' => $item->totalPrice(),
+                        'discount' => $item->totalDiscount(),
+                        'tax' => $item->totalTax(),
+
+                        'raw' => [
+                            'price' => $item->pivot->price ?? 0,
+                            'discount' => $item->pivot->discount ?? 0,
+                            'tax' => $item->pivot->tax ?? 0,
+                            'tax_included' => $item->pivot->tax_included ?? 0,
+                        ],
+
+                        'count' => $item->totalCount(),
+                        'amount' => $item->totalSum(),
                     ];
                 }),
             ],
