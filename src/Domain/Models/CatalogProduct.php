@@ -300,13 +300,7 @@ class CatalogProduct extends Model
                 ],
                 'attributes' => $this->attributes()->getResults()->keyBy('address'),
                 'relations' => $this->relations()->getResults()->keyBy('uuid')->map(function (CatalogProduct $item) {
-                    return [
-                        'title' => $item->title,
-                        'address' => $item->address,
-                        'price' => $item->price,
-                        'priceWholesale' => $item->priceWholesale,
-                        'count' => $item->pivot->count ?? 1,
-                    ];
+                    return $item->toArray();
                 }),
                 'files' => $this->files,
             ],
