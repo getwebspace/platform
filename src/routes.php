@@ -20,7 +20,12 @@ return function (App $app, Container $container): void {
                 ->group('/api', function (Group $proxy): void {
                     $proxy
                         ->group('/v1', function (Group $proxy): void {
-                            // search
+                            // signature
+                            $proxy
+                                ->map(['GET'], '/signature', \App\Application\Actions\Api\v1\SignatureAction::class)
+                                ->setName('api:v1:signature');
+
+                            // telemetry
                             $proxy
                                 ->map(['GET'], '/telemetry', \App\Application\Actions\Api\v1\TelemetryAction::class)
                                 ->setName('api:v1:telemetry');
