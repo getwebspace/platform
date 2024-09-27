@@ -82,7 +82,7 @@ class CatalogOrder extends Model
         'status_uuid' => null,
         'payment_uuid' => null,
         'delivery' => '{}',
-        'shipping' => '',
+        'shipping' => null,
         'comment' => '',
         'phone' => '',
         'email' => '',
