@@ -289,9 +289,10 @@ class CatalogProduct extends Model
             parent::toArray(),
             [
                 'calculated' => [
-                    'price_first' => $this->price('price_first'),
                     'price' => $this->price('price'),
                     'price_wholesale' => $this->price('price_wholesale'),
+                    'tax_price' => $this->tax('price'),
+                    'tax_price_wholesale' => $this->tax('price_wholesale'),
                 ],
                 'category' => [
                     'uuid' => $this->category->uuid,
