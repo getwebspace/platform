@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.3",
         "ext-gd": "*",
         "ext-pdo": "*",
         "ext-json": "*",
@@ -18,14 +18,14 @@
         "ext-openssl": "*",
         "slim/slim": "^4.14.0",
         "slim/psr7": "^1.7.0",
-        "slim/twig-view": "^3.4.0",
-        "slim/http-cache": "^1.1.0",
-        "php-di/php-di": "^7.0.6",
-        "illuminate/events": "^v11.15.0",
-        "illuminate/database": "^v11.15.0",
-        "illuminate/collections": "^v11.15.0",
-        "illuminate/filesystem": "^11.15.0",
-        "illuminate/cache": "^v11.15.0",
+        "slim/twig-view": "^3.4.1",
+        "slim/http-cache": "^1.2.0",
+        "php-di/php-di": "^7.0.7",
+        "illuminate/events": "^v11.25.0",
+        "illuminate/database": "^v11.25.0",
+        "illuminate/collections": "^v11.25.0",
+        "illuminate/filesystem": "^v11.25.0",
+        "illuminate/cache": "^v11.25.0",
         "firebase/php-jwt": "^v6.10.1",
         "alksily/support": "^2.0.0",
         "twig/twig": "v3.14.0",
@@ -36,18 +36,18 @@
         "sendpulse/rest-api": "^2.0.1",
         "phpoffice/phpspreadsheet": "^2.2.2",
         "bacon/bacon-qr-code": "^v3.0.0",
-        "monolog/monolog": "^3.6.0",
-        "symfony/var-dumper": "^v7.1.1",
+        "monolog/monolog": "^3.7.0",
+        "symfony/var-dumper": "^v7.1.5",
         "voku/html-compress-twig": "^4.0.2",
         "rybakit/twig-deferred-extension": "^v3.0.5",
-        "robmorgan/phinx": "^0.16.1",
-        "teamtnt/tntsearch": "^v4.2.1"
+        "robmorgan/phinx": "^0.16.4",
+        "teamtnt/tntsearch": "^v4.3.0"
     },
     "require-dev": {
         "fakerphp/faker": "^2.0.x-dev",
-        "friendsofphp/php-cs-fixer": "^v3.59.3",
-        "phpunit/phpunit": "^11.2.5",
-        "guzzlehttp/guzzle": "^7.8.1"
+        "friendsofphp/php-cs-fixer": "^v3.64.0",
+        "phpunit/phpunit": "^11.3.6",
+        "guzzlehttp/guzzle": "^7.9.2"
     },
     "autoload": {
         "psr-4": {
