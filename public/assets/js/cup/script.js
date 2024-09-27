@@ -679,15 +679,8 @@ $(() => {
                     $discount = $row.find('input[name$="[discount]"]'),
                     isSelfPrice = $input.val() === 'price_self';
 
-                if (!isSelfPrice) {
-                    $price.val($row.data($input.val()) ?? '0');
-                    $discount.val(Math.abs($row.data('discount')));
-                } else {
-                    $discount.val(0);
-                }
-
-                $price.prop('readonly', !isSelfPrice);
-                $discount.prop('readonly', !isSelfPrice);
+                $price.val(+($row.data($input.val()) ?? '0')).prop('readonly', !isSelfPrice);
+                $discount.val(0);
 
                 $price.trigger('change');
             });
@@ -696,19 +689,12 @@ $(() => {
             $table.on('change keyup', 'input[type="number"]', (e) => {
                 let $input = $(e.currentTarget),
                     $row = $input.parents('[data-product]'),
-                    price_type = $row.find('select[name$="[price_type]"]').val(),
                     price = $row.find('input[name$="[price]"]').val(),
                     discount = Math.abs($row.find('input[name$="[discount]"]').val()),
                     count = $row.find('input[name$="[count]"]').val();
 
                 if (parseFloat(count) > 0) {
-                    let sum = price * count;
-
-                    if (price_type === 'price_self') {
-                         sum = (price - discount) * count;
-                    }
-
-                    $row.find('[data-subtotal]').text((sum).toFixed(2));
+                    $row.find('[data-subtotal]').text((Math.max(0, (price - discount) * count)).toFixed(2));
                 } else {
                     $row.remove();
                 }

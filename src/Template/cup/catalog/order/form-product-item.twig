@@ -1,7 +1,7 @@
 {% set price_self = constant('/App/Domain/References/Catalog::PRODUCT_PRICE_TYPE_PRICE_SELF') %}
 {% set is_price_self = product.pivot.price_type == price_self %}
 
-<div class="card mb-2" data-product="{{ product.uuid }}" data-price="{{ product.price('price') }}" data-price_wholesale="{{ product.price('price_wholesale') }}" data-discount="{{ product.discount }}">
+<div class="card mb-2" data-product="{{ product.uuid }}" data-price="{{ product.price }}" data-price_wholesale="{{ product.price_wholesale }}">
     <div class="card-header">
         <a href="/cup/catalog/product/{{ product.uuid }}/edit" target="_blank">{{ product.title }}</a>
     </div>
@@ -17,7 +17,7 @@
                                 <option value="{{ type }}" {{ product.pivot.price_type == type ? 'selected' : '' }}>{{ title }}</option>
                             {% endfor %}
                         </select>
-                        <input type="number" class="form-control" name="products[{{ product.uuid }}][price]" value="{{ product.pivot.price }}" min="0" step="any" placeholder="{{ product.price }}" {{ not is_price_self ? 'readonly' : '' }}>
+                        <input type="number" class="form-control" name="products[{{ product.uuid }}][price]" value="{{ product.pivot.price }}" placeholder="{{ product.pivot.price }}" min="0" step="any" {{ not is_price_self ? 'readonly' : '' }}>
                     </div>
                 </div>
             </div>
@@ -28,9 +28,9 @@
                     'name': 'products['~ product.uuid ~'][discount]',
                     'args': {
                         'value': (product.pivot.discount ?? 0)|abs,
-                        'placeholder': product.discount,
+                        'placeholder': (product.pivot.discount ?? 0)|abs,
                         'step': 'any',
-                        'readonly': not is_price_self,
+                        'min': '0',
                     }
                 } %}
             </div>
