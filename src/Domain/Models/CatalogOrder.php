@@ -140,6 +140,7 @@ class CatalogOrder extends Model
                     return [
                         'title' => $item->title,
                         'address' => $item->address,
+                        'type' => $item->type,
 
                         'price' => $item->totalPrice(),
                         'discount' => $item->totalDiscount(),
@@ -154,8 +155,17 @@ class CatalogOrder extends Model
 
                         'count' => $item->totalCount(),
                         'amount' => $item->totalSum(),
+
+                        'files' => $item->files->map(function (File $file) {
+                            return array_intersect_key($file->toArray(), array_flip(['uuid', 'name', 'ext', 'type', 'order', 'link', 'path']));
+                        }),
                     ];
                 }),
+                'calculated' => [
+                    'discount' => $this->totalDiscount(),
+                    'tax' => $this->totalTax(),
+                    'total' => $this->totalSum(),
+                ],
             ],
         );
     }
