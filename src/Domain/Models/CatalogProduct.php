@@ -291,8 +291,6 @@ class CatalogProduct extends Model
                 'calculated' => [
                     'price' => $this->price('price'),
                     'price_wholesale' => $this->price('price_wholesale'),
-                    'tax_price' => $this->tax('price'),
-                    'tax_price_wholesale' => $this->tax('price_wholesale'),
                 ],
                 'category' => [
                     'uuid' => $this->category->uuid,
