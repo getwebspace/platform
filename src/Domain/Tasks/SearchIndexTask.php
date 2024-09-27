@@ -4,9 +4,9 @@ namespace App\Domain\Tasks;
 
 use App\Domain\AbstractService;
 use App\Domain\AbstractTask;
+use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\Page\PageService;
 use App\Domain\Service\Publication\PublicationService;
-use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 
 class SearchIndexTask extends AbstractTask
 {
@@ -36,8 +36,8 @@ class SearchIndexTask extends AbstractTask
             $indexer = $tnt->createIndex("{$name}.index", true);
             $indexer->setPrimaryKey('uuid');
             $indexer->setInMemory(false);
-            $indexer->setTokenizer(new \TeamTNT\TNTSearch\Support\Tokenizer);
-            $indexer->setStemmer(new \TeamTNT\TNTSearch\Stemmer\NoStemmer);
+            $indexer->setTokenizer(new \TeamTNT\TNTSearch\Support\Tokenizer());
+            $indexer->setStemmer(new \TeamTNT\TNTSearch\Stemmer\NoStemmer());
             $indexer->setStopWords([]); // todo
 
             $offset = 0;
@@ -46,8 +46,8 @@ class SearchIndexTask extends AbstractTask
             do {
                 $rows = $service->read([
                     'status' => \App\Domain\Casts\Catalog\Status::WORK,
-                    'limit'=> $limit,
-                    'offset'=> $limit * $offset,
+                    'limit' => $limit,
+                    'offset' => $limit * $offset,
                 ]);
 
                 foreach ($rows as $row) {
@@ -66,9 +66,9 @@ class SearchIndexTask extends AbstractTask
                     $indexer->insert($columns);
                 }
 
-                $offset++;
+                ++$offset;
                 $go = $rows->count() === $limit;
-            } while($go === true);
+            } while ($go === true);
 
             $this->logger->info('SearchIndex: result', [
                 'name' => $name,
