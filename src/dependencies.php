@@ -72,7 +72,6 @@ return function (ContainerBuilder $containerBuilder): void {
             $tnt->loadConfig([
                 'storage' => VAR_DIR . '/cache',
                 'engine' => \TeamTNT\TNTSearch\Engines\SqliteEngine::class,
-                'stemmer' => \TeamTNT\TNTSearch\Stemmer\PorterStemmer::class,
             ]);
             $tnt->engine->setDatabaseHandle($pdo);
             $tnt->fuzziness(true);
