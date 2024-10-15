@@ -88,6 +88,17 @@ class PublicationCategory extends Model
         return $this->hasOne(self::class, 'uuid', 'parent_uuid');
     }
 
+    public function parents(): Collection
+    {
+        $collect = collect([$this]);
+
+        if ($this->parent) {
+            $collect = $collect->merge($this->parent->parents());
+        }
+
+        return $collect;
+    }
+
     public function nested(bool $force = false): Collection
     {
         $collect = collect([$this]);
