@@ -230,7 +230,7 @@ if (!function_exists('str_escape')) {
                 $input[$key] = str_escape($value);
             }
         } else {
-            $input = htmlspecialchars($input, ENT_QUOTES);
+            $input = htmlspecialchars(strip_tags($input), ENT_QUOTES);
         }
 
         return $input;
