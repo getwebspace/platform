@@ -92,6 +92,7 @@ if ($queue->count()) {
                 'action' => $action,
                 'message' => $e->getMessage(),
                 'file' => $e->getFile(),
+                'line' => $e->getLine(),
                 'code' => $e->getCode(),
             ]);
         }
