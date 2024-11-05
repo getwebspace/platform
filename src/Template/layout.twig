@@ -14,7 +14,7 @@
         {% block head '' %}
         {% block style '' %}
 
-        <title>{% block title deferred %}{{ title ? title ~ ' | ' : '' }}{{ parameter('common_title', '') }}{% endblock %}</title>
+        <title>{% block title %}{{ title ? title ~ ' | ' : '' }}{{ parameter('common_title', '') }}{% endblock %}</title>
         <script defer type="text/javascript" src="/assets/js/wse.js?v={{ SHA }}"></script>
     </head>
 

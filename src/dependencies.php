@@ -193,7 +193,6 @@ return function (ContainerBuilder $containerBuilder): void {
             $view->addExtension(new \Twig\Extra\Intl\IntlExtension());
             $view->addExtension(new \Twig\Extra\String\StringExtension());
             $view->addExtension(new \Twig\Extension\StringLoaderExtension());
-            $view->addExtension(new \Twig\DeferredExtension\DeferredExtension());
             $view->addExtension(new \voku\twig\MinifyHtmlExtension(new \voku\helper\HtmlMin()));
 
             // if debug
