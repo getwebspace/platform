@@ -11,12 +11,14 @@ require __DIR__ . '/../src/bootstrap.php';
 // app container
 $container = $app->getContainer();
 
-// bind error/exception handler
-set_error_handler(ErrorHandler($container));
-set_exception_handler(ExceptionHandler($container));
-
 /** @var \Monolog\Logger $logger */
 $logger = $container->get(\Psr\Log\LoggerInterface::class);
+
+// bind error handler
+error_reporting(E_ALL);
+set_error_handler(function ($code, $message, $file, $line) {
+    throw new \ErrorException($message, 0, $code, $file, $line);
+});
 
 // simple scheduler
 $scheduler = $container->get('scheduler');

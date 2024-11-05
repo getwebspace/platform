@@ -22,9 +22,6 @@ if (\App\Domain\AbstractTask::workerHasPidFile($action)) {
 // app container
 $container = $app->getContainer();
 
-// bind error/exception handler
-set_error_handler(ErrorHandler($container));
-set_exception_handler(ExceptionHandler($container));
 
 /** @var \Monolog\Logger $logger */
 $logger = $container->get(\Psr\Log\LoggerInterface::class);
@@ -46,6 +43,12 @@ $queue = $taskService->read([
     'limit' => 1,
 ]);
 
+// bind error handler
+error_reporting(E_ALL);
+set_error_handler(function ($code, $message, $file, $line) {
+    throw new \ErrorException($message, 0, $code, $file, $line);
+});
+
 // rerun worker
 register_shutdown_function(function () use ($queue, $action): void {
     // after work remove PID file
@@ -63,32 +66,43 @@ if ($queue->count()) {
     $entity = $queue->first();
     $action = $entity->action;
 
-    try {
-        if (class_exists($action)) {
-            /** @var \App\Domain\AbstractTask $task */
-            $task = new $action($container, $entity);
+    if (class_exists($action)) {
+        /** @var \App\Domain\AbstractTask $task */
+        $task = new $action($container, $entity);
 
+        try {
             if ($entity->status === \App\Domain\Casts\Task\Status::QUEUE) {
                 $task->run();
             } else {
                 // remove task by time
                 if (datetime()->diff($entity->date)->i >= 10) {
                     $task->setStatusDelete('Removed by time');
+                    $logger->info('Task removed by time', [
+                        'uuid' => $entity->uuid,
+                        'action' => $action,
+                    ]);
                 } else {
                     sleep(5);
                 }
             }
-        } else {
-            $taskService->update($entity, [
-                'status' => \App\Domain\Casts\Task\Status::DELETE,
-                'output' => 'Task class not found',
+        } catch (Throwable $e) {
+            $task->setStatusFail($e->getMessage());
+            $logger->error('Task catch exception', [
+                'uuid' => $entity->uuid,
+                'action' => $action,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'code' => $e->getCode(),
             ]);
         }
-    } catch (Exception $e) {
-        $logger->error('Task catch exception', [
-            'message' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'code' => $e->getCode(),
+    } else {
+        $taskService->update($entity, [
+            'status' => \App\Domain\Casts\Task\Status::DELETE,
+            'output' => 'Task class not found',
+        ]);
+        $logger->warning('Task class not found', [
+            'uuid' => $entity->uuid,
+            'action' => $action,
         ]);
     }
 }

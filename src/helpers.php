@@ -413,38 +413,3 @@ if (!function_exists('convertPhpToJsMomentFormat')) {
         return strtr($phpFormat, $replacements);
     }
 }
-
-if (!function_exists('ErrorHandler')) {
-    function ErrorHandler(\Psr\Container\ContainerInterface $container): callable
-    {
-        /**
-         * @var \Psr\Log\LoggerInterface $logger
-         */
-        $logger = $container->get(\Psr\Log\LoggerInterface::class);
-
-        return function ($code, $str, $file, $line) use ($logger): void {
-            $level = match ($code) {
-                E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR => \Monolog\Level::Error,
-                E_WARNING, E_USER_WARNING, E_COMPILE_WARNING, E_RECOVERABLE_ERROR => \Monolog\Level::Warning,
-                E_NOTICE, E_USER_NOTICE, E_STRICT, E_DEPRECATED, E_USER_DEPRECATED => \Monolog\Level::Notice,
-                default => \Monolog\Level::Info,
-            };
-
-            $logger->log($level, "{$str} ({$file}:{$line})");
-        };
-    }
-}
-
-if (!function_exists('ExceptionHandler')) {
-    function ExceptionHandler(\Psr\Container\ContainerInterface $container): callable
-    {
-        /**
-         * @var \Psr\Log\LoggerInterface $logger
-         */
-        $logger = $container->get(\Psr\Log\LoggerInterface::class);
-
-        return function (Throwable $ex) use ($logger): void {
-            $logger->critical("{$ex->getMessage()} ({$ex->getFile()}:{$ex->getLine()})");
-        };
-    }
-}
