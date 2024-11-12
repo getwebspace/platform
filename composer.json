@@ -28,7 +28,7 @@
         "illuminate/cache": "^v11.25.0",
         "firebase/php-jwt": "^v6.10.1",
         "alksily/support": "^2.0.0",
-        "twig/twig": "v3.11.1",
+        "twig/twig": "v3.11.2",
         "twig/intl-extra": "v3.8.0",
         "twig/string-extra": "v3.8.0",
         "ramsey/uuid": "^4.7.6",
