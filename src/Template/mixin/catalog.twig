@@ -497,10 +497,10 @@
 
                 /**
                  * Add item to cart (if duplicate - increment quantity)
-                 * @param properties
+                 * @param item
                  * @return {number}
                  */
-                cartAddItem(properties) {
+                cartAddItem(item) {
                     let index,
                         defaults = {
                             'uuid': '',
@@ -519,20 +519,20 @@
                             'type': options.item_type,
                         };
 
-                    properties = merge({}, defaults, properties);
-                    properties['quantity_step'] = properties['quantity_step'] ? +properties['quantity_step'] : 1;
-                    properties['quantity_min'] = properties['quantity_min'] ? +properties['quantity_min'] : 1;
-                    properties['quantity'] = properties['quantity'] >= properties['quantity_min'] ? +properties['quantity'] : properties['quantity_min'];
-                    properties['price'] = properties['price'] ? +properties['price'] : 0;
-                    properties['price_wholesale'] = properties['price_wholesale'] ? +properties['price_wholesale'] : 0;
-                    properties['price_wholesale_from'] = properties['price_wholesale_from'] ? +properties['price_wholesale_from'] : 0;
-                    properties['price_type'] = properties['price_wholesale_from'] > 0 && properties['quantity'] >= properties['price_wholesale_from'] ? 'price_wholesale' : 'price';
+                    item = merge({}, defaults, item);
+                    item['quantity_step'] = item['quantity_step'] ? +item['quantity_step'] : 1;
+                    item['quantity_min'] = item['quantity_min'] ? +item['quantity_min'] : 1;
+                    item['quantity'] = item['quantity'] >= item['quantity_min'] ? +item['quantity'] : item['quantity_min'];
+                    item['price'] = item['price'] ? +item['price'] : 0;
+                    item['price_wholesale'] = item['price_wholesale'] ? +item['price_wholesale'] : 0;
+                    item['price_wholesale_from'] = item['price_wholesale_from'] ? +item['price_wholesale_from'] : 0;
+                    item['price_type'] = item['price_wholesale_from'] > 0 && item['quantity'] >= item['price_wholesale_from'] ? 'price_wholesale' : 'price';
 
-                    if ((index = this.cartFindItemByField(properties['uuid'], 'uuid')) >= 0) {
-                        this.cartItemChangeCountById(index, cart[index].quantity + properties['quantity']);
+                    if ((index = this.cartFindItemByField(item['uuid'], 'uuid')) >= 0) {
+                        this.cartItemChangeCountById(index, cart[index].quantity + item['quantity']);
                     } else {
-                        cart.push(properties);
-                        triggerEvent('cart:add', properties);
+                        cart.push(item);
+                        triggerEvent('cart:add', item);
                     }
                     saveCartData(cart);
 
@@ -622,8 +622,8 @@
                  */
                 cartRemoveItemById(index) {
                     if (index >= 0 && cart[index]) {
-                        cart.splice(index, 1);
-                        triggerEvent('cart:remove', cart);
+                        let removed = cart.splice(index, 1);
+                        triggerEvent('cart:remove', removed.shift());
                         saveCartData(cart);
                     }
                 }
