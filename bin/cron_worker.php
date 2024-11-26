@@ -4,6 +4,12 @@ ini_set('memory_limit', '-1'); // fix memory usage
 
 require __DIR__ . '/../src/bootstrap.php';
 
+// bind error handler
+error_reporting(E_ALL);
+set_error_handler(function ($code, $message, $file, $line) {
+    throw new \ErrorException($message, 0, $code, $file, $line);
+});
+
 /**
  * @var \Slim\App $app
  */
@@ -13,12 +19,6 @@ $container = $app->getContainer();
 
 /** @var \Monolog\Logger $logger */
 $logger = $container->get(\Psr\Log\LoggerInterface::class);
-
-// bind error handler
-error_reporting(E_ALL);
-set_error_handler(function ($code, $message, $file, $line) {
-    throw new \ErrorException($message, 0, $code, $file, $line);
-});
 
 // simple scheduler
 $scheduler = $container->get('scheduler');

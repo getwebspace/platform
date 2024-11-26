@@ -1,9 +1,14 @@
-#!/usr/local/bin/php
 <?php declare(strict_types=1);
 
 ini_set('memory_limit', '-1'); // fix memory usage
 
 require __DIR__ . '/../src/bootstrap.php';
+
+// bind error handler
+error_reporting(E_ALL);
+set_error_handler(function ($code, $message, $file, $line) {
+    throw new \ErrorException($message, 0, $code, $file, $line);
+});
 
 $action = $_SERVER['argv'][1] ?? null;
 
@@ -21,7 +26,6 @@ if (\App\Domain\AbstractTask::workerHasPidFile($action)) {
 
 // app container
 $container = $app->getContainer();
-
 
 /** @var \Monolog\Logger $logger */
 $logger = $container->get(\Psr\Log\LoggerInterface::class);
@@ -42,12 +46,6 @@ $queue = $taskService->read([
     ],
     'limit' => 1,
 ]);
-
-// bind error handler
-error_reporting(E_ALL);
-set_error_handler(function ($code, $message, $file, $line) {
-    throw new \ErrorException($message, 0, $code, $file, $line);
-});
 
 // rerun worker
 register_shutdown_function(function () use ($queue, $action): void {
