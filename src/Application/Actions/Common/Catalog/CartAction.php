@@ -50,7 +50,7 @@ class CartAction extends CatalogAction
             }
 
             // for receive address in multiple lines
-            if (is_array($data['delivery']['address'])) {
+            if (!empty($data['delivery']['address']) && is_array($data['delivery']['address'])) {
                 if ($this->parameter('catalog_order_address', 'off') === 'on') {
                     ksort($data['delivery']['address']);
                 }
