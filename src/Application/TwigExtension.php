@@ -583,12 +583,12 @@ class TwigExtension extends AbstractExtension
     }
 
     // save uuid of product in session or return saved list
-    public function catalog_product_view($uuid = null, $limit = 10)
+    public function catalog_product_view(string $uuid = null, int $limit = 10)
     {
         $list = $_SESSION['catalog_product_view'] ?? [];
 
-        if (is_string($uuid) && \Ramsey\Uuid\Uuid::isValid($uuid) || is_object($uuid) && is_a($uuid, Uuid::class)) {
-            $list[] = $uuid->toString();
+        if (is_string($uuid) && \Ramsey\Uuid\Uuid::isValid($uuid)) {
+            $list[] = $uuid;
             $list = array_unique($list);
 
             // shift first element
