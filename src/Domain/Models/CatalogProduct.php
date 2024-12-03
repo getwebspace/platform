@@ -184,6 +184,15 @@ class CatalogProduct extends Model
         )->withPivot('value');
     }
 
+    public function attribute($address, $default = null): mixed
+    {
+        try {
+            return $this->attributes()->where('address', $address)->firstOrFail()->value();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $default;
+        }
+    }
+
     public function relations(): BelongsToMany
     {
         return $this->belongsToMany(
