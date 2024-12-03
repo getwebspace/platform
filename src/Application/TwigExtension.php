@@ -17,9 +17,10 @@ use App\Domain\Service\Publication\PublicationService;
 use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
+use Illuminate\Cache\ArrayStore as ArrayCache;
+use Illuminate\Cache\FileStore as FileCache;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
-use Ramsey\Uuid\UuidInterface as Uuid;
 use Slim\Interfaces\RouteCollectorInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -104,6 +105,8 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('base64_decode', [$this, 'base64_decode']),
             new TwigFunction('json_encode', [$this, 'json_encode'], ['is_safe' => ['html']]),
             new TwigFunction('json_decode', [$this, 'json_decode'], ['is_safe' => ['html']]),
+            new TwigFunction('cache_put', [$this, 'cache_put']),
+            new TwigFunction('cache_get', [$this, 'cache_get']),
             new TwigFunction('convert_size', [$this, 'convert_size']),
             new TwigFunction('qr_code', [$this, 'qr_code'], ['is_safe' => ['html']]),
 
@@ -183,16 +186,7 @@ class TwigExtension extends AbstractExtension
         return $this->routeCollector->getRouteParser()->urlFor($name, $data, $queryParams);
     }
 
-    /**
-     * Similar to pathFor but returns a fully qualified URL
-     *
-     * @param string $name The name of the route
-     * @param array  $data Route placeholders
-     * @param array  $queryParams
-     *
-     * @return string fully qualified URL
-     */
-    public function fullUrlFor($name, $data = [], $queryParams = [])
+    public function fullUrlFor(string $name, array $data = [], array $queryParams = []): string
     {
         return $this->currentHost() . $this->pathFor($name, $data, $queryParams);
     }
@@ -392,6 +386,28 @@ class TwigExtension extends AbstractExtension
         return json_decode($json, $associative, $depth, $flags);
     }
 
+    function cache_put(string $key, mixed $value, int $seconds, string $type = 'memory'): void
+    {
+        /** @var FileCache|ArrayCache $cache */
+        $cache = match ($type) {
+            'file' => $this->container->get(FileCache::class),
+            'memory' => $this->container->get(ArrayCache::class),
+        };
+
+        $cache->put('twig-' . $key, $value, $seconds);
+    }
+
+    function cache_get(string $key, mixed $default = null, string $type = 'memory'): mixed
+    {
+        /** @var FileCache|ArrayCache $cache */
+        $cache = match ($type) {
+            'file' => $this->container->get(FileCache::class),
+            'memory' => $this->container->get(ArrayCache::class),
+        };
+
+        return $cache->get('twig-' . $key) ?? $default;
+    }
+
     public function json_encode($value, int $flags = JSON_UNESCAPED_UNICODE, int $depth = 512): false|string
     {
         return json_encode($value, $flags, $depth);
@@ -401,7 +417,7 @@ class TwigExtension extends AbstractExtension
     {
         $unit = ['b', 'kb', 'mb', 'gb', 'tb', 'pb'];
 
-        return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[(int) $i];
+        return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[(int)$i];
     }
 
     public function qr_code(mixed $value, $size = 256, $margin = 0): string
@@ -576,7 +592,7 @@ class TwigExtension extends AbstractExtension
             ->join('catalog_order_product as cop', 'cp.uuid', '=', 'cop.product_uuid')
             ->where('cp.type', '=', $type)
             ->where('cp.status', '=', \App\Domain\Casts\Catalog\Status::WORK)
-            ->groupBy('cp.uuid', ...array_map(fn ($col) => "cp.{$col}", array_keys((new \App\Domain\Models\CatalogProduct())->getAttributes())))
+            ->groupBy('cp.uuid', ...array_map(fn($col) => "cp.{$col}", array_keys((new \App\Domain\Models\CatalogProduct())->getAttributes())))
             ->orderByDesc('order_count')
             ->limit($limit)
             ->get();
