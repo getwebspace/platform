@@ -254,13 +254,7 @@ class TwigExtension extends AbstractExtension
     }
 
     /**
-     * old debug function
-     *
      * @param mixed ...$args
-     *
-     * @deprecated
-     *
-     * @tracySkipLocation
      */
     public function pre(...$args): void
     {
