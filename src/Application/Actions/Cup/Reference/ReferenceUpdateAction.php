@@ -26,7 +26,7 @@ class ReferenceUpdateAction extends ReferenceAction
                         $ref = $this->referenceService->update($ref, [
                             'type' => $type,
                             'title' => $this->getParam('title'),
-                            'value' => $this->getParam('value'),
+                            'value' => $this->getParam('value', []),
                             'order' => $this->getParam('order'),
                             'status' => $this->getParam('status'),
                         ]);
