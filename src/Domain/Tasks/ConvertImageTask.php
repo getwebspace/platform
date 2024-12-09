@@ -48,10 +48,11 @@ class ConvertImageTask extends AbstractTask
                     if ($file->size >= $convert_size) {
                         $folder = $file->dir();
                         $original = $folder . '/' . $file->name . '.orig';
+                        $filesize = filesize($file->internal_path());
 
                         if (!file_exists($original)) {
                             @copy($file->internal_path(), $original);
-                            @unlink($file->internal_path());
+                            $filesize += filesize($original);
                         }
 
                         $sizes = [
@@ -59,7 +60,6 @@ class ConvertImageTask extends AbstractTask
                             'middle' => $this->parameter('image_convert_size_middle', 450),
                             'small' => $this->parameter('image_convert_size_small', 200),
                         ];
-                        $filesize = filesize($original);
 
                         // resize original picture
                         $this->resizeAndSaveImage($original, $folder . '/' . $file->name . '.webp');
