@@ -73,21 +73,6 @@ class ProductService extends AbstractService
 
     protected function buildCriteria(array $data = []): array
     {
-        $default = [
-            'uuid' => null,
-            'category_uuid' => null,
-            'title' => null,
-            'type' => null,
-            'address' => null,
-            'vendorcode' => null,
-            'barcode' => null,
-            'special' => null,
-            'status' => null,
-            'external_id' => null,
-            'export' => null,
-        ];
-        $data = array_merge($default, $data);
-
         $criteria = [];
 
         if ($data['uuid'] !== null) {
@@ -140,6 +125,20 @@ class ProductService extends AbstractService
      */
     public function count(array $data = []): int
     {
+        $default = [
+            'uuid' => null,
+            'category_uuid' => null,
+            'title' => null,
+            'type' => null,
+            'address' => null,
+            'vendorcode' => null,
+            'barcode' => null,
+            'special' => null,
+            'status' => null,
+            'external_id' => null,
+            'export' => null,
+        ];
+        $data = array_merge($default, $data);
         $criteria = $this->buildCriteria($data);
 
         $query = CatalogProduct::query();
@@ -163,6 +162,20 @@ class ProductService extends AbstractService
      */
     public function read(array $data = [])
     {
+        $default = [
+            'uuid' => null,
+            'category_uuid' => null,
+            'title' => null,
+            'type' => null,
+            'address' => null,
+            'vendorcode' => null,
+            'barcode' => null,
+            'special' => null,
+            'status' => null,
+            'external_id' => null,
+            'export' => null,
+        ];
+        $data = array_merge($default, static::$default_read, $data);
         $criteria = $this->buildCriteria($data);
 
         switch (true) {
