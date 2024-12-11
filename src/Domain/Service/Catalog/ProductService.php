@@ -71,12 +71,7 @@ class ProductService extends AbstractService
         return $product;
     }
 
-    /**
-     * @throws ProductNotFoundException
-     *
-     * @return CatalogProduct|Collection
-     */
-    public function read(array $data = [])
+    protected function buildCriteria(array $data = []): array
     {
         $default = [
             'uuid' => null,
@@ -91,7 +86,7 @@ class ProductService extends AbstractService
             'external_id' => null,
             'export' => null,
         ];
-        $data = array_merge($default, static::$default_read, $data);
+        $data = array_merge($default, $data);
 
         $criteria = [];
 
@@ -137,6 +132,39 @@ class ProductService extends AbstractService
             $criteria['export'] = $data['export'];
         }
 
+        return $criteria;
+    }
+
+    /**
+     * @return int
+     */
+    public function count(array $data = []): int
+    {
+        $criteria = $this->buildCriteria($data);
+
+        $query = CatalogProduct::query();
+
+        /** @var Builder $query */
+        foreach ($criteria as $key => $value) {
+            if (is_array($value)) {
+                $query->whereIn($key, $value);
+            } else {
+                $query->where($key, $value);
+            }
+        }
+
+        return $query->count();
+    }
+
+    /**
+     * @throws ProductNotFoundException
+     *
+     * @return CatalogProduct|Collection
+     */
+    public function read(array $data = [])
+    {
+        $criteria = $this->buildCriteria($data);
+
         switch (true) {
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['address']) && $data['address'] !== null:
@@ -148,6 +176,7 @@ class ProductService extends AbstractService
 
                 return $catalogProduct ?: throw new ProductNotFoundException();
 
+            // cup search by name
             case !is_array($data['title']) && $data['title'] !== null:
                 $query = CatalogProduct::query();
                 /** @var Builder $query */

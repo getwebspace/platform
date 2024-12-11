@@ -133,6 +133,7 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('catalog_attribute', [$this, 'catalog_attribute']),
             new TwigFunction('catalog_category', [$this, 'catalog_category']),
             new TwigFunction('catalog_product', [$this, 'catalog_product']),
+            new TwigFunction('catalog_product_count', [$this, 'catalog_product_count']),
             new TwigFunction('catalog_product_price_type', [$this, 'catalog_product_price_type'], ['needs_context' => true]),
             new TwigFunction('catalog_product_popular', [$this, 'catalog_product_popular']),
             new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
@@ -565,6 +566,15 @@ class TwigExtension extends AbstractExtension
         $catalogProductService = $this->container->get(CatalogProductService::class);
 
         return $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
+    }
+
+    // returns a product count by criteria
+    public function catalog_product_count(array $criteria = [])
+    {
+        $criteria['status'] = \App\Domain\Casts\Catalog\Status::WORK;
+        $catalogProductService = $this->container->get(CatalogProductService::class);
+
+        return $catalogProductService->count($criteria);
     }
 
     // returns product price type
