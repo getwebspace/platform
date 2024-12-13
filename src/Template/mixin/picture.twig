@@ -10,14 +10,10 @@
 #}
 {% htmlcompress %}
     {% if file and file.type starts with 'image/' %}
-        {% set big = parameter('image_convert_size_big', 960) %}
-        {% set middle = parameter('image_convert_size_middle', 450) %}
-        {% set small = parameter('image_convert_size_small', 200) %}
-
         <picture>
-            <source srcset="{{ file.public_path('big') }}" media="(min-width: {{ big }}px)" />
-            <source srcset="{{ file.public_path('middle') }}" media="(min-width: {{ middle }}px)" />
-            <source srcset="{{ file.public_path('small') }}" media="(min-width: {{ small }}px)" />
+            <source srcset="{{ file.public_path('big') }}" media="(max-width: 950px)" />
+            <source srcset="{{ file.public_path('middle') }}" media="(max-width: 650px)" />
+            <source srcset="{{ file.public_path('small') }}" media="(max-width: 350px)" />
             <img src="{{ file.public_path() }}"
                 {{ id ? ('id="'~ id|trim ~ '"')|raw : '' }}
                 {{ class ? ('class="'~ class|trim ~'"')|raw : '' }}
