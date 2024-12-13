@@ -37,7 +37,7 @@
                                 <div class="row">
                                     <div class="col col-sm-1 d-none d-sm-block">{{ item.order }}</div>
                                     <div class="col">
-                                        {{ item.title }}
+                                        {{ item.title|u.truncate(20, '...') }}
 
                                         <div class="text-black-50 float-right d-none d-lg-inline">
                                             {% if item.status == 0 %}
