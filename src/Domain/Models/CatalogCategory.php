@@ -132,8 +132,13 @@ class CatalogCategory extends Model
         $collect = collect([$this]);
 
         if ($this->is_allow_nested || $force) {
-            /** @var \App\Domain\Models\CatalogCategory $category */
-            foreach (self::where(['parent_uuid' => $this->uuid])->get() as $child) {
+            $nested = self::where([
+                'parent_uuid' => $this->uuid,
+                'status' => \App\Domain\Casts\Catalog\Status::WORK,
+            ])->get();
+
+            /** @var \App\Domain\Models\CatalogCategory $child */
+            foreach ($nested as $child) {
                 $collect = $collect->merge($child->nested($force));
             }
         }

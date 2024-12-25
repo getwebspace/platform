@@ -104,7 +104,7 @@ class PublicationCategory extends Model
         $collect = collect([$this]);
 
         if ($this->is_allow_nested || $force) {
-            /** @var \App\Domain\Models\PublicationCategory $category */
+            /** @var \App\Domain\Models\PublicationCategory $child */
             foreach (self::where(['parent_uuid' => $this->uuid])->get() as $child) {
                 $collect = $collect->merge($child->nested($force));
             }
