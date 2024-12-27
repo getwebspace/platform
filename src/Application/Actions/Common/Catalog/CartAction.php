@@ -41,7 +41,7 @@ class CartAction extends CatalogAction
                 $data['comment'] = [$data['comment']];
 
                 foreach ($this->getParams() as $key => $value) {
-                    if (!in_array($key, array_merge(array_keys($data), ['recaptcha']), true) && $value) {
+                    if (!in_array($key, array_merge(array_keys($data), ['recaptcha', 'payment']), true) && $value) {
                         $data['comment'][] = $key . ' ' . $value;
                     }
                 }
