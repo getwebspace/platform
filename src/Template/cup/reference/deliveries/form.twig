@@ -78,7 +78,7 @@
                     </div>
 
                     <div class="card-body">
-                        {% set products = catalog_product({'type': 'service'}).pluck('title', 'uuid').all() %}
+                        {% set products = catalog_product({'type': 'service'}, {'order': 'asc'}, 100).pluck('title', 'uuid').all() %}
 
                         {% if item.value|count() %}
                             {% for pair in item.value %}
