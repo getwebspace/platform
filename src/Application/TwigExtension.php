@@ -560,7 +560,7 @@ class TwigExtension extends AbstractExtension
     }
 
     // returns a product or a list of products by criteria
-    public function catalog_product(array $criteria = [], $order = ['order' => 'asc'], $limit = 10, $offset = null)
+    public function catalog_product(array $criteria = [], $order = ['order' => 'asc'], $limit = 50, $offset = null)
     {
         $criteria['status'] = \App\Domain\Casts\Catalog\Status::WORK;
         $catalogProductService = $this->container->get(CatalogProductService::class);
