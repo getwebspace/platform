@@ -692,19 +692,29 @@
                     let data = new FormData();
 
                     $fields.each((i, el) => {
-                        if (el.required === true && el.value === '') {
+                        const isCheckable = (el.type === 'checkbox' || el.type === 'radio');
+
+                        // skip unchecked checkbox/radio
+                        if (isCheckable && !el.checked) {
+                            return;
+                        }
+
+                        // check required fields
+                        if (el.required && ((!isCheckable && !el.value.trim()) || (isCheckable && !el.checked))) {
                             el.classList.add('check-error');
                             throw new Error('Required field');
                         }
-                        if (el.required === true && el.type === 'email') {
-                            // todo replace regex
-                            if (/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(el.value) === false) {
-                                el.classList.add('check-error');
-                                throw new Error('Invalid E-Mail address');
-                            }
+
+                        // check email field
+                        if (el.required && el.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value)) {
+                            el.classList.add('check-error');
+                            throw new Error('Invalid E-Mail address');
                         }
 
-                        data.append(el.name, el.value);
+                        // add value into FormData
+                        if (el.value) {
+                            data.append(el.name, el.value);
+                        }
                     });
 
                     triggerEvent('cart:checkout:before', data);
