@@ -58,8 +58,26 @@ abstract class AbstractTask
      */
     public static function workerHasPidFile(string $action = ''): bool
     {
-        return file_exists(VAR_DIR . '/' . ($action ? str_replace(['/', '\\'], '-', mb_strtolower($action)) . '.' : '') . 'worker.pid');
+        $pidFilePath = VAR_DIR . '/' . ($action ? str_replace(['/', '\\'], '-', mb_strtolower($action)) . '.' : '') . 'worker.pid';
+
+        // check pid file exist
+        if (!file_exists($pidFilePath)) {
+            return false;
+        }
+
+        // read pid
+        $pid = (int) file_get_contents($pidFilePath);
+
+        // check is process running
+        if ($pid > 0 && posix_kill($pid, 0)) {
+            return true;
+        }
+
+        // remove pid file
+        unlink($pidFilePath);
+        return false;
     }
+
 
     /**
      * After work remove PID file

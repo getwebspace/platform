@@ -43,7 +43,7 @@
             "authors": [
                 {
                     "name": "Aleksey Ilyin",
-                    "email": "alksily@outlook.com",
+                    "email": "alksily@getwebspace.org",
                     "homepage": "https://www.facebook.com/aleksey.ily",
                     "role": "Developer"
                 }
@@ -9332,7 +9332,8 @@
         "ext-pdo": "*",
         "ext-json": "*",
         "ext-curl": "*",
-        "ext-openssl": "*"
+        "ext-openssl": "*",
+        "ext-posix": "*"
     },
     "platform-dev": {},
     "plugin-api-version": "2.6.0"
