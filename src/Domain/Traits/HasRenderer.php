@@ -44,7 +44,7 @@ trait HasRenderer
             $this->renderer->getLoader()->addPath(VIEW_ERROR_DIR);
 
             return $this->renderer->fetch($template, $data);
-        } catch (\Twig\Error\LoaderError $exception) {
+        } catch (\Twig\Error\LoaderError|\Twig\Error\SyntaxError|\Twig\Error\RuntimeError $exception) {
             throw new HttpBadRequestException($exception->getMessage());
         }
     }
