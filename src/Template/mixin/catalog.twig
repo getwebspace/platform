@@ -692,30 +692,38 @@
                     let data = new FormData();
 
                     $fields.each((i, el) => {
-                        const isCheckable = (el.type === 'checkbox' || el.type === 'radio');
+                        if (!el.disabled) {
+                            const isCheckable = (el.type === 'checkbox' || el.type === 'radio');
 
-                        // skip unchecked checkbox/radio
-                        if (isCheckable && !el.checked) {
-                            return;
-                        }
+                            // skip unchecked checkbox/radio
+                            if (isCheckable && !el.checked) {
+                                return;
+                            }
 
-                        // check required fields
-                        if (el.required && ((!isCheckable && !el.value.trim()) || (isCheckable && !el.checked))) {
-                            el.classList.add('check-error');
-                            throw new Error('Required field');
-                        }
+                            // check required fields
+                            if (el.required && ((!isCheckable && !el.value.trim()) || (isCheckable && !el.checked))) {
+                                el.classList.add('check-error');
+                                throw new Error('Required field');
+                            }
 
-                        // check email field
-                        if (el.required && el.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value)) {
-                            el.classList.add('check-error');
-                            throw new Error('Invalid E-Mail address');
-                        }
+                            // check email field
+                            if (el.required && el.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value)) {
+                                el.classList.add('check-error');
+                                throw new Error('Invalid E-Mail address');
+                            }
 
-                        // add value into FormData
-                        if (el.value) {
-                            data.append(el.name, el.value);
+                            // add value into FormData
+                            if (el.value) {
+                                data.append(el.name, el.value);
+                            }
                         }
                     });
+
+                    // disable btn
+                    let $btn = $document.find(getSelector('cart-checkout'));
+                    let html = $btn.html();
+
+                    $btn.prop('disabled', true).html('Подождите..');
 
                     triggerEvent('cart:checkout:before', data);
 
@@ -747,6 +755,10 @@
                                     }
                                 }
                             }
+                        },
+                        complete: () => {
+                            // enable btn
+                            setTimeout(() => {$btn.prop('disabled', false).html(html);}, options.cart.delay);
                         }
                     });
                 }
