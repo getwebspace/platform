@@ -376,7 +376,7 @@
                                 $('<input ' + options.selectors['cart-data'] + '>')
                                     .attr('type', 'number')
                                     .attr('name', 'products[' + item.uuid + '][price]')
-                                    .val(item.price)
+                                    .val(item[item.price_type])
                             );
 
                             // append system line with uuid => price_type
@@ -522,6 +522,7 @@
                             'price': 0,
                             'price_wholesale': 0,
                             'price_wholesale_from': 0,
+                            'price_self': 0,
                             'price_type': 'price', // price, price_wholesale, price_self
                             'quantity': 1,
                             'quantity_step': 1,
@@ -537,6 +538,7 @@
                     item['price'] = item['price'] ? +item['price'] : 0;
                     item['price_wholesale'] = item['price_wholesale'] ? +item['price_wholesale'] : 0;
                     item['price_wholesale_from'] = item['price_wholesale_from'] ? +item['price_wholesale_from'] : 0;
+                    item['price_self'] = item['price_self'] ? +item['price_self'] : 0;
                     item['price_type'] = item['price_type'] === 'price_self' ? 'price_self' : (item['price_wholesale_from'] > 0 && item['quantity'] >= item['price_wholesale_from'] ? 'price_wholesale' : 'price');
 
                     if ((index = this.cartFindItemByField(item['uuid'], 'uuid')) >= 0) {
