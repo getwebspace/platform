@@ -170,7 +170,7 @@
                         $document.on('click', getSelector('item-add'), (e) => {
                             this.cartAddItemFromJQuery($(e.currentTarget).parents(getSelector('item')));
                         });
-                        $document.on('click', getSelector('cart-checkout'), (e) => {
+                        $document.on('click', `${getSelector('cart-checkout')}:not(:disabled)`, (e) => {
                             e.preventDefault();
                             e.stopPropagation();
 
