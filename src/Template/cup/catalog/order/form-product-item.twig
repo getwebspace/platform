@@ -17,7 +17,7 @@
                                 <option value="{{ type }}" {{ product.pivot.price_type == type ? 'selected' : '' }}>{{ title }}</option>
                             {% endfor %}
                         </select>
-                        <input type="number" class="form-control" name="products[{{ product.uuid }}][price]" value="{{ product.pivot.price }}" placeholder="{{ product.pivot.price }}" min="0" step="any" {{ not is_price_self ? 'readonly' : '' }}>
+                        <input type="number" class="form-control" name="products[{{ product.uuid }}][price]" value="{{ product.pivot.price }}" placeholder="{{ product.pivot.price }}" step="any" {{ not is_price_self ? 'readonly' : '' }}>
                     </div>
                 </div>
             </div>
