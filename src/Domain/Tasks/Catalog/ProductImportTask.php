@@ -47,8 +47,13 @@ class ProductImportTask extends AbstractTask
             return $this->setStatusFail();
         }
 
+        /** @var CatalogCategoryService $catalogCategoryService */
         $catalogCategoryService = $this->container->get(CatalogCategoryService::class);
+
+        /** @var CatalogProductService $catalogProductService */
         $catalogProductService = $this->container->get(CatalogProductService::class);
+
+        /** @var CatalogAttributeService $catalogAttributeService */
         $catalogAttributeService = $this->container->get(CatalogAttributeService::class);
 
         // parse excel file
@@ -61,7 +66,7 @@ class ProductImportTask extends AbstractTask
                 'category' => $this->parameter('catalog_category_template', 'catalog.category.twig'),
                 'product' => $this->parameter('catalog_product_template', 'catalog.product.twig'),
             ];
-            $attributes = $catalogAttributeService->read()->whereNotIn('type', \App\Domain\Casts\Catalog\Attribute\Type::BOOLEAN);
+            $attributes = $catalogAttributeService->read();
 
             $now = datetime();
             $category = null;
@@ -71,7 +76,7 @@ class ProductImportTask extends AbstractTask
                 switch ($item['type']) {
                     case 'category':
                         try {
-                            $this->logger->info('Search category', ['title' => $item]);
+                            $this->logger->info('Search category', ['item' => $item]);
                             $category = $catalogCategoryService
                                 ->read([
                                     'title' => [
@@ -83,14 +88,16 @@ class ProductImportTask extends AbstractTask
                                     'status' => \App\Domain\Casts\Catalog\Status::WORK,
                                 ])
                                 ->first();
+
+                            if ($category === null) throw new CategoryNotFoundException();
                         } catch (CategoryNotFoundException $e) {
                             if ($action === 'insert') {
-                                $this->logger->info('Create category', ['title' => $item]);
+                                $this->logger->info('Create category', $item);
 
                                 try {
                                     $category = $catalogCategoryService->create([
-                                        'title' => $item['title'],
-                                        'parent' => $nested === true ? $category : null,
+                                        'title' => $item['trimmed'] ?? $item['raw'],
+                                        'parent_uuid' => $nested === true ? $category->uuid : null,
                                         'pagination' => $pagination,
                                         'template' => $template,
                                         'export' => 'excel',
@@ -112,22 +119,20 @@ class ProductImportTask extends AbstractTask
                         $data = collect($item['data'] ?? []);
 
                         try {
-                            if (!empty($data[$key_field]['trimmed'])) {
-                                $this->logger->info('Search product', [$key_field => '' . $data[$key_field]['formatted'], 'item' => $data]);
-                                $product = $catalogProductService
-                                    ->read([
-                                        $key_field => [
-                                            '' . $data[$key_field]['raw'],
-                                            '' . $data[$key_field]['formatted'],
-                                            '' . $data[$key_field]['trimmed'],
-                                            floatval($data[$key_field]['raw']),
-                                        ],
-                                        'status' => \App\Domain\Casts\Catalog\Status::WORK,
-                                    ])
-                                    ->first();
-                            } else {
-                                throw new ProductNotFoundException();
-                            }
+                            $this->logger->info('Search product', [$key_field => '' . $data[$key_field]['formatted'], 'item' => $data]);
+                            $product = $catalogProductService
+                                ->read([
+                                    $key_field => [
+                                        '' . $data[$key_field]['raw'],
+                                        '' . $data[$key_field]['formatted'],
+                                        '' . $data[$key_field]['trimmed'],
+                                        floatval($data[$key_field]['raw']),
+                                    ],
+                                    'status' => \App\Domain\Casts\Catalog\Status::WORK,
+                                ])
+                                ->first();
+
+                            if ($product === null) throw new ProductNotFoundException();
                         } catch (ProductNotFoundException $e) {
                             if ($action === 'insert') {
                                 $this->logger->info('Create product', $data->toArray());
@@ -150,7 +155,7 @@ class ProductImportTask extends AbstractTask
                                             array_merge(
                                                 $create,
                                                 [
-                                                    'category' => $category,
+                                                    'category_uuid' => $category->uuid,
                                                     'date' => $now,
                                                     'export' => 'excel',
                                                     'attributes' => $data
@@ -234,7 +239,7 @@ class ProductImportTask extends AbstractTask
      */
     protected function getParsedExcelData(string $path = ''): array
     {
-        $fields = trim($this->parameter('catalog_import_columns', \App\Domain\References\Catalog::IMPORT_EXPORT_FIELDS_DEFAULT));
+        $fields = trim($this->parameter('catalog_import_columns', implode(PHP_EOL, \App\Domain\References\Catalog::IMPORT_EXPORT_FIELDS_DEFAULT)));
 
         if ($fields) {
             $fields = array_map('trim', explode(PHP_EOL, $fields));
