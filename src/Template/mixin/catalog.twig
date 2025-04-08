@@ -557,6 +557,17 @@
                     return cart.findIndex(obj => obj[field] === value);
                 }
 
+                // return cart item
+                cartGetItemByField(value, field = 'uuid') {
+                    let index = this.cartFindItemByField(value, field);
+
+                    if (index >= 0) {
+                        return cart[index];
+                    }
+
+                    return null;
+                }
+
                 /**
                  * Increment item quantity
                  * @param value
