@@ -151,11 +151,14 @@ class ProductImportTask extends AbstractTask
                                     }
 
                                     if ($create) {
+                                        if ($category) {
+                                            $create['category_uuid'] = $category->uuid;
+                                        }
+
                                         $catalogProductService->create(
                                             array_merge(
                                                 $create,
                                                 [
-                                                    'category_uuid' => $category->uuid,
                                                     'date' => $now,
                                                     'export' => 'excel',
                                                     'attributes' => $data
@@ -187,10 +190,14 @@ class ProductImportTask extends AbstractTask
                                         $update[$key] = $value['raw'];
                                     }
                                 }
+
+                                if ($category) {
+                                    $update['category_uuid'] = $category->uuid;
+                                }
+
                                 $catalogProductService->update($product, array_merge(
                                     $update,
                                     [
-                                        'category' => $category,
                                         'date' => $now,
                                         'attributes' => $data
                                             ->intersectByKeys($attributes->pluck('title', 'address'))
