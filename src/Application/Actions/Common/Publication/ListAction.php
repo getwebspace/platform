@@ -74,19 +74,24 @@ class ListAction extends AbstractAction
      */
     protected function parsePath(): array
     {
-        $category = $this->resolveArg('category');
-        $path = ltrim(str_replace('/' . $category, '', $this->request->getUri()->getPath()), '/');
-        $parts = $path ? explode('/', $path) : [];
+        $category = $this->args['category'] ?? '';
+        $args = $this->args['args'] ?? '';
         $offset = 0;
 
-        if ($parts && ($buf = $parts[count($parts) - 1]) && ctype_digit($buf)) {
-            $offset = +$buf;
-            unset($parts[count($parts) - 1]);
+        // split args
+        $parts = $args !== '' ? explode('/', $args) : [];
+
+        // check last element is digits
+        if ($parts && ctype_digit(end($parts))) {
+            $offset = (int) array_pop($parts);
         }
+
+        $addressParts = array_merge([$category], $parts);
+        $address = implode('/', $addressParts);
 
         return [
             'category' => $category,
-            'address' => implode('/', $parts ? array_merge([$category], $parts) : []),
+            'address' => $address,
             'offset' => $offset,
         ];
     }
