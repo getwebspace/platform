@@ -20,7 +20,7 @@ class CartAction extends CatalogAction
                 'phone' => $this->getParam('phone'),
                 'email' => $this->getParam('email'),
                 'comment' => $this->getParam('comment', ''),
-                'shipping' => $this->getParam('shipping'),
+                'shipping' => $this->getParam('shipping', 'now'),
                 'system' => $this->getParam('system', ''),
 
                 'payment_uuid' => $this->getParam('payment_uuid', $this->getParam('payment')),
