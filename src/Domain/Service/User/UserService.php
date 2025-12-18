@@ -71,6 +71,7 @@ class UserService extends AbstractService
         $default = [
             'identifier' => null, // field for: username, email, phone
             'uuid' => null,
+            'group_uuid' => null,
             'username' => null,
             'firstname' => null,
             'lastname' => null,
@@ -92,6 +93,9 @@ class UserService extends AbstractService
 
         if ($data['uuid'] !== null) {
             $criteria['uuid'] = $data['uuid'];
+        }
+        if ($data['group_uuid'] !== null) {
+            $criteria['group_uuid'] = $data['group_uuid'];
         }
         if ($data['username'] !== null) {
             $criteria['username'] = $data['username'];
