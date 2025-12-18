@@ -41,6 +41,7 @@ return function (App $app, Container $container): void {
                                 ->map(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], '/{args:.*}', \App\Application\Actions\Api\v1\EntityAction::class)
                                 ->setName('api:v1:entity')
                                 ->add(\Slim\Middleware\BodyParsingMiddleware::class)
+                                ->add(\App\Application\Middlewares\MultipartParserMiddleware::class)
                                 ->add(\App\Application\Middlewares\AuthorizationAPIMiddleware::class);
                         });
                 })
@@ -349,7 +350,8 @@ return function (App $app, Container $container): void {
                     $proxy
                         ->map(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], '/api/v1/{args:.*}', \App\Application\Actions\Api\v1\EntityAction::class)
                         ->setName('cup:api:v1:entity')
-                        ->add(\Slim\Middleware\BodyParsingMiddleware::class);
+                        ->add(\Slim\Middleware\BodyParsingMiddleware::class)
+                        ->add(\App\Application\Middlewares\MultipartParserMiddleware::class);
                 })
                 ->add(new \Slim\HttpCache\Cache('private', 0, true));
 
