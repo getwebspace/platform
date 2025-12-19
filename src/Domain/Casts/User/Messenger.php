@@ -7,7 +7,6 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 class Messenger implements CastsAttributes
 {
     protected array $default = [
-        'skype' => '',
         'telegram' => '',
         'whatsapp' => '',
         'viber' => '',
