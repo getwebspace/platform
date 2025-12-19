@@ -27,7 +27,7 @@ class ParameterServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'name' => implode('-', $this->getFaker()->words(4)),
+            'name' => implode('_', $this->getFaker()->words(2)),
             'value' => $this->getFaker()->text(10),
         ];
 
@@ -42,7 +42,7 @@ class ParameterServiceTest extends TestCase
         $this->expectException(ParameterAlreadyExistsException::class);
 
         $data = [
-            'name' => implode('-', $this->getFaker()->words(4)),
+            'name' => implode('_', $this->getFaker()->words(2)),
             'value' => $this->getFaker()->text(128),
         ];
 
@@ -54,7 +54,7 @@ class ParameterServiceTest extends TestCase
     public function testReadSuccess(): void
     {
         $data = [
-            'name' => implode('-', $this->getFaker()->words(4)),
+            'name' => implode('_', $this->getFaker()->words(2)),
             'value' => $this->getFaker()->text(128),
         ];
 
@@ -69,7 +69,7 @@ class ParameterServiceTest extends TestCase
     public function testReadWithDefault(): void
     {
         $data = [
-            'name' => implode('-', $this->getFaker()->words(4)),
+            'name' => implode('_', $this->getFaker()->words(2)),
             'default' => $this->getFaker()->text(128),
         ];
 
@@ -82,7 +82,7 @@ class ParameterServiceTest extends TestCase
     public function testUpdateSuccess(): void
     {
         $parameter = $this->service->create([
-            'name' => implode('-', $this->getFaker()->words(4)),
+            'name' => implode('_', $this->getFaker()->words(2)),
             'value' => $this->getFaker()->text(128),
         ]);
 
@@ -104,7 +104,7 @@ class ParameterServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $parameter = $this->service->create([
-            'name' => implode('-', $this->getFaker()->words(4)),
+            'name' => implode('_', $this->getFaker()->words(2)),
             'value' => $this->getFaker()->text(128),
         ]);
 
