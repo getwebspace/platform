@@ -3,42 +3,55 @@ action - form action url
 title - text
 steps - collection
 #}
-{% set quizId = random() %}
-<div id="quiz-{{ quizId }}">
+{% set quizId = 'quiz-' ~ random() %}
+
+<style>
+    [id="{{ quizId }}"] [data-input].radio,
+    [id="{{ quizId }}"] [data-input].checkbox {
+        display: none;
+    }
+    [id="{{ quizId }}"] [data-option] {
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    [id="{{ quizId }}"] [data-option]:hover {
+        transform: translateY(-3px);
+    }
+    [id="{{ quizId }}"] [data-step-list].list-group-item-secondary,
+    [id="{{ quizId }}"] .progress {
+        cursor: pointer;
+    }
+    [id="{{ quizId }}"] [data-step-list] span:not(:empty):before {
+        content: '(';
+    }
+    [id="{{ quizId }}"] [data-step-list] span:not(:empty):after {
+        content: ')';
+    }
+    /* Стили для валидации */
+    .border-danger-custom {
+        border: 1px solid red !important;
+        border-radius: 5px;
+        padding: 5px;
+    }
+</style>
+
+<div id="{{ quizId }}">
     <form action="{{ action }}" method="post" enctype="multipart/form-data">
-        <style>
-            [id="quiz-{{ quizId }}"] [data-input].radio,
-            [id="quiz-{{ quizId }}"] [data-input].checkbox {
-                display: none;
-            }
-
-            [id="quiz-{{ quizId }}"] [data-option] [data-label],
-            [id="quiz-{{ quizId }}"] [data-step-list].list-group-item-secondary,
-            [id="quiz-{{ quizId }}"] .progress {
-                cursor: pointer;
-            }
-
-            [id="quiz-{{ quizId }}"] [data-step-list] span:not(:empty):before {
-                content: '(';
-            }
-
-            [id="quiz-{{ quizId }}"] [data-step-list] span:not(:empty):after {
-                content: ')';
-            }
-        </style>
         <div class="row">
             <div class="col-12 col-md-8 text-center text-md-left">
                 <h3 class="d-none d-md-inline">{{ title ?: 'Poll title' }}</h3>
                 <h4 class="d-inline d-md-none">{{ title ?: 'Poll title' }}</h4>
             </div>
+
             <div class="col-12 col-md-4 mt-2 mt-md-0">
                 <div class="row">
                     <div class="col-12 col-md-4 text-center text-md-left text-muted">
-                        Шаг <span data-progress="current">1</span> of <span data-progress="of">{{ steps|count }}</span>
+                        Шаг <span data-progress="current">1</span> из <span data-progress="of">{{ steps|count }}</span>
                     </div>
                     <div class="col-12 col-md-8 text-center text-md-right my-auto">
                         <div class="progress" data-progress="bar">
-                            <div class="progress-bar progress-bar-striped" style="width: 10%"></div>
+                            {# Исправление: Динамический расчет ширины для первого шага #}
+                            <div class="progress-bar progress-bar-striped" style="width: {{ 100 / steps|count }}%"></div>
                         </div>
                     </div>
                 </div>
@@ -48,12 +61,17 @@ steps - collection
         <div class="row mt-3">
             <div class="col-12 col-md-8">
                 {% for step in steps %}
-                    {% set button = (step.field is defined or (step.option is defined and 'checkbox' in collect(step.option).pluck('type'))) and loop.last == false %}
+                    {# Логика кнопки: показываем кнопку, если есть текстовые поля ИЛИ если есть чекбоксы #}
+                    {% set has_text_fields = step.field is defined %}
+                    {% set has_checkboxes = step.option is defined and 'checkbox' in collect(step.option).pluck('type') %}
+                    {% set button = (has_text_fields or has_checkboxes) and loop.last == false %}
 
-                    <section data-step="{{ loop.index }}" data-button="{{ button or loop.last ?: 0 }}" class="text-center text-md-left" {{ loop.first != true ? 'style="display: none"' }}>
-                        <h4 class="d-none d-md-inline">{{ step.title ?: 'Question title ' ~ loop.index }}</h4>
-                        <h5 class="d-inline d-md-none">{{ step.title ?: 'Question title ' ~ loop.index }}</h5>
-                        <p class="py-2 text-justify">{{ step.description }}</p>
+                    <section data-step="{{ loop.index }}" data-button="{{ button or loop.last ? 1 : 0 }}" class="text-center text-md-left" {{ loop.first != true ? 'style="display: none"' }}>
+                        <h4 class="d-none d-md-inline">{{ step.title ?: 'Question ' ~ loop.index }}</h4>
+                        <h5 class="d-inline d-md-none">{{ step.title ?: 'Question ' ~ loop.index }}</h5>
+                        {% if step.description %}
+                            <p class="py-2 text-justify text-muted">{{ step.description }}</p>
+                        {% endif %}
 
                         {% set count = step.option|count %}
                         {% set small_col = count == 1 ? 'col-12' : (count % 2 == 0 ? 'col-6' : (count % 3 == 0 ? 'col-3' : 'col-4')) %}
@@ -63,56 +81,68 @@ steps - collection
                                 {% set icon = option.icon is defined %}
                                 {% set image = option.image is defined %}
 
-                                <div class="{{ small_col }} col-md-3" data-option="{{ loop.index }}" data-option-name="{{ option.name }}" >
-                                    <div class="row d-flex justify-content-between my-2">
-                                        <div class="col-12 text-center" data-label>
-                                            {% if icon %}<i class="{{ option.icon }} fa-3x"></i>{% endif %}
-                                            {% if image %}
-                                                {% include 'mixin/img.twig' with {
-                                                    'src': option.image,
-                                                    'alt': product.title,
-                                                    'style': 'height: 50px; width: 50px; object-fit: contain; object-position: center center;'
-                                                } only %}
+                                <div class="{{ small_col }} col-md-3 mb-3" data-option="{{ loop.index }}" data-option-name="{{ option.name }}">
+                                    <div class="card h-100 border-0 shadow-sm" data-clickable-card>
+                                        <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                                            <div class="mb-2" data-label>
+                                                {% if icon %}<i class="{{ option.icon }} fa-3x text-secondary"></i>{% endif %}
+                                                {% if image %}
+                                                    {% include 'mixin/img.twig' with {
+                                                        'src': option.image,
+                                                        'alt': option.label,
+                                                        'style': 'height: 50px; width: 50px; object-fit: contain; object-position: center center;'
+                                                    } only %}
+                                                {% endif %}
+                                            </div>
+
+                                            {% if option.label %}
+                                                <div class="text-center w-100">
+                                                    {# Скрытый инпут #}
+                                                    {% include 'mixin/form.twig' with option %}
+                                                    <div class="font-weight-bold mt-2" data-label-text>{{ option.label }}</div>
+                                                </div>
                                             {% endif %}
                                         </div>
-                                        {% if option.label %}
-                                            <div class="col-12 my-auto my-md-0 mt-md-2 text-center">
-                                                {% include 'mixin/form.twig' with option %}
-                                                <div class="font-weight-bold" data-label>{{ option.label }}</div>
-                                            </div>
-                                        {% endif %}
                                     </div>
                                 </div>
                             {% endfor %}
 
                             {% for field in step.field %}
-                                <div class="col-12" data-field="{{ loop.index }}" data-field-name="{{ field.name }}">
+                                <div class="col-12 mb-3" data-field="{{ loop.index }}">
                                     {% include 'mixin/form.twig' with field %}
                                 </div>
                             {% endfor %}
 
-                            {% if button %}
-                                <div class="col-12 text-center text-md-right mt-4">
-                                    {% if loop.first != true %}
-                                        <button type="button" class="btn btn-secondary" data-click="back">{{ step.btn_back ?: 'Prev' }}</button>
-                                    {% endif %}
-                                    <button type="button" class="btn btn-primary" data-click="next">{{ step.btn_next ?: 'Next' }}</button>
-                                </div>
-                            {% elseif loop.last %}
-                                <div class="col-12 text-center text-md-right mt-4">
-                                    <button type="button" class="btn btn-secondary" data-click="back">{{ step.btn_back ?: 'Back' }}</button>
-                                    <button type="button" class="btn btn-primary" data-click="submit">{{ step.btn_submit ?: 'Send' }}</button>
-                                </div>
-                            {% endif %}
+                            <div class="col-12 text-center text-md-right mt-4">
+                                {% if loop.first != true %}
+                                    <button type="button" class="btn btn-outline-secondary mr-2" data-click="back">{{ step.btn_back ?: 'Назад' }}</button>
+                                {% endif %}
+
+                                {% if loop.last %}
+                                    <button type="button" class="btn btn-success" data-click="submit">{{ step.btn_submit ?: 'Отправить' }}</button>
+                                {% elseif button %}
+                                    <button type="button" class="btn btn-primary" data-click="next">{{ step.btn_next ?: 'Далее' }}</button>
+                                {% endif %}
+                            </div>
                         </div>
                     </section>
                 {% endfor %}
+
+                <section data-step="success" style="display: none;" class="text-center">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle fa-4x mb-3"></i>
+                        <h4>Спасибо! Ваша заявка отправлена.</h4>
+                    </div>
+                </section>
             </div>
+
+            {# Сайдбар #}
             <div class="d-none d-md-block col-md-4">
                 <ul class="list-group list-group-flush">
                     {% for step in steps %}
-                        <li class="list-group-item {{ loop.first ? 'active' }} text-uppercase" data-step-list="{{ loop.index }}" data-step-title="{{ step.title }}">
-                            {{ step.title }} <span></span>
+                        <li class="list-group-item {{ loop.first ? 'active' }} text-uppercase" data-step-list="{{ loop.index }}">
+                            <small class="d-block text-muted" style="font-size: 0.7em;">Шаг {{ loop.index }}</small>
+                            {{ step.title }} <span class="badge badge-light float-right"></span>
                         </li>
                     {% endfor %}
                 </ul>
@@ -122,155 +152,234 @@ steps - collection
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 if (typeof $ === 'undefined') {
-                    console.warn('Quiz need jQuery');
+                    console.warn('Quiz needs jQuery');
                     return;
                 }
 
-                let $quiz = $('[id="quiz-{{ quizId }}"]'),
-                    $step = $quiz.find('[data-progress="current"]'),
-                    $stepList = $quiz.find('[data-step-list]');
+                const $quiz = $('[id="{{ quizId }}"]');
+                const $stepText = $quiz.find('[data-progress="current"]');
+                const $stepList = $quiz.find('[data-step-list]');
+
+                // Функция валидации текущего шага
+                function validateStep(stepIndex) {
+                    let $section = $quiz.find('section[data-step="' + stepIndex + '"]');
+                    let isValid = true;
+
+                    // 1. Проверяем текстовые поля required
+                    $section.find('input[type="text"][required], input[type="tel"][required], input[type="email"][required], textarea[required]').each((i, el) => {
+                        if (!el.value.trim()) {
+                            $(el).addClass('border-danger');
+                            isValid = false;
+                        } else {
+                            $(el).removeClass('border-danger');
+                        }
+                    });
+
+                    // 2. Проверяем группы радио/чекбоксов
+                    // Собираем уникальные имена групп на этом шаге
+                    let groupNames = [];
+                    $section.find('input[type="radio"], input[type="checkbox"]').each(function() {
+                        if(this.name && !groupNames.includes(this.name)) groupNames.push(this.name);
+                    });
+
+                    groupNames.forEach(name => {
+                        let $group = $section.find('input[name="' + name + '"]');
+                        // Если хотя бы один в группе required, проверяем всю группу
+                        let isRequired = $group.filter('[required]').length > 0;
+
+                        if (isRequired) {
+                            let isChecked = $group.is(':checked');
+                            if (!isChecked) {
+                                // Подсвечиваем родительские карточки или контейнер
+                                $group.closest('.card').addClass('border-danger-custom');
+                                isValid = false;
+                            } else {
+                                $group.closest('.card').removeClass('border-danger-custom');
+                            }
+                        }
+                    });
+
+                    if (!isValid) {
+                        setTimeout(() => {
+                            $section.find('.border-danger').removeClass('border-danger');
+                            $section.find('.border-danger-custom').removeClass('border-danger-custom');
+                        }, 2500);
+                    }
+
+                    return isValid;
+                }
 
                 function change_step(current_step, new_step, variant = '') {
                     let $progressBar = $quiz.find('[data-progress="bar"] div'),
                         count_step = +$quiz.find('[data-progress="of"]').text();
 
                     if (new_step > 0 && new_step <= count_step) {
-                        $quiz.find('section[data-step="' + current_step + '"]').hide();
-                        $quiz.find('section[data-step="' + new_step + '"]').show();
+                        $quiz.find('section[data-step="' + current_step + '"]').fadeOut(200, function() {
+                            $quiz.find('section[data-step="' + new_step + '"]').fadeIn(200);
+                            // Scroll to top of quiz
+                            $('html, body').animate({
+                                scrollTop: $quiz.offset().top - 100
+                            }, 500);
+                        });
 
-                        $step.text(new_step);
-                        $progressBar.css('width', new_step / count_step * 100 + '%');
+                        $stepText.text(new_step);
+                        $progressBar.css('width', (new_step / count_step * 100) + '%');
+
                         $stepList.removeClass('active').filter('[data-step-list="' + new_step + '"]').addClass('active');
 
-                        // highlight prev item in list
+                        // Update sidebar history
                         if (current_step < new_step) {
-                            let $prev = $stepList
-                                .filter('[data-step-list="' + current_step + '"]')
-                                .addClass('list-group-item-secondary');
-
+                            let $prev = $stepList.filter('[data-step-list="' + current_step + '"]');
+                            $prev.addClass('list-group-item-secondary');
                             if (variant) {
-                                $prev.find('span').text(variant);
+                                // Обрезаем длинный текст варианта
+                                let shortVariant = variant.length > 20 ? variant.substring(0, 20) + '...' : variant;
+                                $prev.find('span').text(shortVariant);
                             }
                         } else {
-                            $stepList
-                                .filter('[data-step-list="' + new_step + '"]')
-                                .removeClass('list-group-item-secondary')
-                                .find('span')
-                                .text('');
+                            // Going back - clear future steps
+                            for(let i = new_step; i <= count_step; i++) {
+                                $stepList.filter('[data-step-list="' + i + '"]')
+                                    .removeClass('list-group-item-secondary')
+                                    .find('span').text('');
+                            }
                         }
                     }
                 }
 
-                // handle click on: btn next/back, progress bar, step list
-                $quiz.find('[data-click="next"], [data-click="back"], [data-progress="bar"], [data-step-list]').on('click', (e) => {
-                    let current_step = +$step.text(),
+                // Кнопки Next, Back, Progress Bar, Step List
+                $quiz.on('click', '[data-click="next"], [data-click="back"], [data-progress="bar"], [data-step-list]', (e) => {
+                    let current_step = +$stepText.text(),
                         new_step = null,
-                        $emptyFields = $('section[data-step="' + current_step + '"] input:required').filter((i, el) => !el.value),
                         $btn = $(e.currentTarget);
 
-                    switch (true) {
-                        case $btn.is('[data-click="next"]'): {
-                            if ($emptyFields.length) {
-                                $emptyFields.addClass('border-danger');
-                                setTimeout(() => $emptyFields.removeClass('border-danger'), 2500);
-                            } else {
-                                new_step = current_step + 1;
-                            }
-                            break;
+                    if ($btn.is('[data-click="next"]')) {
+                        if (validateStep(current_step)) {
+                            new_step = current_step + 1;
+                        } else {
+                            return; // Stop if invalid
                         }
-                        case $btn.is('[data-progress="bar"]'):
-                        case $btn.is('[data-click="back"]'): {
-                            new_step = current_step - 1;
-                            break;
-                        }
-                        case $btn.is('[data-step-list]'): {
-                            let value = $btn.attr('data-step-list');
-
-                            if (value < current_step) {
-                                new_step = value;
-                            }
-                            break;
+                    } else if ($btn.is('[data-progress="bar"]') || $btn.is('[data-click="back"]')) {
+                        new_step = current_step - 1;
+                    } else if ($btn.is('[data-step-list]')) {
+                        let value = +$btn.attr('data-step-list');
+                        // Разрешаем кликать только назад
+                        if (value < current_step) {
+                            new_step = value;
                         }
                     }
 
-                    change_step(current_step, new_step);
+                    if (new_step) change_step(current_step, new_step);
                 });
 
-                // handle change radio option with next step
-                $quiz.find('[data-button="0"] [data-option] input[type="radio"]').on('click', (e) => {
-                    change_step(+$step.text(), +$step.text() + 1, $(e.currentTarget).val());
+                // Авто-переход для радио кнопок (если шаг не требует кнопки)
+                // Используем делегирование событий для динамики
+                $quiz.on('change', 'input[type="radio"]', (e) => {
+                    let $input = $(e.currentTarget);
+                    let $section = $input.closest('section');
+                    let current_step = +$section.attr('data-step');
+
+                    // Визуальное выделение
+                    $section.find('.text-primary').removeClass('text-primary');
+                    $section.find('.active').removeClass('active'); // удаляем active с карточек
+
+                    let $card = $input.closest('[data-option]').find('.card-body');
+                    $card.addClass('active text-primary'); // добавляем стили активной карточке
+                    $input.closest('[data-option]').find('i').removeClass('text-secondary').addClass('text-primary');
+
+                    // Если шаг предполагает авто-переход (data-button="0")
+                    if ($section.attr('data-button') === "0") {
+                        // Небольшая задержка для визуального эффекта выбора
+                        setTimeout(() => {
+                            change_step(current_step, current_step + 1, $input.val());
+                        }, 300);
+                    }
                 });
 
-                // handle click on icon with label (radio|checkbox)
-                $quiz.find('[data-option] [data-label]').on('click', (e) => {
-                    let $el = $(e.currentTarget).parents('[data-option]'),
-                        $input = $el.find('input[type="radio"], input[type="checkbox"]');
+                // Чекбоксы - только визуал
+                $quiz.on('change', 'input[type="checkbox"]', (e) => {
+                    let $input = $(e.currentTarget);
+                    let $cardBody = $input.closest('[data-option]').find('.card-body');
+                    let $icon = $input.closest('[data-option]').find('i');
 
+                    if ($input.is(':checked')) {
+                        $cardBody.addClass('text-primary font-weight-bold');
+                        $icon.removeClass('text-secondary').addClass('text-primary');
+                    } else {
+                        $cardBody.removeClass('text-primary font-weight-bold');
+                        $icon.removeClass('text-primary').addClass('text-secondary');
+                    }
+                });
+
+                // Клик по карточке -> клик по инпуту
+                $quiz.on('click', '[data-clickable-card]', (e) => {
+                    // Предотвращаем двойной клик, если кликнули прямо по label или input
+                    if ($(e.target).is('input') || $(e.target).is('label')) return;
+
+                    let $input = $(e.currentTarget).closest('[data-option]').find('input');
                     $input.click();
-
-                    switch (true) {
-                        case $input.is('[type="radio"]'): {
-                            $el.parents('[data-step]').find('.text-primary.active').removeClass('text-primary active')
-                            $el.addClass('text-primary active');
-                            break;
-                        }
-                        case $input.is('[type="checkbox"]'): {
-                            $el.toggleClass('text-primary active', $input.is(':checked'));
-                            break;
-                        }
-                    }
                 });
 
-                // handle submit
-                $quiz.find('[data-click="submit"]').on('click', async () => {
-                    if ('{{ action }}') {
-                        let data = new FormData(),
-                            $inputs = $quiz.find('input, select, textarea');
+                // SUBMIT
+                $quiz.find('[data-click="submit"]').on('click', async (e) => {
+                    e.preventDefault();
+                    let current_step = +$stepText.text();
 
-                        $inputs.each((i, el) => {
-                            if (el.required === true && el.value === '') {
-                                el.classList.add('check-error');
-                                throw new Error('Required field');
-                            }
-                            if (el.required === true && el.type === 'email') {
-                                // todo replace regex
-                                if (/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(el.value) === false) {
-                                    el.classList.add('check-error');
-                                    throw new Error('Invalid E-Mail address');
-                                }
-                            }
-                            if ((el.type === 'checkbox' || el.type === 'radio') && el.checked === false) {
-                                if (el.required === true) {
-                                    el.classList.add('check-error');
-                                    throw new Error('Required field');
-                                }
+                    if (!validateStep(current_step)) return;
 
-                                return;
-                            }
+                    let data = new FormData();
+                    let $inputs = $quiz.find('input, select, textarea');
+                    let formAction = $quiz.find('form').attr('action');
 
+                    // Сбор данных
+                    $inputs.each((i, el) => {
+                        // Игнорируем кнопки
+                        if(el.type === 'button' || el.type === 'submit') return;
+
+                        // Для чеков и радио - берем только выбранные
+                        if ((el.type === 'checkbox' || el.type === 'radio')) {
+                            if (el.checked) {
+                                data.append(el.name, el.value);
+                            }
+                        } else {
                             data.append(el.name, el.value);
-                        });
-
-                        // Google reCAPTCHA works if mixin/recaptcha.twig included
-                        if (typeof (grecaptcha) !== 'undefined' && grecaptcha.getToken) {
-                            data.append('recaptcha', await grecaptcha.getToken());
                         }
+                    });
 
-                        $.ajax({
-                            url: '{{ action }}',
-                            type: 'POST',
-                            data,
-                            contentType: false,
-                            cache: false,
-                            processData: false,
-                            success: (res) => {
-                                $inputs.val('');
-                                change_step(+$step.text(), 1);
-                                $stepList.removeClass('list-group-item-secondary').find('span').text('');
-                                $(window).trigger('event:quiz:sent', res, data);
-                            }
-                        });
+                    // Google reCAPTCHA
+                    if (typeof (grecaptcha) !== 'undefined' && grecaptcha.getToken) {
+                        try {
+                            data.append('recaptcha', await grecaptcha.getToken());
+                        } catch (err) {
+                            console.error('Recaptcha error', err);
+                        }
                     }
+
+                    let $btn = $(e.currentTarget);
+                    $btn.prop('disabled', true).text('Отправка...');
+
+                    $.ajax({
+                        url: formAction || window.location.href, // Fallback url
+                        type: 'POST',
+                        data: data,
+                        contentType: false,
+                        cache: false,
+                        processData: false,
+                        success: (res) => {
+                            $inputs.val(''); // Очистка
+                            $quiz.find('input:checked').prop('checked', false); // Сброс чеков
+
+                            $quiz.find('section').hide();
+                            $quiz.find('section[data-step="success"]').show();
+
+                            // Событие для аналитики
+                            $(window).trigger('event:quiz:sent', [res, data]);
+                        },
+                        error: (err) => {
+                            alert('Ошибка отправки. Попробуйте позже.');
+                            $btn.prop('disabled', false).text('{{ step.btn_submit ?: "Send" }}');
+                        }
+                    });
                 });
             });
         </script>
