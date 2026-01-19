@@ -34,7 +34,28 @@ class UserRegisterAction extends UserAction
                         'external_id' => $this->getParam('external_id', ''),
                     ]);
 
-                    return $this->respondWithRedirect('/user/login');
+                    $result = $this->auth->login(
+                        $provider,
+                        [
+                            'username' => $this->getParam('username', ''),
+                            'email' => $this->getParam('email', ''),
+                            'phone' => $this->getParam('phone', ''),
+                            'password' => $this->getParam('password'),
+                            'code' => $this->getParam('code'),
+                            'state' => $this->getParam('state'),
+                        ],
+                        [
+                            'redirect' => $this->request->getUri()->getPath(),
+                            'agent' => $this->getServerParam('HTTP_USER_AGENT'),
+                            'ip' => $this->getRequestRemoteIP(),
+                            'comment' => 'Login via common page',
+                        ]
+                    );
+
+                    @setcookie('access_token', $result['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
+                    @setcookie('refresh_token', $result['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');
+
+                    return $this->respondWithRedirect('/user/profile');
                 } catch (MissingUniqueValueException $e) {
                     $this->addError('email', $e->getMessage());
                     $this->addError('username', $e->getMessage());
