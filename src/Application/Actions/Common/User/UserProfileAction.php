@@ -4,6 +4,7 @@ namespace App\Application\Actions\Common\User;
 
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
+use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
 use App\Domain\Service\User\Exception\WrongPhoneValueException;
 
@@ -55,6 +56,8 @@ class UserProfileAction extends UserAction
                 $this->addError('email', $e->getMessage());
             } catch (PhoneAlreadyExistsException|WrongPhoneValueException $e) {
                 $this->addError('phone', $e->getMessage());
+            } catch (UsernameAlreadyExistsException $e) {
+                $this->addError('username', $e->getMessage());
             }
         }
 
