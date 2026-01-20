@@ -46,6 +46,7 @@ class UserProfileAction extends UserAction
                         'language' => $this->getParam('language'),
                     ]
                 );
+                $user = $this->processEntityFiles($user);
 
                 $this->container->get(\App\Application\PubSub::class)->publish('common:user:edit', $user);
 
