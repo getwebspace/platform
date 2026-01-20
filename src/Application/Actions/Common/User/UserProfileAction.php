@@ -17,7 +17,7 @@ class UserProfileAction extends UserAction
         if ($user && $this->isPost()) {
             try {
                 $password = $this->getParam('password');
-                $this->userService->update(
+                $user = $this->userService->update(
                     $user,
                     [
                         'username' => $this->getParam('username'),
