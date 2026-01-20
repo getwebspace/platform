@@ -99,7 +99,15 @@
                         {% endif %}
                         {% if item.messenger %}
                             <dt class="col-4">{{ 'Messengers'|locale }}</dt>
-                            <dd class="col-8">{{ item.messenger.implode(', ') }}</dd>
+                            <dd class="col-8">
+                                {% for type, value in item.messenger %}
+                                    {% if value %}
+                                        <b>[{{ type }}]</b>: {{ value }}
+
+                                        {% if not loop.last %}<br>{% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </dd>
                         {% endif %}
                         {% if item.legal.code or item.legal.number %}
                             <dt class="col-4">{{ 'Registration No'|locale }}</dt>
