@@ -17,6 +17,7 @@ class UserRegisterAction extends UserAction
     {
         if ($this->isPost()) {
             if ($this->isRecaptchaChecked()) {
+                $identifier = $this->parameter('user_login_type', 'username');
                 $provider = $this->getParam('provider', $_SESSION['auth_provider'] ?? 'BasicAuthProvider');
 
                 try {
@@ -37,9 +38,7 @@ class UserRegisterAction extends UserAction
                     $result = $this->auth->login(
                         $provider,
                         [
-                            'username' => $this->getParam('username', ''),
-                            'email' => $this->getParam('email', ''),
-                            'phone' => $this->getParam('phone', ''),
+                            $identifier => $this->getParam($identifier, ''),
                             'password' => $this->getParam('password'),
                             'code' => $this->getParam('code'),
                             'state' => $this->getParam('state'),
