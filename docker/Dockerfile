@@ -1,6 +1,6 @@
 FROM php:8.3-fpm-alpine3.20
 
-MAINTAINER Aleksey Ilyin <alksily@getwebspace.org>
+MAINTAINER Aleksey Ilyin <alksily@outlook.com>
 
 LABEL org.opencontainers.image.source="https://github.com/getwebspace/platform"
 LABEL org.opencontainers.image.description="Optimised container with nginx & PHP-FPM based on Alpine Linux for WebSpace Engine"
