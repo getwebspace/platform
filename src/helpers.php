@@ -257,7 +257,7 @@ if (!function_exists('str_mask_email')) {
 
 if (!function_exists('str_rem_tags')) {
     /**
-     * Mask email
+     * Strip tags and collapse whitespace
      */
     function str_rem_tags(string $str): string
     {
@@ -349,7 +349,7 @@ if (!function_exists('array_serialize')) {
     }
 }
 
-if (!function_exists(('datetime'))) {
+if (!function_exists('datetime')) {
     function datetime(null|Carbon|DateTime|int|string $value = null): Carbon
     {
         return match (true) {

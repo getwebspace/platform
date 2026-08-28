@@ -95,8 +95,6 @@ class User extends Model
         'external_id',
     ];
 
-    protected $guarded = [];
-
     protected $casts = [
         'email' => Email::class,
         'phone' => Phone::class,
@@ -224,20 +222,19 @@ class User extends Model
 
     public function avatar(int $size = 64, string $background = '0D8ABC', string $color = '000000'): string
     {
-        static $path;
+        if ($this->images->count()) {
+            /** @var File $file */
+            $file = $this->images->first();
 
-        if (!$path) {
-            if ($this->images->count()) {
-                /** @var File $file */
-                $file = $this->images->first();
-
-                $path = $file->public_path('small');
-            } else {
-                $path = "https://ui-avatars.com/api/?name={$this->name('name')}&size={$size}?background={$background}&color={$color}";
-            }
+            return $file->public_path('small');
         }
 
-        return $path;
+        return 'https://ui-avatars.com/api/?' . http_build_query([
+            'name' => $this->name('name'),
+            'size' => $size,
+            'background' => $background,
+            'color' => $color,
+        ]);
     }
 
     public function toArray(): array

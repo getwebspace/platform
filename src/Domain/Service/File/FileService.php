@@ -12,6 +12,10 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class FileService extends AbstractService
 {
+    private const REMOTE_REDIRECT_CODES = [301, 302, 303, 307, 308];
+
+    private const REMOTE_REDIRECT_LIMIT = 5;
+
     public function createFromPath(string $path, ?string $name_with_ext = null): ?File
     {
         $saved = false;
@@ -42,7 +46,7 @@ class FileService extends AbstractService
                 mkdir(dirname($dir), 0o777, true);
             }
 
-            if (rename($path, $dir) && chmod($dir, 444)) {
+            if (rename($path, $dir) && chmod($dir, 0o444)) {
                 $info = File::info($dir);
 
                 try {
@@ -56,7 +60,7 @@ class FileService extends AbstractService
                     ]);
                 } catch (FileAlreadyExistsException $exception) {
                     // remove uploaded temp file
-                    @exec('rm -rf ' . dirname($dir));
+                    static::removeDirectory(dirname($dir));
 
                     try {
                         return $this->read(['hash' => $info['hash']]);
@@ -71,18 +75,67 @@ class FileService extends AbstractService
     }
 
     /**
+     * Recursively remove directory with content
+     */
+    protected static function removeDirectory(string $dir): void
+    {
+        if (!is_dir($dir)) {
+            return;
+        }
+
+        foreach (array_diff(scandir($dir) ?: [], ['.', '..']) as $item) {
+            $item = $dir . '/' . $item;
+
+            if (is_dir($item)) {
+                static::removeDirectory($item);
+            } else {
+                @unlink($item);
+            }
+        }
+
+        @rmdir($dir);
+    }
+
+    /**
      * Get file from url, recursion when redirect
      */
-    protected static function getFileFromRemote(string $path): false|string
+    protected static function getFileFromRemote(string $path, int $depth = 0): false|string
     {
-        $headers = get_headers($path, true);
-        $code = (int) mb_substr($headers[0], 9, 3);
+        if ($depth > self::REMOTE_REDIRECT_LIMIT) {
+            return false;
+        }
 
-        if ($code === 302) {
-            $url = parse_url($path);
+        $headers = @get_headers($path, true);
+
+        if ($headers === false) {
+            return false;
+        }
+
+        // with followed redirects each entry becomes a list, the last one is actual
+        $status = is_array($headers[0] ?? '') ? end($headers[0]) : ($headers[0] ?? '');
+        $code = (int) mb_substr((string) $status, 9, 3);
+
+        if (in_array($code, self::REMOTE_REDIRECT_CODES, true)) {
             $location = $headers['Location'] ?? '';
 
-            return static::getFileFromRemote(($url['scheme'] ?? 'http') . '://' . $url['host'] . '/' . $location);
+            if (is_array($location)) {
+                $location = (string) end($location);
+            }
+            if (!$location) {
+                return false;
+            }
+
+            // relative location must be resolved against the current url
+            if (!str_contains($location, '://')) {
+                $url = parse_url($path);
+                $scheme = $url['scheme'] ?? 'http';
+
+                $location = str_starts_with($location, '//')
+                    ? $scheme . ':' . $location
+                    : $scheme . '://' . ($url['host'] ?? '') . '/' . ltrim($location, '/');
+            }
+
+            return static::getFileFromRemote($location, $depth + 1);
         }
         if ($code === 200) {
             $file = @file_get_contents($path, false, stream_context_create(['http' => ['timeout' => 15]]));

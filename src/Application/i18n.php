@@ -97,7 +97,7 @@ class i18n
                     break;
 
                 case 'php':
-                    $strings = require_once $path;
+                    $strings = require $path;
 
                     break;
             }

@@ -67,13 +67,23 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
         $key = $request->getQueryParams()['apikey'] ?? null;
 
         if (blank($key)) {
-            $key = $request->getHeaderLine('key') ?? null;
+            $key = $request->getHeaderLine('key');
         }
         if (blank($key)) {
-            $key = $request->getHeaderLine('apikey') ?? null;
+            $key = $request->getHeaderLine('apikey');
+        }
+        if (!is_string($key) || blank($key)) {
+            return false;
         }
 
-        return $key && str_contains($this->parameter('entity_keys', ''), $key);
+        // compare whole keys, a substring of a valid key must not pass
+        foreach (preg_split('/[\s,]+/', $this->parameter('entity_keys', '')) ?: [] as $item) {
+            if ($item !== '' && hash_equals($item, $key)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected function findUser(Request $request): false|User

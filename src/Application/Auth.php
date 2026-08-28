@@ -215,7 +215,7 @@ class Auth
             'uuid:' . $uuid,
             'ip:' . sha1($ip),
             'agent:' . sha1($agent),
-            'microtime:' . intval(microtime(true)),
+            'random:' . bin2hex(random_bytes(16)),
         ]);
 
         return hash('sha256', $payload);

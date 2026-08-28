@@ -30,7 +30,7 @@ class TwigExtension extends AbstractExtension
 {
     protected RouteCollectorInterface $routeCollector;
 
-    public function __construct(?ContainerInterface $container = null)
+    public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
@@ -139,7 +139,6 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
             new TwigFunction('catalog_product_dimensional_weight', [$this, 'catalog_product_dimensional_weight'], ['needs_context' => true]),
             new TwigFunction('catalog_order', [$this, 'catalog_order']),
-            new TwigFunction('catalog_order_status', [$this, 'catalog_order_status']),
 
             // user
             new TwigFunction('user', [$this, 'user']),
@@ -198,9 +197,9 @@ class TwigExtension extends AbstractExtension
         return rtrim($this->parameter('common_homepage', ''), '/');
     }
 
-    public function isCurrentPath($name, $data = [])
+    public function isCurrentPath($name, $data = []): bool
     {
-        return $this->routeCollector->pathFor($name, $data) === $this->baseUrl() . '/' . ltrim($this->currentUrl(), '/');
+        return $this->pathFor($name, $data) === parse_url($this->currentUrl(), PHP_URL_PATH);
     }
 
     /**
@@ -313,7 +312,7 @@ class TwigExtension extends AbstractExtension
         $url = $this->parseUrl();
         $path = explode('/', ltrim($url['path'], '/'));
 
-        if (($key = count($path) - 1) && ($buf = $path[$key]) && ctype_digit($buf)) {
+        if (($key = count($path) - 1) >= 0 && ($buf = $path[$key]) && ctype_digit($buf)) {
             unset($path[$key]);
         }
 
@@ -326,8 +325,8 @@ class TwigExtension extends AbstractExtension
         $path = explode('/', ltrim($url['path'], '/'));
         $page = 0;
 
-        if (($key = count($path) - 1) && ($buf = $path[$key]) && ctype_digit($buf)) {
-            $page = +$path[$key];
+        if (($key = count($path) - 1) >= 0 && ($buf = $path[$key]) && ctype_digit($buf)) {
+            $page = (int) $path[$key];
         }
 
         return $page;
@@ -381,23 +380,23 @@ class TwigExtension extends AbstractExtension
         return json_decode($json, $associative, $depth, $flags);
     }
 
-    function cache_put(string $key, mixed $value, int $seconds, string $type = 'memory'): void
+    public function cache_put(string $key, mixed $value, int $seconds, string $type = 'memory'): void
     {
         /** @var FileCache|ArrayCache $cache */
         $cache = match ($type) {
             'file' => $this->container->get(FileCache::class),
-            'memory' => $this->container->get(ArrayCache::class),
+            default => $this->container->get(ArrayCache::class),
         };
 
         $cache->put('twig-' . $key, $value, $seconds);
     }
 
-    function cache_get(string $key, mixed $default = null, string $type = 'memory'): mixed
+    public function cache_get(string $key, mixed $default = null, string $type = 'memory'): mixed
     {
         /** @var FileCache|ArrayCache $cache */
         $cache = match ($type) {
             'file' => $this->container->get(FileCache::class),
-            'memory' => $this->container->get(ArrayCache::class),
+            default => $this->container->get(ArrayCache::class),
         };
 
         return $cache->get('twig-' . $key) ?? $default;
@@ -603,7 +602,7 @@ class TwigExtension extends AbstractExtension
     }
 
     // save uuid of product in session or return saved list
-    public function catalog_product_view(string $uuid = null, int $limit = 10)
+    public function catalog_product_view(?string $uuid = null, int $limit = 10)
     {
         $list = $_SESSION['catalog_product_view'] ?? [];
 

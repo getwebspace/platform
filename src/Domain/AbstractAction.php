@@ -41,6 +41,9 @@ abstract class AbstractAction
     // 50X
     private const NOT_IMPLEMENTED = 'NOT_IMPLEMENTED';
 
+    // rendered when a template fails, must never fail itself
+    private const FALLBACK_TEMPLATE = 'p400.twig';
+
     protected ContainerInterface $container;
 
     protected LoggerInterface $logger;
@@ -331,7 +334,7 @@ abstract class AbstractAction
             }
         }
 
-        return $return === null ? $uploaded : $uploaded[$return];
+        return $return === null ? $uploaded : ($uploaded[$return] ?? []);
     }
 
     /**
@@ -345,7 +348,7 @@ abstract class AbstractAction
                 'response' => $this->getParam('recaptcha', ''),
                 'remoteip' => $this->getRequestRemoteIP(),
             ]);
-            $verify = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, stream_context_create([
+            $response = @file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, stream_context_create([
                 'http' => [
                     'method' => 'POST',
                     'header' => "Content-Type: application/x-www-form-urlencoded\r\n" .
@@ -353,11 +356,13 @@ abstract class AbstractAction
                     'content' => $query,
                     'timeout' => 10,
                 ],
-            ])));
+            ]));
+            $verify = $response !== false ? json_decode($response) : null;
+            $status = (bool) ($verify->success ?? false);
 
-            $this->logger->info('Check reCAPTCHA', ['status' => $verify->success]);
+            $this->logger->info('Check reCAPTCHA', ['status' => $status]);
 
-            return $verify->success;
+            return $status;
         }
 
         return true;
@@ -397,10 +402,17 @@ abstract class AbstractAction
     protected function respondWithTemplate(string $template, array $data = []): Response
     {
         try {
-            $this->response->getBody()->write($this->render($template, $data));
+            // render before write, so a failed template leaves no partial body
+            $rendered = $this->render($template, $data);
         } catch (\Exception $e) {
-            return $this->respondWithTemplate('p400.twig', ['exception' => $e])->withStatus(400);
+            if ($template === self::FALLBACK_TEMPLATE) {
+                throw new HttpBadRequestException($e->getMessage());
+            }
+
+            return $this->respondWithTemplate(self::FALLBACK_TEMPLATE, ['exception' => $e])->withStatus(400);
         }
+
+        $this->response->getBody()->write($rendered);
 
         return $this->response;
     }

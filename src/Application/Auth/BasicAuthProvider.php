@@ -29,7 +29,7 @@ class BasicAuthProvider extends AbstractAuthProvider
         $user = $this->userService->read($credentials);
 
         if (is_a($user, User::class) && $user->status === UserStatus::WORK) {
-            if (!password_verify($credentials['password'], $user->password)) {
+            if (!password_verify((string) $credentials['password'], (string) $user->password)) {
                 throw new WrongPasswordException();
             }
 

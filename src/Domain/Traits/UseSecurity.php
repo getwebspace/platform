@@ -19,9 +19,10 @@ trait UseSecurity
 
         if (!$key) {
             if (file_exists(self::PRIVATE_SECRET_FILE)) {
-                return file_get_contents(self::PRIVATE_SECRET_FILE);
+                $key = file_get_contents(self::PRIVATE_SECRET_FILE);
+            } else {
+                $key = false;
             }
-            $key = false;
         }
 
         return $key;

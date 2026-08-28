@@ -190,7 +190,7 @@ class UserService extends AbstractService
                     $query->orWhere('firstname', 'like', $data['firstname'] . '%');
                 }
                 if (!empty($data['lastname'])) {
-                    $query->orWhere('firstname', 'like', $data['lastname'] . '%');
+                    $query->orWhere('lastname', 'like', $data['lastname'] . '%');
                 }
                 if ($data['limit']) {
                     $query = $query->limit($data['limit']);
@@ -369,12 +369,12 @@ class UserService extends AbstractService
 
                 case 'whitelist':
                     foreach ($list as $item) {
-                        if (!str_ends_with($email, $item)) {
-                            return true;
+                        if ($item !== '' && str_ends_with($email, $item)) {
+                            return false;
                         }
                     }
 
-                    break;
+                    return true;
             }
         }
 
