@@ -39,6 +39,10 @@ return function (ContainerBuilder $containerBuilder): void {
                 $settings['database'] = VAR_DIR . '/database-test.sqlite';
             }
 
+            // sqlite takes a single writer at a time and fails the query outright
+            // with "database is locked" when another one holds it - wait instead
+            $settings['options'][PDO::ATTR_TIMEOUT] = 15;
+
             $capsule = new Illuminate\Database\Capsule\Manager();
             $capsule->addConnection($settings);
 

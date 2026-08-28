@@ -10,9 +10,15 @@ class Status extends Enum
     public const DELETE = 'delete';
     public const BLOCK = 'block';
 
+    /**
+     * Registered, but the address has not been confirmed yet
+     */
+    public const CONFIRMATION = 'confirmation';
+
     public const LIST = [
         self::WORK,
         self::DELETE,
         self::BLOCK,
+        self::CONFIRMATION,
     ];
 }

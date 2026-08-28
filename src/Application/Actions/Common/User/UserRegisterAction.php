@@ -2,17 +2,22 @@
 
 namespace App\Application\Actions\Common\User;
 
+use App\Domain\Casts\User\Status as UserStatus;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\EmailBannedException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
+use App\Domain\Service\User\Exception\PasswordsNotMatchException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
 use App\Domain\Service\User\Exception\WrongPhoneValueException;
 use App\Domain\Service\User\Exception\WrongUsernameValueException;
+use App\Domain\Traits\UseConfirmation;
 
 class UserRegisterAction extends UserAction
 {
+    use UseConfirmation;
+
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->isPost()) {
@@ -20,12 +25,15 @@ class UserRegisterAction extends UserAction
                 $identifier = $this->parameter('user_login_type', 'username');
                 $provider = $this->getParam('provider', $_SESSION['auth_provider'] ?? 'BasicAuthProvider');
 
+                $email = $this->getParam('email', '');
+                $confirmation = $this->isConfirmationRequired($email);
+
                 try {
-                    $this->auth->register($provider, [
+                    $result = $this->auth->register($provider, [
                         'firstname' => $this->getParam('firstname', ''),
                         'lastname' => $this->getParam('lastname', ''),
                         'username' => $this->getParam('username', ''),
-                        'email' => $this->getParam('email', ''),
+                        'email' => $email,
                         'phone' => $this->getParam('phone', ''),
                         'address' => $this->getParam('address', ''),
                         'additional' => $this->getParam('additional', ''),
@@ -33,7 +41,24 @@ class UserRegisterAction extends UserAction
                         'password' => $this->getParam('password'),
                         'password_again' => $this->getParam('password_again'),
                         'external_id' => $this->getParam('external_id', ''),
+
+                        // set here and not from the request, a visitor must not
+                        // be able to hand themselves a confirmed account
+                        'status' => $confirmation ? UserStatus::CONFIRMATION : UserStatus::WORK,
                     ]);
+
+                    // no session until the address is confirmed
+                    if ($confirmation) {
+                        $this->container->get(\App\Application\PubSub::class)->publish(
+                            'common:user:confirmation',
+                            ['user' => $result['user'], 'token' => $this->issueConfirmationToken($result['user'])]
+                        );
+
+                        return $this->respond(
+                            $this->parameter('user_confirmation_template', 'user.confirmation.twig'),
+                            ['stage' => 'sent']
+                        );
+                    }
 
                     $result = $this->auth->login(
                         $provider,
@@ -51,8 +76,7 @@ class UserRegisterAction extends UserAction
                         ]
                     );
 
-                    @setcookie('access_token', $result['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
-                    @setcookie('refresh_token', $result['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');
+                    $this->setAuthCookies($result);
 
                     return $this->respondWithRedirect('/user/profile');
                 } catch (MissingUniqueValueException $e) {
@@ -65,10 +89,12 @@ class UserRegisterAction extends UserAction
                     $this->addError('email', $e->getMessage());
                 } catch (PhoneAlreadyExistsException|WrongPhoneValueException $e) {
                     $this->addError('phone', $e->getMessage());
+                } catch (PasswordsNotMatchException $e) {
+                    $this->addError('password_again', $e->getMessage());
                 }
+            } else {
+                $this->addError('grecaptcha', 'EXCEPTION_WRONG_GRECAPTCHA');
             }
-
-            $this->addError('grecaptcha', 'EXCEPTION_WRONG_GRECAPTCHA');
         }
 
         return $this->respond($this->parameter('user_register_template', 'user.register.twig'));

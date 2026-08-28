@@ -5,17 +5,24 @@ namespace App\Application\Actions\Auth;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\EmailBannedException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
+use App\Domain\Service\User\Exception\PasswordsNotMatchException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
 use App\Domain\Service\User\Exception\WrongPhoneValueException;
 use App\Domain\Service\User\Exception\WrongUsernameValueException;
+use App\Domain\Traits\UseConfirmation;
 
 class RegisterAction extends AuthAction
 {
+    use UseConfirmation;
+
     protected function action(): \Slim\Psr7\Response
     {
-        $redirect = $this->getParam('redirect', '/');
+        $redirect = $this->getRedirectParam();
+
+        $email = $this->getParam('email', '');
+        $confirmation = $this->isConfirmationRequired($email);
 
         try {
             $result = $this->auth->register(
@@ -24,7 +31,7 @@ class RegisterAction extends AuthAction
                     'firstname' => $this->getParam('firstname', ''),
                     'lastname' => $this->getParam('lastname', ''),
                     'username' => $this->getParam('username', ''),
-                    'email' => $this->getParam('email', ''),
+                    'email' => $email,
                     'phone' => $this->getParam('phone', ''),
                     'address' => $this->getParam('address', ''),
                     'additional' => $this->getParam('additional', ''),
@@ -32,8 +39,18 @@ class RegisterAction extends AuthAction
                     'password' => $this->getParam('password'),
                     'password_again' => $this->getParam('password_again'),
                     'external_id' => $this->getParam('external_id', ''),
+
+                    // never taken from the request
+                    'status' => $confirmation ? \App\Domain\Casts\User\Status::CONFIRMATION : \App\Domain\Casts\User\Status::WORK,
                 ]
             );
+
+            if ($confirmation) {
+                $this->container->get(\App\Application\PubSub::class)->publish(
+                    'common:user:confirmation',
+                    ['user' => $result['user'], 'token' => $this->issueConfirmationToken($result['user'])]
+                );
+            }
 
             switch ($this->isRequestJson()) {
                 case true:
@@ -46,7 +63,7 @@ class RegisterAction extends AuthAction
                     return $this->response->withAddedHeader('Location', $redirect)->withStatus(307);
             }
         } catch (
-            EmailAlreadyExistsException|EmailBannedException|MissingUniqueValueException|PhoneAlreadyExistsException|UsernameAlreadyExistsException|WrongEmailValueException|WrongPhoneValueException|WrongUsernameValueException $e
+            EmailAlreadyExistsException|EmailBannedException|MissingUniqueValueException|PasswordsNotMatchException|PhoneAlreadyExistsException|UsernameAlreadyExistsException|WrongEmailValueException|WrongPhoneValueException|WrongUsernameValueException $e
         ) {
             return $this->respondWithJson(['error' => $e->getMessage()])->withStatus(400);
         }

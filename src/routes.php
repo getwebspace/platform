@@ -385,6 +385,16 @@ return function (App $app, Container $container): void {
                                 ->setName('common:user:logout');
 
                             $proxy
+                                ->map(['GET', 'POST'], '/recovery', \App\Application\Actions\Common\User\UserRecoveryAction::class)
+                                ->setName('common:user:recovery')
+                                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+
+                            $proxy
+                                ->map(['GET', 'POST'], '/confirm', \App\Application\Actions\Common\User\UserConfirmationAction::class)
+                                ->setName('common:user:confirm')
+                                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+
+                            $proxy
                                 ->map(['GET', 'POST'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class)
                                 ->setName('common:user:profile')
                                 ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class)

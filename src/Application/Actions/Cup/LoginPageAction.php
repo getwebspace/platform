@@ -4,12 +4,18 @@ namespace App\Application\Actions\Cup;
 
 use App\Application\Actions\Cup\User\UserAction;
 use App\Application\Auth;
+use App\Domain\Service\User\Exception\UserNotConfirmedException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
+use App\Domain\Traits\UseThrottle;
 use Psr\Container\ContainerInterface;
 
 class LoginPageAction extends UserAction
 {
+    use UseThrottle;
+
+    private const THROTTLE_SCOPE = 'cup-login';
+
     private Auth $auth;
 
     public function __construct(ContainerInterface $container)
@@ -27,33 +33,46 @@ class LoginPageAction extends UserAction
         }
 
         $identifier = $this->parameter('user_login_type', 'username');
+        $login = (string) $this->getParam('identifier', '');
+        $ip = $this->getRequestRemoteIP();
 
-        try {
-            if ($this->isPost() && $this->isRecaptchaChecked()) {
-                $result = $this->auth->login(
-                    'BasicAuthProvider',
-                    [
-                        'identifier' => $this->getParam('identifier', ''),
-                        'password' => $this->getParam('password'),
-                    ],
-                    [
-                        'redirect' => $this->request->getUri()->getPath(),
-                        'agent' => $this->getServerParam('HTTP_USER_AGENT'),
-                        'ip' => $this->getRequestRemoteIP(),
-                        'comment' => 'Login via common page',
-                    ]
-                );
+        if ($this->isPost()) {
+            if ($this->isThrottled(self::THROTTLE_SCOPE, $login, $ip)) {
+                $this->addError('identifier', 'EXCEPTION_TOO_MANY_ATTEMPTS');
+            } elseif (!$this->isRecaptchaChecked()) {
+                // used to be reported on plain GET as well, so the login page
+                // greeted every visitor with a captcha error
+                $this->addError('grecaptcha', 'EXCEPTION_WRONG_GRECAPTCHA');
+            } else {
+                try {
+                    $result = $this->auth->login(
+                        'BasicAuthProvider',
+                        [
+                            'identifier' => $login,
+                            'password' => $this->getParam('password'),
+                        ],
+                        [
+                            'redirect' => $this->request->getUri()->getPath(),
+                            'agent' => $this->getServerParam('HTTP_USER_AGENT'),
+                            'ip' => $ip,
+                            'comment' => 'Login via common page',
+                        ]
+                    );
 
-                @setcookie('access_token', $result['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
-                @setcookie('refresh_token', $result['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');
+                    $this->throttleClear(self::THROTTLE_SCOPE, $login, $ip);
+                    $this->setAuthCookies($result);
 
-                return $this->respondWithRedirect($this->getParam('redirect', '/cup'));
+                    return $this->respondWithRedirect($this->getRedirectParam('redirect', '/cup'));
+                } catch (UserNotConfirmedException $e) {
+                    $this->addError('identifier', $e->getMessage());
+                } catch (UserNotFoundException $e) {
+                    $this->throttleHit(self::THROTTLE_SCOPE, $login, $ip);
+                    $this->addError('identifier', $e->getMessage());
+                } catch (WrongPasswordException $e) {
+                    $this->throttleHit(self::THROTTLE_SCOPE, $login, $ip);
+                    $this->addError('password', $e->getMessage());
+                }
             }
-            $this->addError('grecaptcha', 'EXCEPTION_WRONG_GRECAPTCHA');
-        } catch (UserNotFoundException $e) {
-            $this->addError('identifier', $e->getMessage());
-        } catch (WrongPasswordException $e) {
-            $this->addError('password', $e->getMessage());
         }
 
         return $this->respondWithTemplate('cup/auth/login.twig', [

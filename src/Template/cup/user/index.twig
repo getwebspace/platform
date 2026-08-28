@@ -78,6 +78,15 @@
                                         'value': 1
                                     }
                                 } %}
+
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Awaiting confirmation'|locale,
+                                    'type': 'checkbox',
+                                    'name': 'status_confirmation',
+                                    'args': {
+                                        'value': 1
+                                    }
+                                } %}
                             </div>
                         </div>
                     </div>
@@ -120,7 +129,11 @@
                                         : (
                                             user.status == constant('/App/Domain/Casts/User/Status::BLOCK')
                                             ? 'bg-warning'
-                                            : ''
+                                            : (
+                                                user.status == constant('/App/Domain/Casts/User/Status::CONFIRMATION')
+                                                ? 'bg-light'
+                                                : ''
+                                            )
                                         )
                                     }}
                                 ">

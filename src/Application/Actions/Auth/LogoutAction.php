@@ -6,7 +6,7 @@ class LogoutAction extends AuthAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $redirect = $this->getParam('redirect', '/');
+        $redirect = $this->getRedirectParam();
         $refresh_token = $this->getParam('token', $this->getCookie('refresh_token', null));
 
         if ($refresh_token) {
@@ -15,8 +15,7 @@ class LogoutAction extends AuthAction
                 $refresh_token,
             );
 
-            @setcookie('access_token', '', time(), '/');
-            @setcookie('refresh_token', '', time(), '/auth');
+            $this->clearAuthCookies();
         }
 
         switch ($this->isRequestJson()) {

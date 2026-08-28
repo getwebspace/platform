@@ -43,6 +43,10 @@ class UserListAction extends UserAction
                 $criteria['status'][] = UserStatus::BLOCK;
             }
 
+            if ($this->getParam('status_confirmation')) {
+                $criteria['status'][] = UserStatus::CONFIRMATION;
+            }
+
             if ($this->getParam('status_delete')) {
                 $criteria['status'][] = UserStatus::DELETE;
             }

@@ -712,6 +712,130 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Require e-mail confirmation on registration',
+                                                    'description': 'Until the address is confirmed the account cannot log in',
+                                                    'type': 'select',
+                                                    'name': 'user[confirmation]',
+                                                    'args': {
+                                                        'option': _(['off', 'on']),
+                                                        'selected': 'off'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'E-Mail confirmation page template',
+                                                    'type': 'text',
+                                                    'name': 'user[confirmation_template]',
+                                                    'args': {
+                                                        'placeholder': 'user.confirmation.twig',
+                                                        'value': 'user.confirmation.twig'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Enabling and disabling the confirmation email',
+                                                    'description': 'Without it registration cannot be completed',
+                                                    'type': 'select',
+                                                    'name': 'user[confirmation_mail]',
+                                                    'args': {
+                                                        'option': _(['off', 'on']),
+                                                        'selected': 'off'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Confirmation email template',
+                                                    'description': 'If there is no value, the email will not be sent',
+                                                    'type': 'text',
+                                                    'name': 'user[confirmation_mail_template]',
+                                                    'args': {
+                                                        'placeholder': 'user.mail.confirmation.twig'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Failed login attempts before a pause',
+                                                    'description': 'Counted per login and address, 0 turns the limit off',
+                                                    'type': 'number',
+                                                    'name': 'user[login_attempts]',
+                                                    'args': {
+                                                        'placeholder': '10',
+                                                        'value': 10
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Length of the pause, minutes',
+                                                    'type': 'number',
+                                                    'name': 'user[login_block_time]',
+                                                    'args': {
+                                                        'placeholder': '15',
+                                                        'value': 15
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Enabling and disabling the welcome email',
+                                                    'type': 'select',
+                                                    'name': 'user[register_mail]',
+                                                    'args': {
+                                                        'option': _(['off', 'on']),
+                                                        'selected': 'off'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Welcome email template',
+                                                    'description': 'If there is no value, the email will not be sent',
+                                                    'type': 'text',
+                                                    'name': 'user[register_mail_template]',
+                                                    'args': {
+                                                        'placeholder': 'user.mail.register.twig'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Enabling and disabling the password recovery email',
+                                                    'description': 'Without it password recovery cannot be completed',
+                                                    'type': 'select',
+                                                    'name': 'user[recovery_mail]',
+                                                    'args': {
+                                                        'option': _(['off', 'on']),
+                                                        'selected': 'off'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Password recovery email template',
+                                                    'description': 'If there is no value, the email will not be sent',
+                                                    'type': 'text',
+                                                    'name': 'user[recovery_mail_template]',
+                                                    'args': {
+                                                        'placeholder': 'user.mail.recovery.twig'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Enabling and disabling the password changed email',
+                                                    'type': 'select',
+                                                    'name': 'user[recovery_done_mail]',
+                                                    'args': {
+                                                        'option': _(['off', 'on']),
+                                                        'selected': 'off'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Password changed email template',
+                                                    'description': 'If there is no value, the email will not be sent',
+                                                    'type': 'text',
+                                                    'name': 'user[recovery_done_mail_template]',
+                                                    'args': {
+                                                        'placeholder': 'user.mail.recovery-done.twig'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
                                                     'label': 'User profile page template',
                                                     'type': 'text',
                                                     'name': 'user[profile_template]',

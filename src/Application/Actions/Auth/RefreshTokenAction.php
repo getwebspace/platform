@@ -8,7 +8,7 @@ class RefreshTokenAction extends AuthAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $redirect = $this->getParam('redirect', '/');
+        $redirect = $this->getRedirectParam();
         $refresh_token = $this->getParam('token', $this->getCookie('refresh_token'));
 
         $result = [];
@@ -24,8 +24,7 @@ class RefreshTokenAction extends AuthAction
                     ]
                 );
 
-                @setcookie('access_token', $result['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
-                @setcookie('refresh_token', $result['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');
+                $this->setAuthCookies($result);
             } catch (TokenNotFoundException $e) {
                 $redirect = '/auth/logout';
             }

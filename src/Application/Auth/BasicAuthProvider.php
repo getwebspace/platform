@@ -6,6 +6,7 @@ use App\Domain\Casts\User\Status as UserStatus;
 use App\Domain\Models\User;
 use App\Domain\Models\UserToken;
 use App\Domain\Service\User\Exception\TokenNotFoundException;
+use App\Domain\Service\User\Exception\UserNotConfirmedException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 
@@ -14,6 +15,7 @@ class BasicAuthProvider extends AbstractAuthProvider
     /**
      * @throws WrongPasswordException
      * @throws UserNotFoundException
+     * @throws UserNotConfirmedException
      */
     public function login(array $credentials, array $params): ?User
     {
@@ -27,6 +29,10 @@ class BasicAuthProvider extends AbstractAuthProvider
         ];
         $credentials = array_merge($default, $credentials);
         $user = $this->userService->read($credentials);
+
+        if (is_a($user, User::class) && $user->status === UserStatus::CONFIRMATION) {
+            throw new UserNotConfirmedException();
+        }
 
         if (is_a($user, User::class) && $user->status === UserStatus::WORK) {
             if (!password_verify((string) $credentials['password'], (string) $user->password)) {
@@ -76,18 +82,24 @@ class BasicAuthProvider extends AbstractAuthProvider
     public function revoke(string $token, ?string $uuid): void
     {
         try {
-            if ($uuid) {
-                $this->userTokenService->delete(
-                    $this->userTokenService->read(['uuid' => $uuid])
-                );
-            } else {
-                /** @var UserToken $item */
-                foreach ($this->userTokenService->read(['unique' => $token])->user->tokens()->where('unique', '!=', $token)->get() as $item) {
-                    $this->userTokenService->delete($item);
-                }
-            }
+            $current = $this->userTokenService->read(['unique' => $token]);
         } catch (TokenNotFoundException $e) {
-            // nothing
+            return;
+        }
+
+        // scoped to the owner of the presented token, otherwise anyone could
+        // hand in a uuid and drop somebody else's session
+        $query = $current->user->tokens();
+
+        if ($uuid) {
+            $query->where('uuid', $uuid);
+        } else {
+            $query->where('unique', '!=', $token);
+        }
+
+        /** @var UserToken $item */
+        foreach ($query->get() as $item) {
+            $this->userTokenService->delete($item);
         }
     }
 }

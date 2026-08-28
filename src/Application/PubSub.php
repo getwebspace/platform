@@ -113,6 +113,78 @@ class PubSub
             }
         );
 
+        // send mail when user registered
+        $this->subscribe(
+            [
+                'auth:user:register',
+            ],
+            function ($user, $container): void {
+                // an unconfirmed account gets the confirmation letter instead,
+                // the welcome one follows once the address is proven
+                if ($user->status === \App\Domain\Casts\User\Status::CONFIRMATION) {
+                    return;
+                }
+
+                $this->sendUserMail(
+                    $container,
+                    $user,
+                    'user_register_mail',
+                    'user_register_mail_template',
+                    ['user' => $user]
+                );
+            }
+        );
+
+        // send the confirmation link for a freshly registered address
+        $this->subscribe('common:user:confirmation', function ($data, $container): void {
+            $this->sendUserMail(
+                $container,
+                $data['user'],
+                'user_confirmation_mail',
+                'user_confirmation_mail_template',
+                [
+                    'user' => $data['user'],
+                    'link' => $this->parameter('common_homepage', '') . '/user/confirm?token=' . $data['token'],
+                ]
+            );
+        });
+
+        // address confirmed, now the welcome letter makes sense
+        $this->subscribe('common:user:confirmed', function ($user, $container): void {
+            $this->sendUserMail(
+                $container,
+                $user,
+                'user_register_mail',
+                'user_register_mail_template',
+                ['user' => $user]
+            );
+        });
+
+        // send recovery link when user asked to reset the password
+        $this->subscribe('common:user:recovery', function ($data, $container): void {
+            $this->sendUserMail(
+                $container,
+                $data['user'],
+                'user_recovery_mail',
+                'user_recovery_mail_template',
+                [
+                    'user' => $data['user'],
+                    'link' => $this->parameter('common_homepage', '') . '/user/recovery?token=' . $data['token'],
+                ]
+            );
+        });
+
+        // let the owner know the password actually changed
+        $this->subscribe('common:user:recovery-done', function ($user, $container): void {
+            $this->sendUserMail(
+                $container,
+                $user,
+                'user_recovery_done_mail',
+                'user_recovery_done_mail_template',
+                ['user' => $user]
+            );
+        });
+
         // automatic update order status after payment via plugin
         $this->subscribe('plugin:order:payment', function ($order, $container): void {
             if (($status_uuid = $this->parameter('catalog_order_status_payed', '')) !== '') {
@@ -121,6 +193,30 @@ class PubSub
         });
 
         // ----------------------------------------------------
+    }
+
+    /**
+     * Queue a letter to a user, when the letter is switched on and has a template
+     */
+    protected function sendUserMail(ContainerInterface $container, mixed $user, string $toggle, string $template, array $data = []): void
+    {
+        if (
+            $user === null
+            || blank($user->email)
+            || $this->parameter($toggle, 'off') !== 'on'
+            || ($tpl = $this->parameter($template, '')) === ''
+        ) {
+            return;
+        }
+
+        $task = new \App\Domain\Tasks\SendMailTask($container);
+        $task->execute([
+            'to' => $user->email,
+            'template' => $this->render($tpl, $data),
+            'isHtml' => true,
+        ]);
+
+        \App\Domain\AbstractTask::worker($task);
     }
 
     /**

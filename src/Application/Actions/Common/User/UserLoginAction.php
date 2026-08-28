@@ -2,11 +2,17 @@
 
 namespace App\Application\Actions\Common\User;
 
+use App\Domain\Service\User\Exception\UserNotConfirmedException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
+use App\Domain\Traits\UseThrottle;
 
 class UserLoginAction extends UserAction
 {
+    use UseThrottle;
+
+    private const THROTTLE_SCOPE = 'user-login';
+
     protected function action(): \Slim\Psr7\Response
     {
         $identifier = $this->parameter('user_login_type', 'username');
@@ -25,7 +31,12 @@ class UserLoginAction extends UserAction
             ($this->isGet() && $data['code'] && $data['state'])
             || ($this->isPost() && (($data[$identifier] && $data['password']) || $provider))
         ) {
-            if ($this->isPost() && $this->isRecaptchaChecked() || $this->isGet()) {
+            $login = (string) ($data[$identifier] ?? '');
+            $ip = $this->getRequestRemoteIP();
+
+            if ($this->isPost() && $this->isThrottled(self::THROTTLE_SCOPE, $login, $ip)) {
+                $this->addError($identifier, 'EXCEPTION_TOO_MANY_ATTEMPTS');
+            } elseif ($this->isPost() && $this->isRecaptchaChecked() || $this->isGet()) {
                 try {
                     $result = $this->auth->login(
                         $provider,
@@ -43,13 +54,18 @@ class UserLoginAction extends UserAction
                         ]
                     );
 
-                    @setcookie('access_token', $result['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
-                    @setcookie('refresh_token', $result['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');
+                    $this->throttleClear(self::THROTTLE_SCOPE, $login, $ip);
+                    $this->setAuthCookies($result);
 
-                    return $this->respondWithRedirect($this->getParam('redirect', '/user/profile'));
+                    return $this->respondWithRedirect($this->getRedirectParam('redirect', '/user/profile'));
+                } catch (UserNotConfirmedException $e) {
+                    // the credentials were fine, so this is not a failed attempt
+                    $this->addError($identifier, $e->getMessage());
                 } catch (UserNotFoundException $e) {
+                    $this->throttleHit(self::THROTTLE_SCOPE, $login, $ip);
                     $this->addError($identifier, $e->getMessage());
                 } catch (WrongPasswordException $e) {
+                    $this->throttleHit(self::THROTTLE_SCOPE, $login, $ip);
                     $this->addError('password', $e->getMessage());
                 }
             } else {

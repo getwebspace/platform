@@ -2,6 +2,7 @@
 
 namespace App\Application\Actions\Auth;
 
+use App\Domain\Service\User\Exception\UserNotConfirmedException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 
@@ -9,7 +10,7 @@ class LoginAction extends AuthAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $redirect = $this->getParam('redirect', '/');
+        $redirect = $this->getRedirectParam();
 
         try {
             $result = $this->auth->login(
@@ -40,6 +41,8 @@ class LoginAction extends AuthAction
                 default:
                     return $this->response->withAddedHeader('Location', $redirect)->withStatus(307);
             }
+        } catch (UserNotConfirmedException $e) {
+            return $this->respondWithJson(['error' => $e->getMessage()])->withStatus(403);
         } catch (UserNotFoundException $e) {
             return $this->respondWithJson(['error' => $e->getMessage()])->withStatus(404);
         } catch (WrongPasswordException $e) {

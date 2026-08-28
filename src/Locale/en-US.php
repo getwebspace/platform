@@ -120,5 +120,8 @@ return [
     'EXCEPTION_WRONG_CODE' => 'Incorrect code',
     'EXCEPTION_WRONG_CODE_TIMEOUT' => 'You can update the authorization code every 10 minutes',
     'EXCEPTION_WRONG_PASSWORD' => 'Wrong password',
+    'EXCEPTION_PASSWORDS_NOT_MATCH' => 'Passwords do not match',
+    'EXCEPTION_TOO_MANY_ATTEMPTS' => 'Too many attempts, please try again later',
+    'EXCEPTION_USER_NOT_CONFIRMED' => 'E-Mail address is not confirmed yet',
     'EXCEPTION_WRONG_GRECAPTCHA' => 'Error validating Google Recaptcha token',
 ];

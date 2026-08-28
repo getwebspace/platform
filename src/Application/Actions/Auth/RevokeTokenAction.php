@@ -8,7 +8,7 @@ class RevokeTokenAction extends AuthAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $redirect = $this->getParam('redirect', '/');
+        $redirect = $this->getRedirectParam();
         $refresh_token = $this->getParam('token', $this->getCookie('refresh_token'));
         $uuid = $this->getParam('uuid');
 

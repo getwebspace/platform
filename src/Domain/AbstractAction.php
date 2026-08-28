@@ -442,4 +442,73 @@ abstract class AbstractAction
     {
         return $this->response->withAddedHeader('Location', $location)->withStatus($status);
     }
+
+    /**
+     * Read a caller supplied redirect target, refusing anything that leaves the site
+     *
+     * Without this an attacker can hand out a link to our own login page that
+     * bounces the visitor to a look-alike host once they sign in
+     */
+    protected function getRedirectParam(string $key = 'redirect', string $default = '/'): string
+    {
+        $value = $this->getParam($key);
+
+        return is_string($value) && $this->isLocalPath($value) ? $value : $default;
+    }
+
+    /**
+     * A safe redirect target is a path on this site and nothing else
+     */
+    protected function isLocalPath(string $value): bool
+    {
+        // must be rooted, and "//evil.tld" is browser shorthand for another host
+        if ($value === '' || $value[0] !== '/' || str_starts_with($value, '//')) {
+            return false;
+        }
+
+        // browsers fold a backslash into a slash, so "/\evil.tld" leaves the site too
+        if (str_contains($value, '\\')) {
+            return false;
+        }
+
+        // control characters can smuggle a line break or a scheme past the checks
+        return preg_match('~[\x00-\x1f\x7f]~', $value) !== 1;
+    }
+
+    protected function isSecureRequest(): bool
+    {
+        return $this->request->getUri()->getScheme() === 'https'
+            || $this->getServerParam('HTTP_X_FORWARDED_PROTO') === 'https';
+    }
+
+    /**
+     * Store the token pair
+     *
+     * The tokens are credentials, so they stay out of reach of page scripts and
+     * are not sent along with cross-site requests
+     */
+    protected function setAuthCookies(array $result): void
+    {
+        $expires = time() + \App\Domain\References\Date::MONTH;
+
+        $this->setAuthCookie('access_token', $result['access_token'] ?? '', $expires, '/');
+        $this->setAuthCookie('refresh_token', $result['refresh_token'] ?? '', $expires, '/auth');
+    }
+
+    protected function clearAuthCookies(): void
+    {
+        $this->setAuthCookie('access_token', '', time() - \App\Domain\References\Date::DAY, '/');
+        $this->setAuthCookie('refresh_token', '', time() - \App\Domain\References\Date::DAY, '/auth');
+    }
+
+    private function setAuthCookie(string $name, string $value, int $expires, string $path): void
+    {
+        @setcookie($name, $value, [
+            'expires' => $expires,
+            'path' => $path,
+            'httponly' => true,
+            'samesite' => 'Lax',
+            'secure' => $this->isSecureRequest(),
+        ]);
+    }
 }

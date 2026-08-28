@@ -49,7 +49,7 @@ trait UseSecurity
      * @throws ExpiredException
      * @throws SignatureInvalidException
      */
-    protected function encodeJWT(string $sub, ?string $uuid = null, array $data = []): string
+    protected function encodeJWT(string $sub, ?string $uuid = null, array $data = [], ?int $ttl = null): string
     {
         $privateKey = $this->getPrivateKey();
 
@@ -59,7 +59,7 @@ trait UseSecurity
                 'uuid' => $uuid,
                 'data' => $data,
                 'iat' => time(),
-                'exp' => time() + (\App\Domain\References\Date::MINUTE * 10),
+                'exp' => time() + ($ttl ?: \App\Domain\References\Date::MINUTE * 10),
             ];
 
             return JWT::encode($payload, $privateKey, 'RS256');

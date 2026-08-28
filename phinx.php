@@ -12,6 +12,8 @@ return [
         'dev' => [
             'dsn' => 'sqlite://./var/database-test',
             'suffix' => '.sqlite',
+            // the app may be serving a request against the same file
+            'attr_timeout' => 15,
         ],
         'prod' => [
             'dsn' => !empty($_ENV['DATABASE']) ? $_ENV['DATABASE'] : 'sqlite://./var/database',

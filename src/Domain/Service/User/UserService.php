@@ -8,6 +8,7 @@ use App\Domain\Models\User;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\EmailBannedException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
+use App\Domain\Service\User\Exception\PasswordsNotMatchException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
@@ -30,11 +31,18 @@ class UserService extends AbstractService
      * @throws UsernameAlreadyExistsException
      * @throws PhoneAlreadyExistsException
      * @throws MissingUniqueValueException
+     * @throws PasswordsNotMatchException
      * @throws WrongEmailValueException
      * @throws WrongPhoneValueException
      */
     public function create(array $data = []): User
     {
+        // the form asks for the password twice, the second copy is not a model
+        // field and used to be dropped silently, letting a typo lock the account
+        if (isset($data['password_again']) && (string) $data['password_again'] !== (string) ($data['password'] ?? '')) {
+            throw new PasswordsNotMatchException();
+        }
+
         $user = new User();
         $user->fill($data);
 
