@@ -8,12 +8,13 @@ use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class SubscriberService extends AbstractService
 {
+    protected static array $search_columns = ['email'];
+
     /**
      * @throws MissingUniqueValueException
      * @throws EmailAlreadyExistsException
@@ -71,26 +72,7 @@ class SubscriberService extends AbstractService
                 return $subscriber ?: throw new UserNotFoundException();
 
             default:
-                $query = UserSubscriber::query();
-                /** @var Builder $query */
-                foreach ($criteria as $key => $value) {
-                    if (is_array($value)) {
-                        $query->whereIn($key, $value);
-                    } else {
-                        $query->where($key, $value);
-                    }
-                }
-                foreach ($data['order'] as $column => $direction) {
-                    $query = $query->orderBy($column, $direction);
-                }
-                if ($data['limit']) {
-                    $query = $query->limit($data['limit']);
-                }
-                if ($data['offset']) {
-                    $query = $query->offset($data['offset']);
-                }
-
-                return $query->get();
+                return $this->buildQuery(UserSubscriber::query(), $criteria, $data)->get();
         }
     }
 

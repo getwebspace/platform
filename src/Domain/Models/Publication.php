@@ -85,17 +85,17 @@ class Publication extends Model
         return array_merge(
             parent::toArray(),
             [
-                'category' => [
+                'category' => $this->category ? [
                     'uuid' => $this->category->uuid,
                     'title' => $this->category->title,
                     'address' => $this->category->address,
-                ],
-                'user' => [
+                ] : null,
+                'user' => $this->user ? [
                     'uuid' => $this->user->uuid,
                     'name' => $this->user->name(),
                     'avatar' => $this->user->avatar(),
                     'external_id' => $this->user->external_id,
-                ],
+                ] : null,
                 'files' => $this->files,
             ],
         );

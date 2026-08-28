@@ -6,11 +6,12 @@ use App\Domain\AbstractService;
 use App\Domain\Models\Parameter;
 use App\Domain\Service\Parameter\Exception\ParameterAlreadyExistsException;
 use App\Domain\Service\Parameter\Exception\ParameterNotFoundException;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class ParameterService extends AbstractService
 {
+    protected static array $search_columns = ['name'];
+
     /**
      * @throws ParameterAlreadyExistsException
      */
@@ -55,26 +56,7 @@ class ParameterService extends AbstractService
                 return $parameter;
 
             default:
-                $query = Parameter::query();
-                /** @var Builder $query */
-                foreach ($criteria as $key => $value) {
-                    if (is_array($value)) {
-                        $query->whereIn($key, $value);
-                    } else {
-                        $query->where($key, $value);
-                    }
-                }
-                foreach ($data['order'] as $column => $direction) {
-                    $query = $query->orderBy($column, $direction);
-                }
-                if ($data['limit']) {
-                    $query = $query->limit($data['limit']);
-                }
-                if ($data['offset']) {
-                    $query = $query->offset($data['offset']);
-                }
-
-                return $query->get();
+                return $this->buildQuery(Parameter::query(), $criteria, $data)->get();
         }
     }
 

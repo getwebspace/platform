@@ -7,12 +7,13 @@ use App\Domain\Models\UserGroup;
 use App\Domain\Service\User\Exception\MissingTitleValueException;
 use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserGroupNotFoundException;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class GroupService extends AbstractService
 {
+    protected static array $search_columns = ['title'];
+
     /**
      * @throws MissingTitleValueException
      * @throws TitleAlreadyExistsException
@@ -66,26 +67,7 @@ class GroupService extends AbstractService
                 return $userGroup ?: throw new UserGroupNotFoundException();
 
             default:
-                $query = UserGroup::query();
-                /** @var Builder $query */
-                foreach ($criteria as $key => $value) {
-                    if (is_array($value)) {
-                        $query->whereIn($key, $value);
-                    } else {
-                        $query->where($key, $value);
-                    }
-                }
-                foreach ($data['order'] as $column => $direction) {
-                    $query = $query->orderBy($column, $direction);
-                }
-                if ($data['limit']) {
-                    $query = $query->limit($data['limit']);
-                }
-                if ($data['offset']) {
-                    $query = $query->offset($data['offset']);
-                }
-
-                return $query->get();
+                return $this->buildQuery(UserGroup::query(), $criteria, $data)->get();
         }
     }
 

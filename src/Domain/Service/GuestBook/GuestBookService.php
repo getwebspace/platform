@@ -9,12 +9,13 @@ use App\Domain\Service\GuestBook\Exception\MissingEmailValueException;
 use App\Domain\Service\GuestBook\Exception\MissingMessageValueException;
 use App\Domain\Service\GuestBook\Exception\MissingNameValueException;
 use App\Domain\Service\GuestBook\Exception\WrongEmailValueException;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class GuestBookService extends AbstractService
 {
+    protected static array $search_columns = ['name', 'email', 'message'];
+
     /**
      * @throws MissingNameValueException
      * @throws MissingEmailValueException
@@ -63,16 +64,8 @@ class GuestBookService extends AbstractService
         if ($data['email'] !== null) {
             $criteria['email'] = $data['email'];
         }
-        if ($data['status'] !== null) {
-            if (is_array($data['status'])) {
-                $statuses = array_intersect($data['status'], \App\Domain\Casts\GuestBook\Status::LIST);
-            } else {
-                $statuses = in_array($data['status'], \App\Domain\Casts\GuestBook\Status::LIST, true) ? [$data['status']] : [];
-            }
-
-            if ($statuses) {
-                $criteria['status'] = $statuses;
-            }
+        if ($data['status'] !== null && ($statuses = $this->limitByList($data['status'], \App\Domain\Casts\GuestBook\Status::LIST))) {
+            $criteria['status'] = $statuses;
         }
 
         switch (true) {
@@ -83,26 +76,7 @@ class GuestBookService extends AbstractService
                 return $entry ?: throw new EntryNotFoundException();
 
             default:
-                $query = GuestBook::query();
-                /** @var Builder $query */
-                foreach ($criteria as $key => $value) {
-                    if (is_array($value)) {
-                        $query->whereIn($key, $value);
-                    } else {
-                        $query->where($key, $value);
-                    }
-                }
-                foreach ($data['order'] as $column => $direction) {
-                    $query = $query->orderBy($column, $direction);
-                }
-                if ($data['limit']) {
-                    $query = $query->limit($data['limit']);
-                }
-                if ($data['offset']) {
-                    $query = $query->offset($data['offset']);
-                }
-
-                return $query->get();
+                return $this->buildQuery(GuestBook::query(), $criteria, $data)->get();
         }
     }
 

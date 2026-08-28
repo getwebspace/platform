@@ -6,12 +6,13 @@ use App\Domain\AbstractService;
 use App\Domain\Models\File;
 use App\Domain\Service\File\Exception\FileAlreadyExistsException;
 use App\Domain\Service\File\Exception\FileNotFoundException;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class FileService extends AbstractService
 {
+    protected static array $search_columns = ['name'];
+
     private const REMOTE_REDIRECT_CODES = [301, 302, 303, 307, 308];
 
     private const REMOTE_REDIRECT_LIMIT = 5;
@@ -234,26 +235,7 @@ class FileService extends AbstractService
                 return $file;
 
             default:
-                $query = File::query();
-                /** @var Builder $query */
-                foreach ($criteria as $key => $value) {
-                    if (is_array($value)) {
-                        $query->whereIn($key, $value);
-                    } else {
-                        $query->where($key, $value);
-                    }
-                }
-                foreach ($data['order'] as $column => $direction) {
-                    $query = $query->orderBy($column, $direction);
-                }
-                if ($data['limit']) {
-                    $query = $query->limit($data['limit']);
-                }
-                if ($data['offset']) {
-                    $query = $query->offset($data['offset']);
-                }
-
-                return $query->get();
+                return $this->buildQuery(File::query(), $criteria, $data)->get();
         }
     }
 

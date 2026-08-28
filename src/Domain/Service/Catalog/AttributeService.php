@@ -8,12 +8,13 @@ use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class AttributeService extends AbstractService
 {
+    protected static array $search_columns = ['title', 'address'];
+
     /**
      * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
@@ -92,33 +93,7 @@ class AttributeService extends AbstractService
                 return $attribute ?: throw new AttributeNotFoundException();
 
             default:
-                $query = CatalogAttribute::query();
-                /** @var Builder $query */
-                foreach ($criteria as $key => $value) {
-                    if (is_array($value)) {
-                        $query->whereIn($key, $value);
-                    } else {
-                        $query->where($key, $value);
-                    }
-                }
-                foreach ($criteria as $key => $value) {
-                    if (is_array($value)) {
-                        $query->orWhereIn($key, $value);
-                    } else {
-                        $query->orWhere($key, $value);
-                    }
-                }
-                foreach ($data['order'] as $column => $direction) {
-                    $query = $query->orderBy($column, $direction);
-                }
-                if ($data['limit']) {
-                    $query = $query->limit($data['limit']);
-                }
-                if ($data['offset']) {
-                    $query = $query->offset($data['offset']);
-                }
-
-                return $query->get();
+                return $this->buildQuery(CatalogAttribute::query(), $criteria, $data)->get();
         }
     }
 

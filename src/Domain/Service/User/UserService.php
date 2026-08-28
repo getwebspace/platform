@@ -20,6 +20,8 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class UserService extends AbstractService
 {
+    protected static array $search_columns = ['username', 'email', 'phone', 'firstname', 'lastname'];
+
     /**
      * @throws EmailAlreadyExistsException
      * @throws EmailBannedException
@@ -121,19 +123,17 @@ class UserService extends AbstractService
         if ($data['is_allow_mail'] !== null) {
             $criteria['is_allow_mail'] = (bool) $data['is_allow_mail'];
         }
-        if ($data['status'] !== null) {
-            if (is_array($data['status'])) {
-                $statuses = array_intersect($data['status'], \App\Domain\Casts\User\Status::LIST);
-            } else {
-                $statuses = in_array($data['status'], \App\Domain\Casts\User\Status::LIST, true) ? [$data['status']] : [];
-            }
-
-            if ($statuses) {
-                $criteria['status'] = $statuses;
-            }
+        if ($data['status'] !== null && ($statuses = $this->limitByList($data['status'], \App\Domain\Casts\User\Status::LIST))) {
+            $criteria['status'] = $statuses;
         }
         if ($data['external_id'] !== null) {
             $criteria['external_id'] = $data['external_id'];
+        }
+        if ($data['firstname'] !== null) {
+            $criteria['firstname'] = $data['firstname'];
+        }
+        if ($data['lastname'] !== null) {
+            $criteria['lastname'] = $data['lastname'];
         }
 
         switch (true) {
@@ -182,25 +182,6 @@ class UserService extends AbstractService
 
                 return $user ?: throw new UserNotFoundException();
 
-            case !is_array($data['firstname']) && $data['firstname'] !== null:
-            case !is_array($data['lastname']) && $data['lastname'] !== null:
-                $query = User::query();
-                /** @var Builder $query */
-                if (!empty($data['firstname'])) {
-                    $query->orWhere('firstname', 'like', $data['firstname'] . '%');
-                }
-                if (!empty($data['lastname'])) {
-                    $query->orWhere('lastname', 'like', $data['lastname'] . '%');
-                }
-                if ($data['limit']) {
-                    $query = $query->limit($data['limit']);
-                }
-                if ($data['offset']) {
-                    $query = $query->offset($data['offset']);
-                }
-
-                return $query->get();
-
             case !is_array($data['provider']) && $data['provider'] !== null && !is_array($data['unique']) && $data['unique'] !== null:
                 /** @var User $user */
                 $user = User::query()
@@ -213,26 +194,7 @@ class UserService extends AbstractService
                 return $user ?: throw new UserNotFoundException();
 
             default:
-                $query = User::query();
-                /** @var Builder $query */
-                foreach ($criteria as $key => $value) {
-                    if (is_array($value)) {
-                        $query->whereIn($key, $value);
-                    } else {
-                        $query->where($key, $value);
-                    }
-                }
-                foreach ($data['order'] as $column => $direction) {
-                    $query = $query->orderBy($column, $direction);
-                }
-                if ($data['limit']) {
-                    $query = $query->limit($data['limit']);
-                }
-                if ($data['offset']) {
-                    $query = $query->offset($data['offset']);
-                }
-
-                return $query->get();
+                return $this->buildQuery(User::query(), $criteria, $data)->get();
         }
     }
 

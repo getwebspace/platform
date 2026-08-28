@@ -136,7 +136,7 @@ class CatalogOrder extends Model
             [
                 'status' => $this->status?->toArray(),
                 'payment' => $this->payment?->toArray(),
-                'products' => $this->products()->getResults()->keyBy('uuid')->map(function (CatalogProduct $item) {
+                'products' => $this->products->keyBy('uuid')->map(function (CatalogProduct $item) {
                     return [
                         'title' => $item->title,
                         'address' => $item->address,

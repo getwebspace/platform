@@ -9,12 +9,13 @@ use App\Domain\Service\Publication\Exception\MissingCategoryValueException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\PublicationNotFoundException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class PublicationService extends AbstractService
 {
+    protected static array $search_columns = ['title', 'address'];
+
     /**
      * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
@@ -100,26 +101,7 @@ class PublicationService extends AbstractService
                 return $publication ?: throw new PublicationNotFoundException();
 
             default:
-                $query = Publication::query();
-                /** @var Builder $query */
-                foreach ($criteria as $key => $value) {
-                    if (is_array($value)) {
-                        $query->whereIn($key, $value);
-                    } else {
-                        $query->where($key, $value);
-                    }
-                }
-                foreach ($data['order'] as $column => $direction) {
-                    $query = $query->orderBy($column, $direction);
-                }
-                if ($data['limit']) {
-                    $query = $query->limit($data['limit']);
-                }
-                if ($data['offset']) {
-                    $query = $query->offset($data['offset']);
-                }
-
-                return $query->get();
+                return $this->buildQuery(Publication::query(), $criteria, $data)->get();
         }
     }
 

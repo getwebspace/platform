@@ -248,7 +248,7 @@ class User extends Model
                 ],
                 'group' => $this->group,
                 'avatar' => $this->avatar(),
-                'files' => $this->files()->getResults()->all(),
+                'files' => $this->files->all(),
             ],
         );
     }

@@ -8,12 +8,13 @@ use App\Domain\Service\Reference\Exception\MissingTitleValueException;
 use App\Domain\Service\Reference\Exception\MissingTypeValueException;
 use App\Domain\Service\Reference\Exception\ReferenceNotFoundException;
 use App\Domain\Service\Reference\Exception\TitleAlreadyExistsException;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class ReferenceService extends AbstractService
 {
+    protected static array $search_columns = ['title'];
+
     /**
      * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
@@ -63,16 +64,8 @@ class ReferenceService extends AbstractService
         if ($data['title'] !== null) {
             $criteria['title'] = $data['title'];
         }
-        if ($data['type'] !== null) {
-            if (is_array($data['type'])) {
-                $types = array_intersect($data['type'], \App\Domain\Casts\Reference\Type::LIST);
-            } else {
-                $types = in_array($data['type'], \App\Domain\Casts\Reference\Type::LIST, true) ? [$data['type']] : [];
-            }
-
-            if ($types) {
-                $criteria['type'] = $types;
-            }
+        if ($data['type'] !== null && ($types = $this->limitByList($data['type'], \App\Domain\Casts\Reference\Type::LIST))) {
+            $criteria['type'] = $types;
         }
         if ($data['status'] !== null) {
             $criteria['status'] = (bool) $data['status'];
@@ -87,26 +80,7 @@ class ReferenceService extends AbstractService
                 return $reference ?: throw new ReferenceNotFoundException();
 
             default:
-                $query = Reference::query();
-                /** @var Builder $query */
-                foreach ($criteria as $key => $value) {
-                    if (is_array($value)) {
-                        $query->whereIn($key, $value);
-                    } else {
-                        $query->where($key, $value);
-                    }
-                }
-                foreach ($data['order'] as $column => $direction) {
-                    $query = $query->orderBy($column, $direction);
-                }
-                if ($data['limit']) {
-                    $query = $query->limit($data['limit']);
-                }
-                if ($data['offset']) {
-                    $query = $query->offset($data['offset']);
-                }
-
-                return $query->get();
+                return $this->buildQuery(Reference::query(), $criteria, $data)->get();
         }
     }
 

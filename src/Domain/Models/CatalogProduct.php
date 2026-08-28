@@ -165,6 +165,11 @@ class CatalogProduct extends Model
 
     protected $hidden = [
         'priceFirst',
+
+        // related products point back at each other, letting eloquent
+        // serialise this relation on its own would recurse forever;
+        // toArray() below adds a depth-limited `relations` key instead
+        'relations',
     ];
 
     public function category(): HasOne
@@ -292,8 +297,30 @@ class CatalogProduct extends Model
         return $this->weight() . ($this->dimension['weight_class'] ? ' ' . $this->dimension['weight_class'] : '');
     }
 
+    /**
+     * Guards the nested level of `relations`
+     *
+     * Related products may point back at each other, and serialising them in
+     * full would recurse until memory runs out
+     */
+    private static bool $serializingRelations = false;
+
     public function toArray(): array
     {
+        $relations = [];
+
+        if (!self::$serializingRelations) {
+            self::$serializingRelations = true;
+
+            try {
+                $relations = $this->getRelationValue('relations')->keyBy('uuid')->map(function (CatalogProduct $item) {
+                    return $item->toArray();
+                });
+            } finally {
+                self::$serializingRelations = false;
+            }
+        }
+
         return array_merge(
             parent::toArray(),
             [
@@ -301,15 +328,13 @@ class CatalogProduct extends Model
                     'price' => $this->price('price'),
                     'price_wholesale' => $this->price('price_wholesale'),
                 ],
-                'category' => [
+                'category' => $this->category ? [
                     'uuid' => $this->category->uuid,
                     'title' => $this->category->title,
                     'address' => $this->category->address,
-                ],
-                'attributes' => $this->attributes()->getResults()->keyBy('address'),
-                'relations' => $this->relations()->getResults()->keyBy('uuid')->map(function (CatalogProduct $item) {
-                    return $item->toArray();
-                }),
+                ] : null,
+                'attributes' => $this->getRelationValue('attributes')->keyBy('address'),
+                'relations' => $relations,
                 'files' => $this->files,
             ],
         );

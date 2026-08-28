@@ -8,12 +8,13 @@ use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\MissingCategoryValueException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class ProductService extends AbstractService
 {
+    protected static array $search_columns = ['title'];
+
     /**
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
@@ -99,16 +100,8 @@ class ProductService extends AbstractService
         if ($data['special'] !== null) {
             $criteria['special'] = (bool) $data['special'];
         }
-        if ($data['status'] !== null) {
-            if (is_array($data['status'])) {
-                $statuses = array_intersect($data['status'], \App\Domain\Casts\Catalog\Status::LIST);
-            } else {
-                $statuses = in_array($data['status'], \App\Domain\Casts\Catalog\Status::LIST, true) ? [$data['status']] : [];
-            }
-
-            if ($statuses) {
-                $criteria['status'] = $statuses;
-            }
+        if ($data['status'] !== null && ($statuses = $this->limitByList($data['status'], \App\Domain\Casts\Catalog\Status::LIST))) {
+            $criteria['status'] = $statuses;
         }
         if ($data['external_id'] !== null) {
             $criteria['external_id'] = $data['external_id'];
@@ -138,19 +131,12 @@ class ProductService extends AbstractService
             'external_id' => null,
             'export' => null,
         ];
-        $data = array_merge($default, $data);
+        $data = array_merge($default, static::$default_read, $data);
         $criteria = $this->buildCriteria($data);
 
         $query = CatalogProduct::query();
-
-        /** @var Builder $query */
-        foreach ($criteria as $key => $value) {
-            if (is_array($value)) {
-                $query->whereIn($key, $value);
-            } else {
-                $query->where($key, $value);
-            }
-        }
+        $this->applyCriteria($query, $criteria);
+        $this->applySearch($query, $data['search'], static::$search_columns);
 
         return $query->count();
     }
@@ -189,42 +175,8 @@ class ProductService extends AbstractService
 
                 return $catalogProduct ?: throw new ProductNotFoundException();
 
-            // cup search by name
-            case !is_array($data['title']) && $data['title'] !== null:
-                $query = CatalogProduct::query();
-                /** @var Builder $query */
-                $query->where('title', 'like', '%' . $data['title'] . '%');
-
-                if ($data['limit']) {
-                    $query = $query->limit($data['limit']);
-                }
-                if ($data['offset']) {
-                    $query = $query->offset($data['offset']);
-                }
-
-                return $query->get();
-
             default:
-                $query = CatalogProduct::query();
-                /** @var Builder $query */
-                foreach ($criteria as $key => $value) {
-                    if (is_array($value)) {
-                        $query->whereIn($key, $value);
-                    } else {
-                        $query->where($key, $value);
-                    }
-                }
-                foreach ($data['order'] as $column => $direction) {
-                    $query = $query->orderBy($column, $direction);
-                }
-                if ($data['limit']) {
-                    $query = $query->limit($data['limit']);
-                }
-                if ($data['offset']) {
-                    $query = $query->offset($data['offset']);
-                }
-
-                return $query->get();
+                return $this->buildQuery(CatalogProduct::query(), $criteria, $data)->get();
         }
     }
 

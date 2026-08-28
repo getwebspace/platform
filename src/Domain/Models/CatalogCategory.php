@@ -183,7 +183,7 @@ class CatalogCategory extends Model
             parent::toArray(),
             [
                 'parent' => $parent,
-                'attributes' => $this->attributes()->getResults()->keyBy('address'),
+                'attributes' => $this->getRelationValue('attributes')->keyBy('address'),
                 'files' => $this->files,
             ],
         );

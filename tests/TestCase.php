@@ -6,7 +6,7 @@ use Phinx\Console\PhinxApplication;
 use Psr\Container\ContainerInterface;
 use Slim\App;
 use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\BufferedOutput;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
@@ -41,11 +41,25 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
         $phinxApp = new PhinxApplication();
         $phinxApp->setAutoExit(false);
+        $phinxApp->setCatchExceptions(false);
 
-        $output = new NullOutput();
+        foreach (['rollback -t 0 -f', 'migrate'] as $command) {
+            /*
+             * phinx stays quiet while everything is fine,
+             * but its output is needed to explain a failure
+             */
+            $output = new BufferedOutput();
 
-        $phinxApp->run(new StringInput('rollback -t 0 -f'), $output);
-        $phinxApp->run(new StringInput('migrate'), $output);
+            try {
+                $code = $phinxApp->run(new StringInput($command), $output);
+            } catch (\Throwable $e) {
+                throw new \RuntimeException("phinx '{$command}' failed: {$e->getMessage()}\n{$output->fetch()}", 0, $e);
+            }
+
+            if ($code !== 0) {
+                throw new \RuntimeException("phinx '{$command}' failed with exit code {$code}\n{$output->fetch()}");
+            }
+        }
     }
 
     protected function getService($class): mixed

@@ -6,12 +6,13 @@ use App\Domain\AbstractService;
 use App\Domain\Models\CatalogOrder;
 use App\Domain\Models\CatalogProduct;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class OrderService extends AbstractService
 {
+    protected static array $search_columns = ['serial', 'phone', 'email'];
+
     /**
      * @throws Exception\WrongEmailValueException
      * @throws Exception\WrongPhoneValueException
@@ -100,26 +101,7 @@ class OrderService extends AbstractService
                 return $catalogOrder ?: throw new OrderNotFoundException();
 
             default:
-                $query = CatalogOrder::query();
-                /** @var Builder $query */
-                foreach ($criteria as $key => $value) {
-                    if (is_array($value)) {
-                        $query->whereIn($key, $value);
-                    } else {
-                        $query->where($key, $value);
-                    }
-                }
-                foreach ($data['order'] as $column => $direction) {
-                    $query = $query->orderBy($column, $direction);
-                }
-                if ($data['limit']) {
-                    $query = $query->limit($data['limit']);
-                }
-                if ($data['offset']) {
-                    $query = $query->offset($data['offset']);
-                }
-
-                return $query->get();
+                return $this->buildQuery(CatalogOrder::query(), $criteria, $data)->get();
         }
     }
 

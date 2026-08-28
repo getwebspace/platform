@@ -7,12 +7,13 @@ use App\Domain\Models\Task;
 use App\Domain\Service\Task\Exception\MissingActionValueException;
 use App\Domain\Service\Task\Exception\MissingTitleValueException;
 use App\Domain\Service\Task\Exception\TaskNotFoundException;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class TaskService extends AbstractService
 {
+    protected static array $search_columns = ['title'];
+
     /**
      * @throws MissingTitleValueException
      * @throws MissingActionValueException
@@ -60,16 +61,8 @@ class TaskService extends AbstractService
         if ($data['status'] !== null) {
             $criteria['status'] = $data['status'];
         }
-        if ($data['status'] !== null) {
-            if (is_array($data['status'])) {
-                $statuses = array_intersect($data['status'], \App\Domain\Casts\Task\Status::LIST);
-            } else {
-                $statuses = in_array($data['status'], \App\Domain\Casts\Task\Status::LIST, true) ? [$data['status']] : [];
-            }
-
-            if ($statuses) {
-                $criteria['status'] = $statuses;
-            }
+        if ($data['status'] !== null && ($statuses = $this->limitByList($data['status'], \App\Domain\Casts\Task\Status::LIST))) {
+            $criteria['status'] = $statuses;
         }
 
         switch (true) {
@@ -80,26 +73,7 @@ class TaskService extends AbstractService
                 return $task ?: throw new TaskNotFoundException();
 
             default:
-                $query = Task::query();
-                /** @var Builder $query */
-                foreach ($criteria as $key => $value) {
-                    if (is_array($value)) {
-                        $query->whereIn($key, $value);
-                    } else {
-                        $query->where($key, $value);
-                    }
-                }
-                foreach ($data['order'] as $column => $direction) {
-                    $query = $query->orderBy($column, $direction);
-                }
-                if ($data['limit']) {
-                    $query = $query->limit($data['limit']);
-                }
-                if ($data['offset']) {
-                    $query = $query->offset($data['offset']);
-                }
-
-                return $query->get();
+                return $this->buildQuery(Task::query(), $criteria, $data)->get();
         }
     }
 
