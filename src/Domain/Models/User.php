@@ -95,6 +95,14 @@ class User extends Model
         'external_id',
     ];
 
+    /**
+     * Never leaves the server, whatever the caller's access level -
+     * a hash is cheap to steal and only ever needed inside password_verify()
+     */
+    protected $hidden = [
+        'password',
+    ];
+
     protected $casts = [
         'email' => Email::class,
         'phone' => Phone::class,

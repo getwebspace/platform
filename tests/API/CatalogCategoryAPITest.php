@@ -20,7 +20,7 @@ class CatalogCategoryAPITest extends TestCase
 
         $parameters = $this->getService(ParameterService::class);
         $parameters->create(['name' => 'entity_access', 'value' => 'key']);
-        $parameters->create(['name' => 'entity_keys', 'value' => $this->apikey = $this->getFaker()->word]);
+        $this->apikey = $this->createApiKeyToken();
     }
 
     public function testAPICreateSuccess(): void

@@ -30,6 +30,31 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
          */
         static::$app = $app;
         static::$container = static::$app->getContainer();
+
+        static::ensureSecretKeys();
+    }
+
+    /**
+     * The API-key and password-recovery/confirmation flows sign a JWT, which
+     * needs a real key pair - normally created on first visit to /cup/system,
+     * here generated once so tests don't depend on that page having run
+     */
+    private static function ensureSecretKeys(): void
+    {
+        $private = VAR_DIR . '/private.secret.key';
+        $public = VAR_DIR . '/public.secret.key';
+
+        if (file_exists($private) && file_exists($public)) {
+            return;
+        }
+
+        $key = openssl_pkey_new([
+            'private_key_bits' => 2048,
+            'private_key_type' => OPENSSL_KEYTYPE_RSA,
+        ]);
+
+        openssl_pkey_export_to_file($key, $private);
+        file_put_contents($public, openssl_pkey_get_details($key)['key']);
     }
 
     public function setUp(): void
@@ -79,6 +104,24 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         }
 
         return $faker;
+    }
+
+    /**
+     * Issues a bearer token the same way the API key admin screen does -
+     * full access unless a narrower scope is asked for
+     */
+    protected function createApiKeyToken(array $scopes = [], bool $fullAccess = true): string
+    {
+        /** @var \App\Domain\Service\ApiKey\ApiKeyService $service */
+        $service = $this->getService(\App\Domain\Service\ApiKey\ApiKeyService::class);
+
+        $apiKey = $service->create([
+            'title' => 'test key',
+            'scopes' => $scopes,
+            'is_full_access' => $fullAccess,
+        ]);
+
+        return $service->issueToken($apiKey);
     }
 
     protected function createRequest(): \GuzzleHttp\Client

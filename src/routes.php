@@ -124,6 +124,18 @@ return function (App $app, Container $container): void {
                     $proxy->map(['GET', 'POST'], '/refresh', \App\Application\Actions\Cup\RefreshAction::class)
                         ->setName('cup:refresh');
 
+                    // API keys
+                    $proxy->group('/api-key', function (Group $proxy): void {
+                        $proxy->get('', \App\Application\Actions\Cup\ApiKey\ListAction::class)
+                            ->setName('cup:api-key:list');
+                        $proxy->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\ApiKey\CreateAction::class)
+                            ->setName('cup:api-key:add');
+                        $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\ApiKey\UpdateAction::class)
+                            ->setName('cup:api-key:edit');
+                        $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\ApiKey\DeleteAction::class)
+                            ->setName('cup:api-key:delete');
+                    });
+
                     // users
                     $proxy->group('/user', function (Group $proxy): void {
                         // users group

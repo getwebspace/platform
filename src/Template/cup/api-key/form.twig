@@ -1,0 +1,126 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            {% include 'cup/form-header.twig' with {
+                'item': item,
+                'create': 'Create an API key',
+                'update': 'Editing an API key'
+            } only %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <form method="post">
+                    <div class="card-body">
+                        {% if item %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label><b>{{ 'Token'|locale }}</b></label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" readonly value="{{ token }}" onclick="this.select();">
+                                        <span class="input-group-append">
+                                            <span class="input-group-text" style="cursor: pointer;">
+                                                <i class="fas fa-copy" data-copy data-value="{{ token }}"></i>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <small class="form-text text-muted">
+                                        {{ 'Paste this into the integration as the `apikey` query parameter or the `key` header. Revoking or deleting this key below invalidates it immediately, everywhere it is used.'|locale }}
+                                    </small>
+                                </div>
+                            </div>
+
+                            <hr>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Title'|locale,
+                                    'type': 'text',
+                                    'name': 'title',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('What this key is for, shown only here in the admin'|locale) ~ '"></i>',
+                                    'args': {
+                                        'value': item.title,
+                                        'required': true,
+                                        'placeholder': '1C sync'|locale,
+                                    }
+                                } %}
+                            </div>
+
+                            {% if item %}
+                                <div class="col-md-4">
+                                    {% include 'cup/form.twig' with {
+                                        'label': 'Status'|locale,
+                                        'type': 'select',
+                                        'name': 'status',
+                                        'args': {
+                                            'option': _(['work', 'revoke']),
+                                            'selected': item.status
+                                        }
+                                    } %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Full access'|locale,
+                                    'description': 'Grants read and write on every entity, ignoring the lists below - the equivalent of the old flat API key'|locale,
+                                    'type': 'checkbox',
+                                    'name': 'is_full_access',
+                                    'args': {
+                                        'value': 1,
+                                        'checked': item.is_full_access ?? false
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Read access'|locale,
+                                    'message': 'This key may fetch these entities'|locale,
+                                    'type': 'select',
+                                    'name': 'scopes[read][]',
+                                    'args': {
+                                        'multiple': true,
+                                        'option': entities,
+                                        'selected': item.scopes.read|default([])
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Write access'|locale,
+                                    'message': 'This key may create, edit and delete these entities'|locale,
+                                    'type': 'select',
+                                    'name': 'scopes[write][]',
+                                    'args': {
+                                        'multiple': true,
+                                        'option': entities,
+                                        'selected': item.scopes.write|default([])
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-action">
+                        {% include "cup/form-save.twig" %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

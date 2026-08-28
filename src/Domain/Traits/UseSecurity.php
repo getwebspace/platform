@@ -59,8 +59,13 @@ trait UseSecurity
                 'uuid' => $uuid,
                 'data' => $data,
                 'iat' => time(),
-                'exp' => time() + ($ttl ?: \App\Domain\References\Date::MINUTE * 10),
             ];
+
+            // $ttl === 0 means the token does not expire by clock - used for
+            // API keys, where a revoked or deleted row invalidates it instead
+            if ($ttl !== 0) {
+                $payload['exp'] = time() + ($ttl ?: \App\Domain\References\Date::MINUTE * 10);
+            }
 
             return JWT::encode($payload, $privateKey, 'RS256');
         }

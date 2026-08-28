@@ -3,7 +3,11 @@
 namespace App\Application\Middlewares;
 
 use App\Domain\AbstractMiddleware;
+use App\Domain\Casts\ApiKey\Status as ApiKeyStatus;
+use App\Domain\Models\ApiKey;
 use App\Domain\Models\User;
+use App\Domain\Service\ApiKey\ApiKeyService;
+use App\Domain\Service\ApiKey\Exception\ApiKeyNotFoundException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\UserService;
 use App\Domain\Traits\UseSecurity;
@@ -29,17 +33,17 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
                 // allow access for all
                 case 'all':
                     $access = true;
-                // no break
 
-                // allow access if key exist
+                    // allow access if key exist
+                    // no break
                 case 'key':
                     if (($apikey = $this->checkAPIKey($request)) !== false) {
                         $access = true;
                         $request = $request->withAttribute('apikey', $apikey);
                     }
-                // no break
 
-                // allow access if user exist
+                    // allow access if user exist
+                    // no break
                 case 'user':
                     if (($user = $this->findUser($request)) !== false) {
                         $access = true;
@@ -62,28 +66,49 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
         return (new Response())->withStatus(200);
     }
 
-    protected function checkAPIKey(Request $request): bool
+    /**
+     * A key is now a signed, scoped token rather than a flat shared secret -
+     * see App\Domain\Service\ApiKey\ApiKeyService. The lookup still happens
+     * on every request (rather than trusting the token's own claims) so that
+     * revoking a key or narrowing its scopes takes effect immediately
+     */
+    protected function checkAPIKey(Request $request): ApiKey|false
     {
-        $key = $request->getQueryParams()['apikey'] ?? null;
+        $token = $request->getQueryParams()['apikey'] ?? null;
 
-        if (blank($key)) {
-            $key = $request->getHeaderLine('key');
+        if (blank($token)) {
+            $token = $request->getHeaderLine('key');
         }
-        if (blank($key)) {
-            $key = $request->getHeaderLine('apikey');
+        if (blank($token)) {
+            $token = $request->getHeaderLine('apikey');
         }
-        if (!is_string($key) || blank($key)) {
+        if (!is_string($token) || blank($token)) {
             return false;
         }
 
-        // compare whole keys, a substring of a valid key must not pass
-        foreach (preg_split('/[\s,]+/', $this->parameter('entity_keys', '')) ?: [] as $item) {
-            if ($item !== '' && hash_equals($item, $key)) {
-                return true;
-            }
+        try {
+            $payload = $this->decodeJWT($token);
+        } catch (\DomainException|ExpiredException|\RuntimeException|SignatureInvalidException|\UnexpectedValueException $e) {
+            // the last one is UseSecurity's "Not exist PEM keys files" - on a
+            // fresh install with no signing key yet, no token can be genuine
+            return false;
         }
 
-        return false;
+        if (($payload['sub'] ?? '') !== 'api-key' || blank($payload['uuid'] ?? null)) {
+            return false;
+        }
+
+        try {
+            /** @var ApiKeyService $apiKeyService */
+            $apiKeyService = $this->container->get(ApiKeyService::class);
+
+            return $apiKeyService->read([
+                'uuid' => $payload['uuid'],
+                'status' => ApiKeyStatus::WORK,
+            ]);
+        } catch (ApiKeyNotFoundException $e) {
+            return false;
+        }
     }
 
     protected function findUser(Request $request): false|User
@@ -114,8 +139,9 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
                         // nothing
                     }
                 }
-            } catch (ExpiredException|SignatureInvalidException $e) {
-                // nothing
+            } catch (\DomainException|ExpiredException|\RuntimeException|SignatureInvalidException|\UnexpectedValueException $e) {
+                // same reasoning as checkAPIKey() above - an unverifiable
+                // token, for whatever reason, is simply not authenticated
             }
         }
 

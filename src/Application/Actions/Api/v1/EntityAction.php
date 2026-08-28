@@ -6,20 +6,8 @@ use App\Application\Actions\Api\ActionApi;
 use App\Domain\AbstractException;
 use App\Domain\AbstractNotFoundException;
 use App\Domain\AbstractService;
-use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
-use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
-use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
-use App\Domain\Service\Catalog\ProductService as CatalogProductService;
-use App\Domain\Service\File\FileService;
-use App\Domain\Service\GuestBook\GuestBookService;
-use App\Domain\Service\Page\PageService;
-use App\Domain\Service\Parameter\ParameterService;
-use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
-use App\Domain\Service\Publication\PublicationService;
-use App\Domain\Service\Reference\ReferenceService;
-use App\Domain\Service\Task\TaskService;
-use App\Domain\Service\User\GroupService as UserGroupService;
-use App\Domain\Service\User\UserService;
+use App\Domain\Models\ApiKey;
+use App\Domain\References\ApiEntity;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerExceptionInterface;
 
@@ -31,17 +19,19 @@ class EntityAction extends ActionApi
         $result = [];
 
         try {
-            $apikey = (bool) $this->request->getAttribute('apikey', false);
             $entity = ltrim($this->resolveArg('args'), '/');
             $params = $this->getParamsQuery();
-            $service = $this->getService($entity);
 
-            // allow access if is CUP level
-            if (str_starts_with($this->request->getUri()->getPath(), '/cup/api')) {
-                $apikey = true;
-            }
+            // the cup panel's own AJAX calls this same endpoint under a
+            // cup-only session, already gated by AuthorizationMiddleware
+            // above it in routes.php - full CRUD, and a few settings-only
+            // entities besides, never reachable from the public /api/v1
+            $isCup = str_starts_with($this->request->getUri()->getPath(), '/cup/api');
 
-            if ($service !== null) {
+            $service = $this->getService($entity, $isCup);
+            [$canRead, $canWrite] = $this->resolvePermissions($entity, $isCup);
+
+            if ($service !== null && $canRead) {
                 switch ($this->request->getMethod()) {
                     case 'GET':
                         try {
@@ -54,7 +44,7 @@ class EntityAction extends ActionApi
 
                     case 'POST':
                     case 'PUT':
-                        if ($apikey) {
+                        if ($canWrite) {
                             $result = $service->create($this->getParamsBody());
                             $result = $this->processEntityFiles($result);
 
@@ -69,7 +59,7 @@ class EntityAction extends ActionApi
                         break;
 
                     case 'PATCH':
-                        if ($apikey) {
+                        if ($canWrite) {
                             try {
                                 $result = $service->read($params);
 
@@ -100,7 +90,7 @@ class EntityAction extends ActionApi
                         break;
 
                     case 'DELETE':
-                        if ($apikey) {
+                        if ($canWrite) {
                             try {
                                 $result = $service->read($params);
 
@@ -129,6 +119,9 @@ class EntityAction extends ActionApi
 
                         break;
                 }
+            } elseif ($service !== null) {
+                // exists, but this caller's key has no read scope for it
+                $status = 403;
             } else {
                 $status = 404;
             }
@@ -148,25 +141,42 @@ class EntityAction extends ActionApi
     /**
      * @throws ContainerExceptionInterface
      */
-    private function getService(mixed $entity): ?AbstractService
+    private function getService(string $entity, bool $isCup): ?AbstractService
     {
-        return match ($entity) {
-            'catalog/attributes' => $this->container->get(CatalogAttributeService::class),
-            'catalog/category' => $this->container->get(CatalogCategoryService::class),
-            'catalog/product' => $this->container->get(CatalogProductService::class),
-            'catalog/order' => $this->container->get(CatalogOrderService::class),
-            'file' => $this->container->get(FileService::class),
-            'guestbook' => $this->container->get(GuestBookService::class),
-            'page' => $this->container->get(PageService::class),
-            'parameter' => $this->container->get(ParameterService::class),
-            'publication' => $this->container->get(PublicationService::class),
-            'publication/category' => $this->container->get(PublicationCategoryService::class),
-            'reference' => $this->container->get(ReferenceService::class),
-            'task' => $this->container->get(TaskService::class),
-            'user' => $this->container->get(UserService::class),
-            'user/group' => $this->container->get(UserGroupService::class),
-            default => null,
-        };
+        $map = ApiEntity::MAP;
+
+        if ($isCup) {
+            $map += ApiEntity::CUP_ONLY_MAP;
+        }
+
+        return isset($map[$entity]) ? $this->container->get($map[$entity]) : null;
+    }
+
+    /**
+     * Whether the current caller may read / write the given entity
+     *
+     * A cup session gets both, unconditionally - it authenticated with a
+     * password, not a key, and is already scoped by the admin's own account.
+     * An API key is checked against its own scopes. Anything else (a plain
+     * customer session, or an unauthenticated request let in by an "all"
+     * access policy) keeps the platform's long-standing behaviour: read is
+     * open, write always requires a key
+     *
+     * @return array{0: bool, 1: bool} [$canRead, $canWrite]
+     */
+    private function resolvePermissions(string $entity, bool $isCup): array
+    {
+        if ($isCup) {
+            return [true, true];
+        }
+
+        $apiKey = $this->request->getAttribute('apikey');
+
+        if ($apiKey instanceof ApiKey) {
+            return [$apiKey->can($entity, 'read'), $apiKey->can($entity, 'write')];
+        }
+
+        return [true, false];
     }
 
     private function getParamsQuery(): array
@@ -185,6 +195,12 @@ class EntityAction extends ActionApi
                 $value = null;
             }
         }
+        unset($value, $params['with']);
+
+        // `with` picks which relations get preloaded and serialized - it is an
+        // internal read() knob, not a caller-facing filter. Left open to the
+        // query string it lets anyone attach an unrelated relation (e.g.
+        // `with[]=tokens` on the user entity) and read it back in the response
 
         return array_merge($default, $params);
     }

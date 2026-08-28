@@ -517,22 +517,14 @@
                                                             }
                                                         } %}
 
-                                                        {% include 'cup/parameters/field.twig' with {
-                                                            'label': 'API access keys',
-                                                            'description': [
-                                                                'The ability to make changes via the API is only available if you have a key',
-                                                                '<br>',
-                                                                '<button class="btn btn-outline-info btn-sm" type="button" data-entity-click="add">',
-                                                                'Generate new',
-                                                                '</button>',
-                                                            ]|locale|join(''),
-                                                            'message': 'Each key on a new line',
-                                                            'type': 'textarea',
-                                                            'name': 'entity[keys]',
-                                                            'args': {
-                                                                'style': 'height: 100px!important;'
-                                                            },
-                                                        } %}
+                                                        <label><b>{{ 'API access keys'|locale }}</b></label>
+                                                        <p class="text-muted">
+                                                            {{ 'Each key is scoped to the entities it may read or write, issued and revoked from its own page.'|locale }}
+                                                        </p>
+                                                        <a href="/cup/api-key" class="btn btn-outline-info btn-sm">
+                                                            <i class="fas fa-key"></i>
+                                                            {{ 'Manage API keys'|locale }}
+                                                        </a>
                                                     </div>
 
                                                     {# TAB: CORS #}
