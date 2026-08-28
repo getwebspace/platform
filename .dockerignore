@@ -1,10 +1,27 @@
-.idea
+# VCS / IDE / OS
 .git
-.composer
-hooks
-vendor
-.gitignore
+.github
+.idea
+.vscode
+**/.DS_Store
+
+# Docs and repo assets not needed at runtime
+*.md
+image.jpeg
+
+# Local tooling / compose
+docker-compose*.yml
 composer
-docker-compose.yml
-LICENSE.md
-README.md
+hooks
+.composer
+
+# Installed during the build
+vendor
+
+# Local mutable state - keep the directories, drop their contents
+var/*
+!var/**/.gitkeep
+public/uploads/*
+!public/uploads/**/.gitkeep
+public/resource/*
+!public/resource/**/.gitkeep

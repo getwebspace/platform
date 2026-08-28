@@ -53,10 +53,9 @@ return function (ContainerBuilder $containerBuilder): void {
 
     switch ($_DEBUG) {
         case true:
-            error_reporting(-1);
+            error_reporting(E_ALL & ~E_DEPRECATED);
             ini_set('display_errors', 1);
             ini_set('html_errors', 1);
-            ini_set('error_reporting', 30719);
 
             break;
 
