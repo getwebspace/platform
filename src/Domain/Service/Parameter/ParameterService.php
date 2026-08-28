@@ -45,7 +45,7 @@ class ParameterService extends AbstractService
         switch (true) {
             case !is_array($data['name']) && $data['name'] !== null:
                 /** @var Parameter $parameter */
-                $parameter = Parameter::firstWhere($criteria);
+                $parameter = $this->buildQuery(Parameter::query(), $criteria, $data)->first();
 
                 if (!$parameter) {
                     $parameter = new Parameter();

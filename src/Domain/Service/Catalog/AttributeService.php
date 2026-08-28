@@ -88,7 +88,7 @@ class AttributeService extends AbstractService
             case !is_array($data['title']) && $data['title'] !== null:
             case !is_array($data['address']) && $data['address'] !== null:
                 /** @var CatalogAttribute $attribute */
-                $attribute = CatalogAttribute::firstWhere($criteria);
+                $attribute = $this->buildQuery(CatalogAttribute::query(), $criteria, $data)->first();
 
                 return $attribute ?: throw new AttributeNotFoundException();
 

@@ -13,6 +13,8 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class ProductService extends AbstractService
 {
+    protected static array $eager = ['category', 'attributes', 'files', 'relations', 'relations.category', 'relations.attributes', 'relations.files'];
+
     protected static array $search_columns = ['title'];
 
     /**
@@ -171,7 +173,7 @@ class ProductService extends AbstractService
             case !is_array($data['barcode']) && $data['barcode'] !== null:
             case !is_array($data['external_id']) && $data['external_id'] !== null:
                 /** @var CatalogProduct $catalogProduct */
-                $catalogProduct = CatalogProduct::firstWhere($criteria);
+                $catalogProduct = $this->buildQuery(CatalogProduct::query(), $criteria, $data)->first();
 
                 return $catalogProduct ?: throw new ProductNotFoundException();
 

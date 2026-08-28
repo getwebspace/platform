@@ -62,7 +62,7 @@ class TokenService extends AbstractService
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['unique']) && $data['unique'] !== null:
                 /** @var UserToken $userToken */
-                $userToken = UserToken::firstWhere($criteria);
+                $userToken = $this->buildQuery(UserToken::query(), $criteria, $data)->first();
 
                 return $userToken ?: throw new TokenNotFoundException();
 

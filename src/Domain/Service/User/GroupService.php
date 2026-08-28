@@ -62,7 +62,7 @@ class GroupService extends AbstractService
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['title']) && $data['title'] !== null:
                 /** @var UserGroup $userGroup */
-                $userGroup = UserGroup::firstWhere($criteria);
+                $userGroup = $this->buildQuery(UserGroup::query(), $criteria, $data)->first();
 
                 return $userGroup ?: throw new UserGroupNotFoundException();
 

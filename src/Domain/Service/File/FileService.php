@@ -213,7 +213,7 @@ class FileService extends AbstractService
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['hash']) && $data['hash'] !== null:
                 /** @var File $file */
-                $file = File::firstWhere($criteria);
+                $file = $this->buildQuery(File::query(), $criteria, $data)->first();
 
                 if (empty($file)) {
                     throw new FileNotFoundException();

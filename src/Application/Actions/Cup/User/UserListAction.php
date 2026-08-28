@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Cup\User;
 
 use App\Domain\Casts\User\Status as UserStatus;
-use App\Domain\Models\User;
 
 class UserListAction extends UserAction
 {
@@ -11,52 +10,46 @@ class UserListAction extends UserAction
     {
         $criteria = [
             'status' => [UserStatus::WORK],
+            'order' => [
+                'group_uuid' => 'desc',
+                'register' => 'desc',
+            ],
         ];
 
-        $query = User::query();
-
         if ($this->isPost()) {
-            $data = [
-                'username' => $this->getParam('username'),
-                'username_strong' => $this->getParam('username_strong'),
-                'email' => $this->getParam('email'),
-                'group_uuid' => $this->getParam('group_uuid'),
-                'status_block' => $this->getParam('status_block'),
-                'status_delete' => $this->getParam('status_delete'),
-            ];
+            $username = $this->getParam('username');
+            $email = $this->getParam('email');
+            $group_uuid = $this->getParam('group_uuid');
 
-            if ($data['username']) {
-                if (!$data['username_strong']) {
-                    $query = $query->where('username', 'like', '%' . $data['username'] . '%');
+            if ($username) {
+                if ($this->getParam('username_strong')) {
+                    // a scalar makes read() look up a single user, a list filter
+                    // has to be passed as an array
+                    $criteria['username'] = [$username];
                 } else {
-                    $query = $query->where('username', '=', $data['username']);
+                    $criteria['search'] = $username;
                 }
             }
 
-            if ($data['email']) {
-                $query = $query->where('email', '=', $data['email']);
+            if ($email) {
+                $criteria['email'] = [$email];
             }
 
-            if ($data['group_uuid']) {
-                $query = $query->where('group_uuid', '=', $data['group_uuid']);
+            if ($group_uuid) {
+                $criteria['group_uuid'] = $group_uuid;
             }
 
-            if ($data['status_block']) {
+            if ($this->getParam('status_block')) {
                 $criteria['status'][] = UserStatus::BLOCK;
             }
 
-            if ($data['status_delete']) {
+            if ($this->getParam('status_delete')) {
                 $criteria['status'][] = UserStatus::DELETE;
             }
         }
 
-        $query = $query
-            ->whereIn('status', $criteria['status'])
-            ->orderBy('group_uuid', 'desc')
-            ->orderBy('register', 'desc');
-
         return $this->respondWithTemplate('cup/user/index.twig', [
-            'list' => $query->get(),
+            'list' => $this->userService->read($criteria),
             'groups' => $this->userGroupService->read(['order' => ['title' => 'asc']]),
         ]);
     }

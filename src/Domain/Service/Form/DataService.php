@@ -53,7 +53,7 @@ class DataService extends AbstractService
         switch (true) {
             case !is_array($data['uuid']) && $data['uuid'] !== null:
                 /** @var FormData $form */
-                $form = FormData::firstWhere($criteria);
+                $form = $this->buildQuery(FormData::query(), $criteria, $data)->first();
 
                 return $form ?: throw new FormDataNotFoundException();
 

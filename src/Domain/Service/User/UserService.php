@@ -20,6 +20,8 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class UserService extends AbstractService
 {
+    protected static array $eager = ['group', 'files', 'images'];
+
     protected static array $search_columns = ['username', 'email', 'phone', 'firstname', 'lastname'];
 
     /**
@@ -144,7 +146,7 @@ class UserService extends AbstractService
             case !is_array($data['phone']) && $data['phone'] !== null:
             case !is_array($data['external_id']) && $data['external_id'] !== null:
                 /** @var User $user */
-                $user = User::firstWhere(function (Builder $query) use ($data): void {
+                $user = User::query()->with(static::$eager)->where(function (Builder $query) use ($data): void {
                     switch (true) {
                         case $data['identifier'] !== null:
                             $query->orWhere($this->db->raw('lower(email)'), mb_strtolower($data['identifier']));
@@ -178,7 +180,7 @@ class UserService extends AbstractService
 
                             break;
                     }
-                });
+                })->first();
 
                 return $user ?: throw new UserNotFoundException();
 

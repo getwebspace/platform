@@ -11,6 +11,8 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class OrderService extends AbstractService
 {
+    protected static array $eager = ['status', 'payment', 'products', 'products.files'];
+
     protected static array $search_columns = ['serial', 'phone', 'email'];
 
     /**
@@ -96,7 +98,7 @@ class OrderService extends AbstractService
             case !is_array($data['serial']) && $data['serial'] !== null:
             case !is_array($data['external_id']) && $data['external_id'] !== null:
                 /** @var CatalogOrder $catalogOrder */
-                $catalogOrder = CatalogOrder::firstWhere($criteria);
+                $catalogOrder = $this->buildQuery(CatalogOrder::query(), $criteria, $data)->first();
 
                 return $catalogOrder ?: throw new OrderNotFoundException();
 

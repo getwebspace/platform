@@ -23,6 +23,7 @@ abstract class AbstractService
 
     protected static array $default_read = [
         'search' => null,
+        'with' => null,
         'order' => [],
         'limit' => null,
         'offset' => null,
@@ -32,6 +33,15 @@ abstract class AbstractService
      * Columns a non-strict `search` looks through, empty means search is not supported
      */
     protected static array $search_columns = [];
+
+    /**
+     * Relations preloaded on list reads
+     *
+     * These are the relations `toArray()` reaches for, and without preloading
+     * each serialised row queries them again. Pass `with` to `read()` to use a
+     * different set, or an empty one to skip it for lists that stay unserialised
+     */
+    protected static array $eager = [];
 
     public function __construct(ContainerInterface $container)
     {
@@ -131,6 +141,12 @@ abstract class AbstractService
      */
     protected function buildQuery(Builder $query, array $criteria, array $data): Builder
     {
+        $with = is_array($data['with'] ?? null) ? $data['with'] : static::$eager;
+
+        if ($with) {
+            $query->with($with);
+        }
+
         $this->applyCriteria($query, $criteria);
         $this->applySearch($query, $data['search'] ?? null, static::$search_columns);
 

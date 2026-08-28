@@ -14,6 +14,8 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class PublicationService extends AbstractService
 {
+    protected static array $eager = ['category', 'user', 'user.images', 'files'];
+
     protected static array $search_columns = ['title', 'address'];
 
     /**
@@ -96,7 +98,7 @@ class PublicationService extends AbstractService
             case !is_array($data['address']) && $data['address'] !== null:
             case !is_array($data['external_id']) && $data['external_id'] !== null:
                 /** @var Publication $publication */
-                $publication = Publication::firstWhere($criteria);
+                $publication = $this->buildQuery(Publication::query(), $criteria, $data)->first();
 
                 return $publication ?: throw new PublicationNotFoundException();
 

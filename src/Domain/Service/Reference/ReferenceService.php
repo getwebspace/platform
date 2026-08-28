@@ -75,7 +75,7 @@ class ReferenceService extends AbstractService
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['title']) && $data['title'] !== null:
                 /** @var Reference $reference */
-                $reference = Reference::firstWhere($criteria);
+                $reference = $this->buildQuery(Reference::query(), $criteria, $data)->first();
 
                 return $reference ?: throw new ReferenceNotFoundException();
 

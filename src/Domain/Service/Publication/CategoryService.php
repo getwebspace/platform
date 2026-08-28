@@ -13,6 +13,8 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class CategoryService extends AbstractService
 {
+    protected static array $eager = ['parent', 'files'];
+
     protected static array $search_columns = ['title', 'address'];
 
     /**
@@ -90,7 +92,7 @@ class CategoryService extends AbstractService
             case !is_array($data['title']) && $data['title'] !== null:
             case !is_array($data['address']) && $data['address'] !== null:
                 /** @var PublicationCategory $publicationCategory */
-                $publicationCategory = PublicationCategory::firstWhere($criteria);
+                $publicationCategory = $this->buildQuery(PublicationCategory::query(), $criteria, $data)->first();
 
                 return $publicationCategory ?: throw new CategoryNotFoundException();
 

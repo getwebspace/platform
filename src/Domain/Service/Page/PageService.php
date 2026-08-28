@@ -13,6 +13,8 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class PageService extends AbstractService
 {
+    protected static array $eager = ['files'];
+
     protected static array $search_columns = ['title', 'address'];
 
     protected function init(): void {}
@@ -86,7 +88,7 @@ class PageService extends AbstractService
             case !is_array($data['title']) && $data['title'] !== null:
             case !is_array($data['address']) && $data['address'] !== null:
                 /** @var Page $page */
-                $page = Page::firstWhere($criteria);
+                $page = $this->buildQuery(Page::query(), $criteria, $data)->first();
 
                 return $page ?: throw new PageNotFoundException();
 
