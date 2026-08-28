@@ -70,6 +70,16 @@ class Publication extends Model
         'external_id' => '',
     ];
 
+    /**
+     * Only `date` is kept as a timestamp column (there is no updated_at).
+     * Drop the null UPDATED_AT so Eloquent does not index an array with a
+     * null key - deprecated since PHP 8.5.
+     */
+    public function getDates(): array
+    {
+        return array_values(array_filter(parent::getDates(), static fn ($column) => $column !== null));
+    }
+
     public function category(): HasOne
     {
         return $this->hasOne(PublicationCategory::class, 'uuid', 'category_uuid');

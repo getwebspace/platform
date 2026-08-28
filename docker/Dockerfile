@@ -33,7 +33,8 @@ RUN set -eux; \
     apk add --no-cache \
         dcron \
         runit \
-        nginx; \
+        nginx \
+        file; \
     apk add --no-cache --virtual .build-deps \
         ${PHPIZE_DEPS} \
         pax-utils \

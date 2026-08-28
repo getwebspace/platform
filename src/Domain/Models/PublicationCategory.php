@@ -39,8 +39,7 @@ class PublicationCategory extends Model
 
     protected $primaryKey = 'uuid';
 
-    public const CREATED_AT = null;
-    public const UPDATED_AT = null;
+    public $timestamps = false;
 
     protected $fillable = [
         'title',
