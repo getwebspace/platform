@@ -64,6 +64,20 @@ Other changes:
 - Relations are a real sync now: they used to be write-only (the import passed
   `relation`, not `relations`, so nothing was ever cleared).
 
+## PHP 8.5
+
+The image is `php:8.5`, and `bin/task_worker.php` turns every notice into an
+`ErrorException` — a deprecation inside a task is a failed task, not a log line.
+`curl_close()` is deprecated in 8.5 (it has done nothing since 8.0), so the first
+version of the curl rewrite failed the task on its very first request. It is
+gone; `curl_multi_close()` is *not* deprecated and stayed. Worth remembering for
+anything else moved to curl here.
+
+Related, not fixed: `voku/html-min` calls the deprecated
+`SplObjectStorage::attach()` in its constructor. It only stays quiet because
+plugins resolve the `view` service inside `bootstrap.php`, before the worker
+installs its handler. Resolve `view` any later in a worker and the task dies.
+
 ## Bugs fixed along the way
 
 - `TradeMasterPluginTwigExt::tm_order_external()` declared return type
