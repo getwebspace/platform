@@ -2,12 +2,15 @@
 
 namespace App\Application;
 
+use App\Application\Mail\Exception\MailException;
 use App\Application\Mail\SMTPProvider;
-use App\Application\Mail\SPProvider;
 
 class Mail
 {
-    public static function send(array $data = []): bool
+    /**
+     * @throws MailException
+     */
+    public static function send(array $data = []): void
     {
         $default = [
             // common section
@@ -21,11 +24,6 @@ class Mail
             'isHtml' => false,
             'attachments' => [],
 
-            // sendpulse section
-            'sendpulse_is_enabled' => 'off',
-            'sendpulse_id' => '',
-            'sendpulse_secret' => '',
-
             // smtp section
             'smtp_login' => '',
             'smtp_pass' => '',
@@ -37,9 +35,6 @@ class Mail
         ];
         $data = array_merge($default, $data);
 
-        return match (true) {
-            $data['sendpulse_is_enabled'] && $data['sendpulse_id'] && $data['sendpulse_secret'] => SPProvider::send($data),
-            default => SMTPProvider::send($data),
-        };
+        SMTPProvider::send($data);
     }
 }

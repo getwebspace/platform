@@ -40,9 +40,7 @@ Built on open source technology, it provides both flexibility and accessibility.
   - Files and Image optimization (GD -> WebP)
   - Background tasks
   - Theme templates in Twig
-  - Mailing, via:
-    * SMTP
-    * SendPulse
+  - Mailing, via SMTP
   - File editor:
     * Theme
     * Resource

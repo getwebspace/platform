@@ -68,7 +68,6 @@
                                             <a class="nav-link"         data-toggle="pill" href="#other-search">{{ 'Search Options'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-guestbook">{{ 'Guestbook'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-api">{{ 'API'|locale }}</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#other-sendpulse">SendPulse</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-recaptcha">reCAPTCHA</a>
                                         </div>
                                     </div>
@@ -216,8 +215,6 @@
                                                 } %}
 
                                                 <hr>
-
-                                                <p>{% locale %}Setup SMTP or use SendPulse{% endlocale %}</p>
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'SMTP server host',
@@ -561,46 +558,6 @@
                                                         } %}
                                                     </div>
                                                 </div>
-                                            </div>
-
-                                            {# TAB: SendPulse #}
-                                            <div class="tab-pane fade" id="other-sendpulse">
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Turning SendPulse on and off',
-                                                    'type': 'select',
-                                                    'name': 'sendpulse[is_enabled]',
-                                                    'args': {
-                                                        'option': _(['off', 'on'])
-                                                    }
-                                                } %}
-
-                                                <hr/>
-
-                                                <p>
-                                                    {% locale %}
-                                                        The required parameters can be found in
-                                                        the account settings, in
-                                                    {% endlocale %}
-                                                    <a href="https://login.sendpulse.com/settings/#api" target="_blank">{{ 'the API tab'|locale }}</a>.
-                                                </p>
-
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Client ID',
-                                                    'type': 'text',
-                                                    'name': 'sendpulse[id]',
-                                                    'args': {
-                                                        'placeholder': '70e07ce45532e8acae69f385de908449'
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Client Secret',
-                                                    'type': 'text',
-                                                    'name': 'sendpulse[secret]',
-                                                    'args': {
-                                                        'placeholder': '5d8f75e2ea712abccc5b9bfcc9453acc'
-                                                    }
-                                                } %}
                                             </div>
 
                                             {# TAB: reCAPTCHA #}

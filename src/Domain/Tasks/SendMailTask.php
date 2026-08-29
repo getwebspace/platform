@@ -3,6 +3,7 @@
 namespace App\Domain\Tasks;
 
 use App\Application\Mail;
+use App\Application\Mail\Exception\MailException;
 use App\Domain\AbstractTask;
 
 class SendMailTask extends AbstractTask
@@ -28,7 +29,6 @@ class SendMailTask extends AbstractTask
     }
 
     /**
-     * @throws \PHPMailer\PHPMailer\Exception
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \App\Domain\Service\Task\Exception\TaskNotFoundException
      * @throws \Psr\Container\ContainerExceptionInterface
@@ -39,7 +39,6 @@ class SendMailTask extends AbstractTask
             $this->parameter(
                 [
                     'mail_from', 'mail_from_name',
-                    'sendpulse_id', 'sendpulse_secret',
                     'smtp_login', 'smtp_pass',
                     'smtp_host', 'smtp_port',
                     'smtp_secure',
@@ -76,16 +75,41 @@ class SendMailTask extends AbstractTask
             }
         }
 
-        $mail = Mail::send($params);
+        $mailto = static::describeRecipients($args['to']);
+
+        try {
+            Mail::send($params);
+        } catch (MailException $e) {
+            // the real reason ("SMTP connect() failed...", "Could not
+            // authenticate.", ...) goes both to the log and into the task's
+            // own output, so a failed send is never mistaken for a sent one
+            $this->logger->error('Mail: send failed', ['mailto' => $mailto, 'reason' => $e->getMessage()]);
+            $this->setStatusFail(mb_substr($e->getMessage(), 0, 900));
+
+            $this->container->get(\App\Application\PubSub::class)->publish('task:mail:send');
+
+            return;
+        }
+
+        $this->logger->info('Mail: sent', ['mailto' => $mailto]);
+        $this->setStatusDone('sent to ' . $mailto);
 
         $this->container->get(\App\Application\PubSub::class)->publish('task:mail:send');
+    }
 
-        if ($mail !== false) {
-            $this->logger->info('Mail is sent', ['mailto' => $args['to']]);
-            $this->setStatusDone('ok');
-        } else {
-            $this->logger->warning('Mail will not sent', ['mailto' => $args['to']]);
-            $this->setStatusFail();
+    /**
+     * @param array<int|string, string>|string $to
+     */
+    private static function describeRecipients(array|string $to): string
+    {
+        if (is_string($to)) {
+            return $to;
         }
+
+        return implode(', ', array_map(
+            static fn ($address, $name): string => is_numeric($address) ? (string) $name : (string) $address,
+            array_keys($to),
+            $to
+        )) ?: '(none)';
     }
 }

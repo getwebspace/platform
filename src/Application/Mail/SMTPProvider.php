@@ -2,6 +2,7 @@
 
 namespace App\Application\Mail;
 
+use App\Application\Mail\Exception\MailException;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -10,7 +11,10 @@ use PHPMailer\PHPMailer\PHPMailer;
  */
 class SMTPProvider implements MailProviderInterface
 {
-    public static function send(array $data = []): bool
+    /**
+     * @throws MailException
+     */
+    public static function send(array $data = []): void
     {
         $default = [
             'subject' => 'WebSpaceEngine | Default subject',
@@ -33,6 +37,10 @@ class SMTPProvider implements MailProviderInterface
         ];
         $data = array_merge($default, $data);
 
+        // exceptions stay off: PHPMailer's own recipient/from validation
+        // (an invalid address, say) fails cleanly into $mail->send() === false
+        // + ErrorInfo this way instead of throwing from inside setup below,
+        // where it wouldn't be wrapped into a MailException
         $mail = new PHPMailer(false);
 
         $mail->Debugoutput = 'error_log';
@@ -100,12 +108,15 @@ class SMTPProvider implements MailProviderInterface
         }
 
         try {
-            $mail->send();
-
-            return true;
+            $sent = $mail->send();
         } catch (Exception $e) {
+            // shouldn't happen with exceptions disabled above, but a
+            // dependency throwing anyway must not look like a silent success
+            throw new MailException($e->getMessage(), 0, $e);
         }
 
-        return false;
+        if (!$sent) {
+            throw new MailException($mail->ErrorInfo !== '' ? $mail->ErrorInfo : 'PHPMailer reported failure without a reason');
+        }
     }
 }

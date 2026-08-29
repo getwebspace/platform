@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "108924741dc9e2c7d81b5dcb1eaf9938",
+    "content-hash": "5e8d72b2294870d74aaebede52a9652a",
     "packages": [
         {
             "name": "alksily/support",
@@ -3448,66 +3448,6 @@
                 "source": "https://github.com/cakephp/phinx/tree/0.16.12"
             },
             "time": "2026-07-03T07:27:17+00:00"
-        },
-        {
-            "name": "sendpulse/rest-api",
-            "version": "3.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sendpulse/sendpulse-rest-api-php.git",
-                "reference": "849da609727dcd4d3d8418b57f8bac3fc7c26dc3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sendpulse/sendpulse-rest-api-php/zipball/849da609727dcd4d3d8418b57f8bac3fc7c26dc3",
-                "reference": "849da609727dcd4d3d8418b57f8bac3fc7c26dc3",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "php": ">=8.3"
-            },
-            "require-dev": {
-                "cebe/php-openapi": "^1.8",
-                "friendsofphp/php-cs-fixer": "^3.64",
-                "phpstan/phpstan": "^2.0",
-                "phpunit/phpunit": "^11.0",
-                "psr/http-client": "^1.0",
-                "psr/http-factory": "^1.1",
-                "psr/simple-cache": "^3.0"
-            },
-            "suggest": {
-                "psr/http-client": "To plug in your own PSR-18 HTTP client (Guzzle, Symfony) instead of the bundled curl transport",
-                "psr/simple-cache": "To use your own PSR-16 cache for token storage instead of the default file cache"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Sendpulse\\RestApi\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Official PHP SDK for the SendPulse REST API",
-            "homepage": "https://sendpulse.com/integrations/api",
-            "keywords": [
-                "api",
-                "chatbots",
-                "crm",
-                "email",
-                "rest",
-                "sdk",
-                "sendpulse",
-                "sms"
-            ],
-            "support": {
-                "issues": "https://github.com/sendpulse/sendpulse-rest-api-php/issues",
-                "source": "https://github.com/sendpulse/sendpulse-rest-api-php"
-            },
-            "time": "2026-08-17T18:57:30+00:00"
         },
         {
             "name": "slim/http-cache",
