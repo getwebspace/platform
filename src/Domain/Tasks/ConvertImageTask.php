@@ -172,9 +172,5 @@ class ConvertImageTask extends AbstractTask
 
         // save as WebP
         imagewebp($thumbnail, $destination);
-
-        // releasing memory
-        imagedestroy($source);
-        imagedestroy($thumbnail);
     }
 }

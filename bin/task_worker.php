@@ -6,7 +6,13 @@ require __DIR__ . '/../src/bootstrap.php';
 
 // bind error handler
 error_reporting(E_ALL);
-set_error_handler(function ($code, $message, $file, $line) {
+set_error_handler(function (int $code, string $message, string $file, int $line): bool {
+    if ($code === E_DEPRECATED || $code === E_USER_DEPRECATED) {
+        error_log("Deprecated: {$message} in {$file} on line {$line}");
+
+        return true;
+    }
+
     throw new \ErrorException($message, 0, $code, $file, $line);
 });
 
