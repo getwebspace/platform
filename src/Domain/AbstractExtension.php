@@ -54,8 +54,13 @@ abstract class AbstractExtension implements ExtensionInterface
         return [];
     }
 
+    /**
+     * Must be exactly [unary, binary] - twig validates the shape since 3.21
+     * and rejects a plain empty array, which every template render then
+     * reports as a compile error rather than anything mentioning operators
+     */
     public function getOperators()
     {
-        return [];
+        return [[], []];
     }
 }

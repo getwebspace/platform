@@ -358,6 +358,103 @@ $fullAccess = true)` helper. Rewrote the three tests that hardcoded
 
 ---
 
+## 7. Dependency update — why Twig was pinned (follow-up session)
+
+Every direct dependency was moved to its current release except one
+deliberate hold. `composer audit` went from **41 advisories across 9
+packages** to **zero**.
+
+### The Twig pin: cause found, one line
+
+`twig/twig` had been pinned to an exact `v3.11.2` (and the two extras to
+`v3.8.0`) because "some extension stops working when Twig is updated". The
+actual cause was neither an extension nor a dependency conflict — **no
+package in the tree constrains Twig at all**, they all accept `^3`.
+
+`App\Domain\AbstractExtension` implements `Twig\Extension\ExtensionInterface`
+directly rather than extending Twig's own `AbstractExtension`, and its
+`getOperators()` returned `[]`. Twig's own base class returns `[[], []]`.
+Bisected the behaviour change to **Twig 3.21.0**, which removed the guard in
+`ExtensionSet::addExtension()`:
+
+```php
+// <= 3.20 — an empty array is falsy, so the whole validation is skipped
+if ($operators = $extension->getOperators()) { ...check count === 2... }
+
+// >= 3.21 — validated unconditionally, count([]) === 0 now throws
+$operators = $extension->getOperators();
+if (2 !== \count($operators)) { throw ... }
+```
+
+The symptom is maximally misleading: **every single page** 400s with
+`An exception has been thrown during the compilation of a template
+("...getOperators() must return an array of 2 elements, got 0.") in
+"p400.twig"` — the error page itself can't compile either, so nothing in the
+message points at operators being the problem, and it looks like a template
+bug. Fix is one line in `src/Domain/AbstractExtension.php`: return
+`[[], []]`. All three plugin Twig extensions inherit from this class, so
+that single change covers them too.
+
+**Verification that mattered here:** the test suite passed on Twig 3.28
+*before* the fix — the 198 tests barely render templates. The breakage only
+appears when actually requesting pages. Rendered all 28 admin + public pages
+over HTTP as the real check.
+
+### TNTSearch held at ^4.4 deliberately
+
+The only dependency not updated. `teamtnt/tntsearch` 5.x tightened
+`SqliteEngine::saveToIndex(Collection $stems, int $docId)` to an **int**
+doc id and declares `doc_id INTEGER` in its schema; this project indexes by
+**UUID string** (`$indexer->setPrimaryKey('uuid')`). SQLite's type affinity
+let 4.x store UUID strings in that column happily; 5.x rejects them at the
+PHP type level. Supporting 5.x means adding an int↔UUID mapping layer to
+the search index — a feature project, not a version bump.
+
+Cost of holding: **none security-wise** — `composer audit` reports no
+advisories for 4.4. Also note 5.x moved `Support\Tokenizer` to
+`Tokenizer\Tokenizer` (leaving only the abstract + interface behind as
+deprecated shims), so a future migration needs that import changed too.
+
+### What moved
+
+| package | from | to |
+|---|---|---|
+| illuminate/* (5 pkgs) | 11.51 | **13.29** |
+| phpunit/phpunit | 11.5 | **13.3** |
+| twig/twig | 3.11.2 (pinned) | **^3.28** |
+| twig/intl-extra, string-extra | 3.8.0 (pinned) | **^3.26 / ^3.24** |
+| guzzlehttp/guzzle (dev) | 7.10 | **8.1** |
+| symfony/var-dumper | 7.4 | **8.1** |
+| firebase/php-jwt | 6.11 | **7.1** |
+| phpmailer/phpmailer | 6.12 | **7.1** |
+| sendpulse/rest-api | 2.0 | **3.0** |
+| bacon, monolog, ramsey/uuid, phinx, slim, php-cs-fixer, phpspreadsheet | — | latest patch/minor |
+
+Illuminate 11 → 13 (two majors) and PHPUnit 11 → 13 both went through with
+**no code changes at all** — worth knowing, since that was the change I
+expected to be painful.
+
+### Verified beyond the test suite
+
+Tests alone were not enough (see the Twig note above). Also exercised by
+hand on the built image: all 28 pages render; TNTSearch indexing task runs
+to `done` and a real search returns UUID hits; search over HTTP; QR code
+generation (bacon 3.1); mail template rendering; Monolog; Eloquent queries +
+the `search` parameter + catalog serialization on Illuminate 13. Full suite
+run 6× consecutively on a clean CI image, 198/198 each time.
+
+### Incidental find, not fixed
+
+`bin/task_worker.php` reads `$action = $_SERVER['argv'][1] ?? null;` then
+passes it to `AbstractTask::workerHasPidFile(string $action = '')` — running
+that script with no argument is an instant `TypeError` under
+`declare(strict_types=1)`. Pre-existing, unrelated to the update, and not on
+any normal path (`AbstractTask::worker()` always passes a class name; cron
+runs `cron_worker.php`, not this one). Only bites someone running the worker
+by hand.
+
+---
+
 ## Gotchas worth remembering
 
 - **`php-fpm` does not persist anything across requests** by default —
@@ -418,10 +515,8 @@ $fullAccess = true)` helper. Rewrote the three tests that hardcoded
    the *symptom* less alarming (401 instead of 500) but does not fix the
    underlying gap — a key-less install still can't complete registration
    end-to-end.
-2. **`twig/twig` and its extras pinned to exact versions.** Untouched this
-   session; flagged in the review artifact. Investigate together with
-   whatever the JIT-disable comment in the (concurrently-modified)
-   Dockerfile is referring to before assuming it's unrelated.
+2. ~~**`twig/twig` and its extras pinned to exact versions.**~~ **RESOLVED** —
+   see section 7 below.
 3. **A concurrent session modified `docker/Dockerfile`,
    `docker-compose*.yml`, `.dockerignore`, and
    `docker/rootfs/usr/local/etc/php/conf.d/custom.ini`** partway through
