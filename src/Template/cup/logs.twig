@@ -8,50 +8,127 @@
     <div class="container container-full">
         <div class="page-inner page-inner-fill">
             <div class="card mb-0">
-                <div class="card-header">
-                    <div class="d-flex align-items-center">
-                        <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
-                            {% for file, lines in files %}
-                                <li class="nav-item">
-                                    <a class="nav-link {{ loop.index0 == 0 ? 'active show' : '' }}" data-toggle="pill" href="#file-{{ file|replace({'.': '-'}) }}" role="tab">
-                                        {{ file }}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                {% if files is empty %}
+                    <div class="card-body">
+                        <p class="text-muted text-center py-5 mb-0">{{ 'No log files found'|locale }}</p>
                     </div>
-                </div>
-                <div class="card-body p-0">
-                    <div class="tab-content">
-                        {% for file, lines in files %}
-                            <div class="tab-pane fade {{ loop.index0 == 0 ? 'active show' : '' }}" id="file-{{ file|replace({'.': '-'}) }}" role="tabpanel">
-                                <div>
-                                    {% include 'cup/editor.twig' with {
-                                        'name': 'template',
-                                        'args': {
-                                            'id': 'editor-' ~ file,
-                                            'value': lines,
-                                            'text_mode': true,
-                                            'readonly': true,
-                                        }
-                                    } %}
-                                </div>
+                {% else %}
+                    <div class="card-header">
+                        <div class="d-flex align-items-center flex-wrap" style="gap: .5rem;">
+                            <div class="btn-group btn-group-sm mr-auto" role="group" aria-label="{{ 'Filter'|locale }}">
+                                <button type="button" class="btn btn-secondary active" data-log-filter="all">
+                                    {{ 'All'|locale }}
+                                </button>
+                                <button type="button" class="btn btn-secondary" data-log-filter="issues">
+                                    {{ 'Errors and warnings'|locale }}
+                                </button>
                             </div>
-                        {% endfor %}
+                            <ul class="nav nav-pills nav-secondary nav-pills-no-bd" role="tablist">
+                                {% for file, log in files %}
+                                    <li class="nav-item">
+                                        <a class="nav-link {{ loop.first ? 'active show' : '' }}" data-toggle="pill" href="#file-{{ file|replace({'.': '-'}) }}" role="tab">
+                                            {{ file }}
+                                            {% if log.errors %}<span class="badge badge-danger ml-1">{{ log.errors }}</span>{% endif %}
+                                            {% if log.warnings %}<span class="badge badge-warning ml-1">{{ log.warnings }}</span>{% endif %}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
-                </div>
+                    <div class="card-body p-0">
+                        <div class="tab-content">
+                            {% for file, log in files %}
+                                <div class="tab-pane fade {{ loop.first ? 'active show' : '' }}" id="file-{{ file|replace({'.': '-'}) }}" role="tabpanel">
+                                    {% if log.lines is empty %}
+                                        <p class="text-muted text-center py-5 mb-0">{{ 'Empty'|locale }}</p>
+                                    {% else %}
+                                        <pre class="log-view"><code>{% for line in log.lines %}<span class="log-line log-line--{{ line.severity }}">{{ line.text }}</span>{% endfor %}</code></pre>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
 
     <style>
-        .CodeMirror {
-            width: 100% !important;
-            min-height: 86vh !important;
+        .log-view {
+            margin: 0;
+            max-height: 86vh;
+            overflow: auto;
+            padding: 1rem 1.25rem;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-size: 12px;
+            line-height: 1.55;
+            border-radius: 0;
         }
-        [data-input] {
-            padding: 0;
+        .log-view code {
+            display: block;
+            white-space: pre;
+            font-family: 'SFMono-Regular', Menlo, Consolas, 'Liberation Mono', monospace;
+        }
+        .log-line {
+            display: block;
+            min-height: 1.55em;
+            padding: 0 .35rem;
+            border-left: 3px solid transparent;
+        }
+        .log-line--info  { color: #d4d4d4; }
+        .log-line--debug,
+        .log-line--plain { color: #8a8a8a; }
+        .log-line--warning {
+            color: #ffd166;
+            background: rgba(255, 209, 102, .10);
+            border-left-color: #ffd166;
+        }
+        .log-line--error {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, .14);
+            border-left-color: #ff6b6b;
+        }
+        .log-view--issues .log-line:not(.log-line--error):not(.log-line--warning) {
+            display: none;
         }
     </style>
 {% endblock %}
 
+{% block script %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var views = document.querySelectorAll('.log-view');
+
+            function scrollToBottom(view) {
+                view.scrollTop = view.scrollHeight;
+            }
+
+            views.forEach(scrollToBottom);
+
+            document.querySelectorAll('[data-log-filter]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var issuesOnly = btn.dataset.logFilter === 'issues';
+
+                    document.querySelectorAll('[data-log-filter]').forEach(function (b) {
+                        b.classList.toggle('active', b === btn);
+                    });
+                    views.forEach(function (view) {
+                        view.classList.toggle('log-view--issues', issuesOnly);
+                        scrollToBottom(view);
+                    });
+                });
+            });
+
+            $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+                var pane = document.querySelector(e.target.getAttribute('href'));
+                var view = pane ? pane.querySelector('.log-view') : null;
+
+                if (view) {
+                    scrollToBottom(view);
+                }
+            });
+        });
+    </script>
+{% endblock %}
