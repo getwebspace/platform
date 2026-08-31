@@ -1,0 +1,540 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">
+                    {{ 'Control Panel'|locale }}
+                </h2>
+                <h5 class="text-white op-7 mb-2">
+                    {{ 'Welcome'|locale }}, {{ user.name('full') ?: user.username }} &middot; {{ 'now'|df('l, d F Y') }}
+                </h5>
+            </div>
+            <div class="ml-md-auto py-2 py-md-0">
+                {% if enabled.publication %}
+                    <a href="/cup/publication/add" class="btn btn-white btn-border btn-round mr-2">
+                        <i class="fas fa-plus mr-1"></i>{{ 'Publication'|locale }}
+                    </a>
+                {% endif %}
+                {% if enabled.catalog %}
+                    <a href="/cup/catalog/product/add" class="btn btn-white btn-border btn-round mr-2">
+                        <i class="fas fa-plus mr-1"></i>{{ 'Product'|locale }}
+                    </a>
+                {% endif %}
+                {% if enabled.page %}
+                    <a href="/cup/page/add" class="btn btn-secondary btn-round">
+                        <i class="fas fa-plus mr-1"></i>{{ 'Page'|locale }}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% set attention_total = attention.users
+        + attention.tasks_error
+        + attention.tasks_active
+        + (attention.guestbook ?? 0)
+        + (attention.review ?? 0)
+        + (attention.orders ?? 0) %}
+
+    {# ----------------------------------------------------------------- #}
+    {# Needs attention                                                   #}
+    {# ----------------------------------------------------------------- #}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <i class="fas fa-bell mr-2"></i>{{ 'Needs attention'|locale }}
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    {% if attention_total %}
+                        <div class="list-group list-group-flush">
+                            {% if attention.orders ?? 0 %}
+                                <a href="/cup/catalog/order" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-shopping-cart text-primary mr-2"></i>{{ 'Orders awaiting processing'|locale }}</span>
+                                    <span class="badge badge-primary badge-pill">{{ attention.orders }}</span>
+                                </a>
+                            {% endif %}
+                            {% if attention.guestbook ?? 0 %}
+                                <a href="/cup/guestbook" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-comments text-warning mr-2"></i>{{ 'Comments on moderation'|locale }}</span>
+                                    <span class="badge badge-warning badge-pill">{{ attention.guestbook }}</span>
+                                </a>
+                            {% endif %}
+                            {% if attention.review ?? 0 %}
+                                <a href="/cup/catalog/review" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-star text-warning mr-2"></i>{{ 'Reviews on moderation'|locale }}</span>
+                                    <span class="badge badge-warning badge-pill">{{ attention.review }}</span>
+                                </a>
+                            {% endif %}
+                            {% if attention.users %}
+                                <a href="/cup/user" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-user-clock text-info mr-2"></i>{{ 'Users awaiting confirmation'|locale }}</span>
+                                    <span class="badge badge-info badge-pill">{{ attention.users }}</span>
+                                </a>
+                            {% endif %}
+                            {% if attention.tasks_error %}
+                                <a href="/cup/logs" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-exclamation-triangle text-danger mr-2"></i>{{ 'Failed background tasks'|locale }}</span>
+                                    <span class="badge badge-danger badge-pill">{{ attention.tasks_error }}</span>
+                                </a>
+                            {% endif %}
+                            {% if attention.tasks_active %}
+                                <span class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span><i class="fas fa-spinner text-muted mr-2"></i>{{ 'Background tasks in progress'|locale }}</span>
+                                    <span class="badge badge-secondary badge-pill">{{ attention.tasks_active }}</span>
+                                </span>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="p-4 text-center text-muted">
+                            <i class="fas fa-check-circle text-success mr-2"></i>{{ 'Everything is in order, no pending items'|locale }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ----------------------------------------------------------------- #}
+    {# KPI tiles                                                         #}
+    {# ----------------------------------------------------------------- #}
+    <div class="row">
+        {% if enabled.catalog and revenue %}
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-success bubble-shadow-small">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">{{ 'Revenue, 30 days'|locale }}</p>
+                                    <h4 class="card-title">{{ revenue.total|number_format(0, '.', ' ') }}</h4>
+                                    <p class="card-category">{{ 'Average check'|locale }}: {{ revenue.avg_check|number_format(0, '.', ' ') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                    <i class="fas fa-shopping-bag"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">{{ 'Orders, 30 days'|locale }}</p>
+                                    <h4 class="card-title">{{ revenue.orders }}</h4>
+                                    <p class="card-category">{{ 'Today'|locale }}: {{ revenue.today_orders }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="col-sm-6 col-md-3">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-info bubble-shadow-small">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                        </div>
+                        <div class="col col-stats ml-3 ml-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">{{ 'New users, 7 days'|locale }}</p>
+                                <h4 class="card-title">{{ kpi.users_week }}</h4>
+                                <p class="card-category">{{ 'Active total'|locale }}: {{ kpi.users_total }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if enabled.form %}
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                                    <i class="fas fa-inbox"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">{{ 'Form submissions, 7 days'|locale }}</p>
+                                    <h4 class="card-title">{{ kpi.form_data_week }}</h4>
+                                    <p class="card-category">{{ 'All time'|locale }}: {{ kpi.form_data_total }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if enabled.guestbook %}
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-warning bubble-shadow-small">
+                                    <i class="fas fa-comment-dots"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">{{ 'New comments, 7 days'|locale }}</p>
+                                    <h4 class="card-title">{{ kpi.guestbook_week }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if enabled.file and kpi.files_total %}
+            <div class="col-sm-6 col-md-3">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                    <i class="fas fa-hdd"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">{{ 'Files'|locale }}</p>
+                                    <h4 class="card-title">{{ kpi.files_total }}</h4>
+                                    {% if kpi.files_size %}
+                                        <p class="card-category">{{ convert_size(kpi.files_size) }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {# ----------------------------------------------------------------- #}
+    {# Revenue chart (30 days)                                           #}
+    {# ----------------------------------------------------------------- #}
+    {% if enabled.catalog and revenue and revenue.orders %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <script>window.orders_revenue = {{ json_encode(revenue.daily) }};</script>
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <div class="card-title">{{ 'Orders and Revenue'|locale }} &middot; {{ 'Last 30 Days'|locale }}</div>
+                            <a href="/cup/catalog/statistic" class="btn btn-sm btn-secondary ml-auto">{{ 'Statistic'|locale }}</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="orders_revenue" height="200" style="display: block; width: 100%; height: 200px; max-height: 200px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# ----------------------------------------------------------------- #}
+    {# Recent activity                                                   #}
+    {# ----------------------------------------------------------------- #}
+    <div class="row">
+        {% if enabled.catalog %}
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <div class="card-title">{{ 'Latest orders'|locale }}</div>
+                            <a href="/cup/catalog/order" class="btn btn-sm btn-secondary ml-auto">{{ 'All'|locale }}</a>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if activity.orders|length %}
+                            <table class="table table-striped mb-0">
+                                {% for item in activity.orders %}
+                                    <tr>
+                                        <td class="text-nowrap">
+                                            <a href="/cup/catalog/order/{{ item.uuid }}/edit"><b>{{ item.serial ?: '—' }}</b></a>
+                                        </td>
+                                        <td>{{ (item.delivery.client ?? item.email ?: '—')|u.truncate(28, '…') }}</td>
+                                        <td class="text-nowrap">
+                                            {% if item.status_uuid %}<span class="badge badge-secondary">{{ item.status.title }}</span>{% endif %}
+                                        </td>
+                                        <td class="text-right text-nowrap">{{ item.totalSum()|number_format(2, '.', ' ') }}</td>
+                                        <td class="text-right text-nowrap text-muted">{{ item.date|df('d.m.Y') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% else %}
+                            <div class="p-4 text-center text-muted">{{ 'No data'|locale }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if enabled.form %}
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <div class="card-title">{{ 'Latest form submissions'|locale }}</div>
+                            <a href="/cup/form" class="btn btn-sm btn-secondary ml-auto">{{ 'All'|locale }}</a>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if activity.forms|length %}
+                            <table class="table table-striped mb-0">
+                                {% for item in activity.forms %}
+                                    <tr>
+                                        <td>
+                                            {% if item.form %}
+                                                <a href="/cup/form/{{ item.form_uuid }}/view/{{ item.uuid }}">{{ item.form.title|u.truncate(40, '…') }}</a>
+                                            {% else %}
+                                                {{ 'Form'|locale }}
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-right text-nowrap text-muted">{{ item.date|df('d.m.Y H:i') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% else %}
+                            <div class="p-4 text-center text-muted">{{ 'No data'|locale }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if enabled.guestbook %}
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <div class="card-title">{{ 'Latest comments'|locale }}</div>
+                            <a href="/cup/guestbook" class="btn btn-sm btn-secondary ml-auto">{{ 'All'|locale }}</a>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if activity.guestbook|length %}
+                            <table class="table table-striped mb-0">
+                                {% for item in activity.guestbook %}
+                                    <tr>
+                                        <td class="text-nowrap">
+                                            <a href="/cup/guestbook/{{ item.uuid }}/edit">{{ (item.name ?: '—')|u.truncate(18, '…') }}</a>
+                                        </td>
+                                        <td>
+                                            {{ item.message|u.truncate(46, '…') }}
+                                            {% if item.status == 'moderate' %}<span class="badge badge-warning ml-1">{{ 'moderate'|locale }}</span>{% endif %}
+                                        </td>
+                                        <td class="text-right text-nowrap text-muted">{{ item.date|df('d.m.Y') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% else %}
+                            <div class="p-4 text-center text-muted">{{ 'No data'|locale }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if enabled.publication %}
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <div class="card-title">{{ 'Latest publications'|locale }}</div>
+                            <a href="/cup/publication" class="btn btn-sm btn-secondary ml-auto">{{ 'All'|locale }}</a>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        {% if activity.publications|length %}
+                            <table class="table table-striped mb-0">
+                                {% for item in activity.publications %}
+                                    <tr>
+                                        <td><a href="/cup/publication/{{ item.uuid }}/edit">{{ item.title|u.truncate(48, '…') }}</a></td>
+                                        <td class="text-right text-nowrap text-muted">{{ item.date|df('d.m.Y') }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        {% else %}
+                            <div class="p-4 text-center text-muted">{{ 'No data'|locale }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <div class="card-title">{{ 'Latest registrations'|locale }}</div>
+                        <a href="/cup/user" class="btn btn-sm btn-secondary ml-auto">{{ 'All'|locale }}</a>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    {% if activity.users|length %}
+                        <table class="table table-striped mb-0">
+                            {% for item in activity.users %}
+                                <tr>
+                                    <td>
+                                        <a href="/cup/user/{{ item.uuid }}/view">{{ (item.name('full') ?: item.username ?: item.email)|u.truncate(30, '…') }}</a>
+                                        {% if item.status == 'confirmation' %}<span class="badge badge-info ml-1">{{ 'confirmation'|locale }}</span>{% endif %}
+                                        {% if item.status == 'block' %}<span class="badge badge-danger ml-1">{{ 'block'|locale }}</span>{% endif %}
+                                    </td>
+                                    <td class="text-right text-nowrap text-muted">{{ item.register|df('d.m.Y') }}</td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    {% else %}
+                        <div class="p-4 text-center text-muted">{{ 'No data'|locale }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ----------------------------------------------------------------- #}
+    {# Summary / System / Notebook                                       #}
+    {# ----------------------------------------------------------------- #}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active show" data-toggle="pill" href="#stats" role="tab">{{ 'Site summary'|locale }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="pill" href="#system" role="tab">{{ 'System'|locale }}</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="pill" href="#notepad" role="tab">{{ 'Notebook'|locale }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        {# Tab: Site summary #}
+                        <div class="tab-pane fade show active" id="stats" role="tabpanel">
+                            <p class="text-muted text-center">{{ 'Below is the statistics of engine usage by sections'|locale }}</p>
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <table class="table table-stats">
+                                        {% if stats.pages %}
+                                            <tr><th width="60%">{{ 'Number of pages'|locale }}:</th><td class="text-right">{{ stats.pages }}</td></tr>
+                                        {% endif %}
+                                        {% if stats.publications %}
+                                            <tr><th>{{ 'Number of publications'|locale }}:</th><td class="text-right">{{ stats.publications }}</td></tr>
+                                        {% endif %}
+                                        {% if stats.guestbook %}
+                                            <tr><th>{{ 'Number of reviews'|locale }}:</th><td class="text-right">{{ stats.guestbook }}</td></tr>
+                                        {% endif %}
+                                        {% if stats.users %}
+                                            <tr><th>{{ 'Number of users'|locale }}:</th><td class="text-right">{{ stats.users }}</td></tr>
+                                        {% endif %}
+                                        {% if stats.forms %}
+                                            <tr><th>{{ 'Number of forms'|locale }}:</th><td class="text-right">{{ stats.forms }}</td></tr>
+                                        {% endif %}
+                                    </table>
+                                </div>
+                                <div class="col-12 col-md-6 border-left">
+                                    <table class="table table-stats">
+                                        {% if stats.catalog.category %}
+                                            <tr><th width="60%">{{ 'Number of categories'|locale }}:</th><td class="text-right">{{ stats.catalog.category }}</td></tr>
+                                        {% endif %}
+                                        {% if stats.catalog.product %}
+                                            <tr><th>{{ 'Number of products'|locale }}:</th><td class="text-right">{{ stats.catalog.product }}</td></tr>
+                                        {% endif %}
+                                        {% if stats.catalog.order %}
+                                            <tr><th>{{ 'Number of orders'|locale }}:</th><td class="text-right">{{ stats.catalog.order }}</td></tr>
+                                        {% endif %}
+                                        {% if stats.files %}
+                                            <tr><th>{{ 'Number of files'|locale }}:</th><td class="text-right">{{ stats.files }}</td></tr>
+                                        {% endif %}
+                                        {% if plugins.count() %}
+                                            <tr><th>{{ 'Number of plugins'|locale }}:</th><td class="text-right">{{ plugins.count() }}</td></tr>
+                                        {% endif %}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Tab: System #}
+                        <div class="tab-pane fade" id="system" role="tabpanel">
+                            <p class="text-muted text-center">{{ 'Here is a collection of technical information about the engine and server'|locale }}</p>
+                            <table class="table table-properties">
+                                <tr>
+                                    <th width="50%">{{ 'Build'|locale }}:</th>
+                                    <td width="50%" class="text-right">
+                                        {{ properties.version.branch }}
+                                        {% if properties.version.commit %}
+                                            (<a href="https://github.com/getwebspace/platform/tree/{{ properties.version.commit }}" target="_blank">{{ SHA }}</a>)
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr><th>{{ 'Operating system'|locale }}:</th><td class="text-right">{{ properties.os }}</td></tr>
+                                <tr><th>{{ 'PHP version'|locale }}:</th><td class="text-right">{{ properties.php }}</td></tr>
+                                <tr><th>{{ 'Dedicated RAM'|locale }}:</th><td class="text-right">{{ properties.memory_limit }}</td></tr>
+                                {% if properties.disable_functions %}
+                                    <tr><th>{{ 'Disabled features'|locale }}:</th><td class="text-right">{{ properties.disable_functions }}</td></tr>
+                                {% endif %}
+                                {% if properties.disable_classes %}
+                                    <tr><th>{{ 'Disabled classes'|locale }}:</th><td class="text-right">{{ properties.disable_classes }}</td></tr>
+                                {% endif %}
+                                <tr><th>{{ 'Maximum upload file size'|locale }}:</th><td class="text-right">{{ properties.upload_max_filesize }}</td></tr>
+                                <tr><th>{{ 'Maximum downloadable files'|locale }}:</th><td class="text-right">{{ properties.max_file_uploads }}</td></tr>
+                            </table>
+                        </div>
+
+                        {# Tab: Notebook #}
+                        <div class="tab-pane fade" id="notepad" role="tabpanel">
+                            <form action="/cup/parameters?return=/cup" method="post">
+                                <p class="text-muted text-center mb-0">{{ 'Here you can save your own notes and memos'|locale }}</p>
+                                {% include 'cup/editor.twig' with {
+                                    'name': 'notepad[' ~ user.username ~ ']',
+                                    'args': {
+                                        'value': notepad,
+                                        'required': true,
+                                    }
+                                } %}
+                                <button type="submit" class="btn btn-success ml-2">{{ 'Save'|locale }}</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
