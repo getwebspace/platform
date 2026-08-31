@@ -30,7 +30,7 @@
                                         <span class="badge badge-default">{{ item.status|locale }}</span>
                                     </div>
                                     <div class="col-8 col-md">
-                                        <b>{{ item.user ? item.user.name : '—' }}</b>
+                                        <b>{{ item.user ? item.user.name('full') : '—' }}</b>
 
                                         {% if item.type == 'review' and item.rating %}
                                             <span class="text-warning ml-1">

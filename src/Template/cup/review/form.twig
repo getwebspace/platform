@@ -24,7 +24,7 @@
                                     'type': 'text',
                                     'name': 'author',
                                     'args': {
-                                        'value': item.user ? item.user.name : '—',
+                                        'value': item.user ? item.user.name('full') : '—',
                                         'readonly': true
                                     }
                                 } %}
