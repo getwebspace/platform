@@ -67,6 +67,7 @@
                                             <a class="nav-link"         data-toggle="pill" href="#other-form">{{ 'Forms'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-search">{{ 'Search Options'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-guestbook">{{ 'Guestbook'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-review">{{ 'Reviews'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-api">{{ 'API'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-recaptcha">reCAPTCHA</a>
                                         </div>
@@ -446,6 +447,42 @@
                                                     'args': {
                                                         'placeholder': '10',
                                                         'value': '10'
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            {# TAB: Reviews #}
+                                            <div class="tab-pane fade" id="other-review">
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Reviews for publications',
+                                                    'description': 'Let signed-in users leave reviews on publications',
+                                                    'type': 'select',
+                                                    'name': 'review[publication_is_enabled]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'no'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Reviews for products',
+                                                    'description': 'Let signed-in users leave reviews on catalog products',
+                                                    'type': 'select',
+                                                    'name': 'review[product_is_enabled]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'no'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Questions for products',
+                                                    'description': 'Let signed-in users ask questions about catalog products',
+                                                    'type': 'select',
+                                                    'name': 'review[question_product_is_enabled]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'no'
                                                     }
                                                 } %}
                                             </div>

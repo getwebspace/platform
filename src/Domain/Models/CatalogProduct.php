@@ -15,6 +15,7 @@ use App\Domain\Traits\HasFiles;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 
@@ -187,6 +188,34 @@ class CatalogProduct extends Model
             'uuid',
             'uuid'
         )->withPivot('value');
+    }
+
+    /**
+     * Top-level reviews for this product (replies excluded)
+     *
+     * Read via getRelationValue('reviews') if eager-loading matters - see the
+     * attributes()/relations() note in CLAUDE.md, the same collision risk
+     * applies to any relation name here
+     */
+    public function reviews(): HasMany
+    {
+        return $this
+            ->hasMany(Review::class, 'entity_uuid', 'uuid')
+            ->where('entity_type', \App\Domain\Casts\Review\EntityType::CATALOG_PRODUCT)
+            ->where('type', \App\Domain\Casts\Review\Type::REVIEW)
+            ->whereNull('parent_uuid');
+    }
+
+    /**
+     * Top-level questions for this product (replies excluded)
+     */
+    public function questions(): HasMany
+    {
+        return $this
+            ->hasMany(Review::class, 'entity_uuid', 'uuid')
+            ->where('entity_type', \App\Domain\Casts\Review\EntityType::CATALOG_PRODUCT)
+            ->where('type', \App\Domain\Casts\Review\Type::QUESTION)
+            ->whereNull('parent_uuid');
     }
 
     public function attribute($address, $default = null): mixed

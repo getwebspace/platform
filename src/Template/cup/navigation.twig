@@ -33,6 +33,13 @@
                                 <span class="sub-item">{{ 'Categories'|locale }}</span>
                             </a>
                         </li>
+                        {% if parameter('review_publication_is_enabled', 'no') == 'yes' %}
+                            <li>
+                                <a href="/cup/publication/review">
+                                    <span class="sub-item">{{ 'Reviews'|locale }}</span>
+                                </a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </li>
@@ -124,6 +131,20 @@
                                 <span class="sub-item">{{ 'Statistic'|locale }}</span>
                             </a>
                         </li>
+                        {% if parameter('review_product_is_enabled', 'no') == 'yes' %}
+                            <li>
+                                <a href="/cup/catalog/review">
+                                    <span class="sub-item">{{ 'Reviews'|locale }}</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if parameter('review_question_product_is_enabled', 'no') == 'yes' %}
+                            <li>
+                                <a href="/cup/catalog/question">
+                                    <span class="sub-item">{{ 'Questions'|locale }}</span>
+                                </a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </li>

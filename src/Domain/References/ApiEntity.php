@@ -13,6 +13,7 @@ use App\Domain\Service\Parameter\ParameterService;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\PublicationService;
 use App\Domain\Service\Reference\ReferenceService;
+use App\Domain\Service\Review\ReviewService;
 use App\Domain\Service\Task\TaskService;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
@@ -40,6 +41,7 @@ class ApiEntity
         'publication' => PublicationService::class,
         'publication/category' => PublicationCategoryService::class,
         'reference' => ReferenceService::class,
+        'review' => ReviewService::class,
         'task' => TaskService::class,
         'user' => UserService::class,
         'user/group' => UserGroupService::class,
@@ -68,6 +70,7 @@ class ApiEntity
         'publication' => 'Publications',
         'publication/category' => 'Publication categories',
         'reference' => 'Reference books',
+        'review' => 'Reviews and questions',
         'task' => 'Background tasks',
         'user' => 'Users',
         'user/group' => 'User groups',

@@ -210,6 +210,16 @@ return function (App $app, Container $container): void {
                             $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Publication\Category\CategoryDeleteAction::class)
                                 ->setName('cup:publication:category:delete');
                         });
+
+                        // reviews
+                        $proxy->group('/review', function (Group $proxy): void {
+                            $proxy->map(['GET', 'POST'], '', \App\Application\Actions\Cup\Review\ReviewListAction::class)
+                                ->setName('cup:publication:review:list');
+                            $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Review\ReviewUpdateAction::class)
+                                ->setName('cup:publication:review:edit');
+                            $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Review\ReviewDeleteAction::class)
+                                ->setName('cup:publication:review:delete');
+                        });
                     });
 
                     // forms
@@ -300,6 +310,26 @@ return function (App $app, Container $container): void {
                                 ->setName('cup:catalog:order:document');
                             $proxy->map(['GET', 'POST'], '/{order}/dispatch', \App\Application\Actions\Cup\Catalog\Order\OrderDispatchAction::class)
                                 ->setName('cup:catalog:order:dispatch');
+                        });
+
+                        // product reviews
+                        $proxy->group('/review', function (Group $proxy): void {
+                            $proxy->map(['GET', 'POST'], '', \App\Application\Actions\Cup\Review\ReviewListAction::class)
+                                ->setName('cup:catalog:review:list');
+                            $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Review\ReviewUpdateAction::class)
+                                ->setName('cup:catalog:review:edit');
+                            $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Review\ReviewDeleteAction::class)
+                                ->setName('cup:catalog:review:delete');
+                        });
+
+                        // product questions
+                        $proxy->group('/question', function (Group $proxy): void {
+                            $proxy->map(['GET', 'POST'], '', \App\Application\Actions\Cup\Review\ReviewListAction::class)
+                                ->setName('cup:catalog:question:list');
+                            $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Review\ReviewUpdateAction::class)
+                                ->setName('cup:catalog:question:edit');
+                            $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Review\ReviewDeleteAction::class)
+                                ->setName('cup:catalog:question:delete');
                         });
                     });
 
@@ -503,6 +533,22 @@ return function (App $app, Container $container): void {
                             $proxy
                                 ->map(['GET', 'POST'], '/guestbook[/{page:[0-9]+}}]', \App\Application\Actions\Common\GuestBookAction::class)
                                 ->setName('common:guestbook')
+                                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+
+                            // reviews and questions
+                            $proxy
+                                ->post('/publication/{uuid}/review', \App\Application\Actions\Common\ReviewAction::class)
+                                ->setName('common:publication:review')
+                                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+
+                            $proxy
+                                ->post('/catalog/{uuid}/review', \App\Application\Actions\Common\ReviewAction::class)
+                                ->setName('common:catalog:review')
+                                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+
+                            $proxy
+                                ->post('/catalog/{uuid}/question', \App\Application\Actions\Common\ReviewAction::class)
+                                ->setName('common:catalog:question')
                                 ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
 
                             // xml files

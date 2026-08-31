@@ -13,6 +13,7 @@ use App\Domain\Service\Parameter\ParameterService;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\PublicationService;
 use App\Domain\Service\Reference\ReferenceService;
+use App\Domain\Service\Review\ReviewService;
 use App\Domain\Service\Task\TaskService;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\SubscriberService as UserSubscriberService;
@@ -50,6 +51,9 @@ return function (ContainerBuilder $containerBuilder): void {
 
         // reference
         ReferenceService::class => \DI\autowire(ReferenceService::class),
+
+        // review
+        ReviewService::class => \DI\autowire(ReviewService::class),
 
         // task
         TaskService::class => \DI\autowire(TaskService::class),

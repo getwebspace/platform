@@ -9,6 +9,7 @@ use App\Domain\Casts\Uuid;
 use App\Domain\Traits\HasFiles;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -88,6 +89,18 @@ class Publication extends Model
     public function user(): HasOne
     {
         return $this->hasOne(User::class, 'uuid', 'user_uuid');
+    }
+
+    /**
+     * Top-level reviews left on this publication (replies excluded)
+     */
+    public function reviews(): HasMany
+    {
+        return $this
+            ->hasMany(Review::class, 'entity_uuid', 'uuid')
+            ->where('entity_type', \App\Domain\Casts\Review\EntityType::PUBLICATION)
+            ->where('type', \App\Domain\Casts\Review\Type::REVIEW)
+            ->whereNull('parent_uuid');
     }
 
     public function toArray(): array

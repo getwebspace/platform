@@ -1,0 +1,130 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            {% include 'cup/form-header.twig' with {
+                'item': item,
+                'update': context.title
+            } only %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Author'|locale,
+                                    'type': 'text',
+                                    'name': 'author',
+                                    'args': {
+                                        'value': item.user ? item.user.name : '—',
+                                        'readonly': true
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-3">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Type'|locale,
+                                    'type': 'text',
+                                    'name': 'type',
+                                    'args': {
+                                        'value': item.type|locale,
+                                        'readonly': true
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-3">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Rating'|locale,
+                                    'type': 'number',
+                                    'name': 'rating',
+                                    'args': {
+                                        'value': item.rating,
+                                        'min': 0,
+                                        'max': 5,
+                                        'readonly': item.type != 'review'
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Message'|locale,
+                                    'type': 'textarea',
+                                    'name': 'message',
+                                    'args': {
+                                        'value': item.message,
+                                        'style': 'min-height: 160px;',
+                                        'readonly': true
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Answer'|locale,
+                                    'type': 'textarea',
+                                    'name': 'response',
+                                    'args': {
+                                        'value': reply ? reply.message : '',
+                                        'style': 'min-height: 160px;'
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        {% if item.files.count() %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label><b>{{ 'Files'|locale }}</b></label>
+                                    <ul>
+                                        {% for file in item.files %}
+                                            <li><a href="{{ file.public_path() }}" target="_blank">{{ file.filename() }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Date'|locale,
+                                    'type': 'datetime',
+                                    'name': 'date',
+                                    'args': {
+                                        'value': item.date|df('Y-m-d\\TH:i'),
+                                        'readonly': true
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Status'|locale,
+                                    'type': 'select',
+                                    'name': 'status',
+                                    'args': {
+                                        'option': _(constant('/App/Domain/Casts/Review/Status::LIST')),
+                                        'selected': item.status
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-action">
+                        {% include "cup/form-save.twig" %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
