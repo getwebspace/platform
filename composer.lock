@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5e8d72b2294870d74aaebede52a9652a",
+    "content-hash": "49d210608e5f4642a49e20c8589bf483",
     "packages": [
         {
             "name": "alksily/support",
@@ -4022,20 +4022,20 @@
         },
         {
             "name": "symfony/css-selector",
-            "version": "v7.4.17",
+            "version": "v8.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
-                "reference": "e3822e1cb7013a0a99b3c578130458927ec4eb89"
+                "reference": "08e2905152a39cf3fd1745d83f8c483e258887d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/css-selector/zipball/e3822e1cb7013a0a99b3c578130458927ec4eb89",
-                "reference": "e3822e1cb7013a0a99b3c578130458927ec4eb89",
+                "url": "https://api.github.com/repos/symfony/css-selector/zipball/08e2905152a39cf3fd1745d83f8c483e258887d9",
+                "reference": "08e2905152a39cf3fd1745d83f8c483e258887d9",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.2"
+                "php": ">=8.4.1"
             },
             "type": "library",
             "autoload": {
@@ -4067,7 +4067,7 @@
             "description": "Converts CSS selectors to XPath expressions",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/css-selector/tree/v7.4.17"
+                "source": "https://github.com/symfony/css-selector/tree/v8.1.6"
             },
             "funding": [
                 {
@@ -4087,7 +4087,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-21T17:40:08+00:00"
+            "time": "2026-08-23T10:06:25+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -5552,6 +5552,66 @@
             "time": "2024-12-13T08:58:55+00:00"
         },
         {
+            "name": "tedivm/jshrink",
+            "version": "v1.8.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tedious/JShrink.git",
+                "reference": "f76454d4c48ddae6354a2f0eeb16633d4e755c9a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tedious/JShrink/zipball/f76454d4c48ddae6354a2f0eeb16633d4e755c9a",
+                "reference": "f76454d4c48ddae6354a2f0eeb16633d4e755c9a",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0|^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.14",
+                "php-coveralls/php-coveralls": "^2.5.0",
+                "phpunit/phpunit": "^9|^10"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "JShrink": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Robert Hafner",
+                    "email": "tedivm@tedivm.com"
+                }
+            ],
+            "description": "Javascript Minifier built in PHP",
+            "homepage": "http://github.com/tedious/JShrink",
+            "keywords": [
+                "javascript",
+                "minifier"
+            ],
+            "support": {
+                "issues": "https://github.com/tedious/JShrink/issues",
+                "source": "https://github.com/tedious/JShrink/tree/v1.8.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/tedivm",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/tedivm/jshrink",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2025-11-20T14:34:30+00:00"
+        },
+        {
             "name": "twig/intl-extra",
             "version": "v3.26.0",
             "source": {
@@ -5763,82 +5823,27 @@
             "time": "2026-07-03T20:44:34+00:00"
         },
         {
-            "name": "voku/html-compress-twig",
-            "version": "4.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/voku/html-compress-twig.git",
-                "reference": "39b32474481d91019792e60fa44b3702ea098d71"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/voku/html-compress-twig/zipball/39b32474481d91019792e60fa44b3702ea098d71",
-                "reference": "39b32474481d91019792e60fa44b3702ea098d71",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.0.0",
-                "twig/twig": "~2.7 || ^3",
-                "voku/html-min": "~4.4",
-                "voku/simple-cache": "~4.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~6.0 || ~7.0 || ~9.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "voku\\": "src/voku/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "ISC"
-            ],
-            "authors": [
-                {
-                    "name": "Marcel Voigt",
-                    "email": "mv@noch.so"
-                },
-                {
-                    "name": "Lars Moelleken",
-                    "homepage": "http://www.moelleken.org/"
-                }
-            ],
-            "description": "Twig extension for compressing HTML",
-            "keywords": [
-                "compress",
-                "extension",
-                "html",
-                "minify",
-                "twig"
-            ],
-            "support": {
-                "source": "https://github.com/voku/html-compress-twig/tree/4.0.2"
-            },
-            "time": "2021-01-05T20:03:11+00:00"
-        },
-        {
             "name": "voku/html-min",
-            "version": "4.5.1",
+            "version": "5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/voku/HtmlMin.git",
-                "reference": "872dac444652d30791ca5d0c23fbe1e6b9cab5bc"
+                "reference": "2c807961d65df94ce095803dc18cdf212cf0ec6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/voku/HtmlMin/zipball/872dac444652d30791ca5d0c23fbe1e6b9cab5bc",
-                "reference": "872dac444652d30791ca5d0c23fbe1e6b9cab5bc",
+                "url": "https://api.github.com/repos/voku/HtmlMin/zipball/2c807961d65df94ce095803dc18cdf212cf0ec6a",
+                "reference": "2c807961d65df94ce095803dc18cdf212cf0ec6a",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
-                "php": ">=7.0.0",
-                "voku/simple_html_dom": "~4.8.5"
+                "php": ">=7.1.0",
+                "tedivm/jshrink": "^1.8.1",
+                "voku/simple_html_dom": "^5.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~6.0 || ~7.0 || ~9.0"
+                "phpunit/phpunit": "~6.0 || ~7.0 || ~8.0 || ~9.0"
             },
             "type": "library",
             "autoload": {
@@ -5867,7 +5872,7 @@
             ],
             "support": {
                 "issues": "https://github.com/voku/HtmlMin/issues",
-                "source": "https://github.com/voku/HtmlMin/tree/4.5.1"
+                "source": "https://github.com/voku/HtmlMin/tree/5.0.0"
             },
             "funding": [
                 {
@@ -5883,7 +5888,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2024-05-25T08:01:45+00:00"
+            "time": "2026-04-23T21:03:26+00:00"
         },
         {
             "name": "voku/portable-ascii",
@@ -5960,105 +5965,28 @@
             "time": "2026-04-26T05:33:54+00:00"
         },
         {
-            "name": "voku/simple-cache",
-            "version": "4.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/voku/simple-cache.git",
-                "reference": "d6578b2b1c7a1ed36c4a862cae826b703520e73b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/voku/simple-cache/zipball/d6578b2b1c7a1ed36c4a862cae826b703520e73b",
-                "reference": "d6578b2b1c7a1ed36c4a862cae826b703520e73b",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.0.0",
-                "psr/simple-cache": "~1.0 || ~2.0"
-            },
-            "provide": {
-                "psr/simple-cache-implementation": "1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~6.0 || ~7.0 || ~9.0"
-            },
-            "suggest": {
-                "predis/predis": "~1.1",
-                "symfony/var-exporter": "~3.0 || ~4.0 || ~5.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "voku\\cache\\": "src/voku/cache/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Lars Moelleken",
-                    "homepage": "https://www.moelleken.org/",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Simple Cache library",
-            "homepage": "https://github.com/voku/simple-cache",
-            "keywords": [
-                "cache",
-                "caching",
-                "php",
-                "simple cache"
-            ],
-            "support": {
-                "issues": "https://github.com/voku/simple-cache/issues",
-                "source": "https://github.com/voku/simple-cache/tree/4.1.0"
-            },
-            "funding": [
-                {
-                    "url": "https://www.paypal.me/moelleken",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/voku",
-                    "type": "github"
-                },
-                {
-                    "url": "https://www.patreon.com/voku",
-                    "type": "patreon"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/voku/simple-cache",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2022-12-20T11:05:33+00:00"
-        },
-        {
             "name": "voku/simple_html_dom",
-            "version": "4.8.10",
+            "version": "5.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/voku/simple_html_dom.git",
-                "reference": "716822ed52ed3a1881542be07a786270de390e99"
+                "reference": "091de9ee6daf73a7ee3a062fb53e3687bc54ef70"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/voku/simple_html_dom/zipball/716822ed52ed3a1881542be07a786270de390e99",
-                "reference": "716822ed52ed3a1881542be07a786270de390e99",
+                "url": "https://api.github.com/repos/voku/simple_html_dom/zipball/091de9ee6daf73a7ee3a062fb53e3687bc54ef70",
+                "reference": "091de9ee6daf73a7ee3a062fb53e3687bc54ef70",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
                 "ext-libxml": "*",
                 "ext-simplexml": "*",
-                "php": ">=7.0.0",
-                "symfony/css-selector": "~3.0 || ~4.0 || ~5.0 || ~6.0 || ~7.0"
+                "php": ">=7.1.0",
+                "symfony/css-selector": "~3.0 || ~4.0 || ~5.0 || ~6.0 || ~7.0 || ~8.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~6.0 || ~7.0 || ~9.0"
+                "phpunit/phpunit": "~6.0 || ~7.0 || ~8.0 || ~9.0"
             },
             "suggest": {
                 "voku/portable-utf8": "If you need e.g. UTF-8 fixed output."
@@ -6095,7 +6023,7 @@
             ],
             "support": {
                 "issues": "https://github.com/voku/simple_html_dom/issues",
-                "source": "https://github.com/voku/simple_html_dom/tree/4.8.10"
+                "source": "https://github.com/voku/simple_html_dom/tree/5.0.0"
             },
             "funding": [
                 {
@@ -6115,7 +6043,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-07-03T16:05:14+00:00"
+            "time": "2026-04-21T08:58:52+00:00"
         }
     ],
     "packages-dev": [

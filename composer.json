@@ -38,7 +38,7 @@
         "bacon/bacon-qr-code": "^3.1",
         "monolog/monolog": "^3.10",
         "symfony/var-dumper": "^8.1",
-        "voku/html-compress-twig": "^4.0.2",
+        "voku/html-min": "^5.0",
         "robmorgan/phinx": "^0.16.12",
         "teamtnt/tntsearch": "^4.4"
     },

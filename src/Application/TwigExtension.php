@@ -3,6 +3,7 @@
 namespace App\Application;
 
 use App\Application\Twig\LocaleParser;
+use App\Application\Twig\MinifyHtmlTokenParser;
 use App\Domain\AbstractExtension;
 use App\Domain\Casts\Reference\Type as ReferenceType;
 use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
@@ -22,19 +23,24 @@ use Illuminate\Cache\FileStore as FileCache;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Slim\Interfaces\RouteCollectorInterface;
+use Twig\Environment;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
+use voku\helper\HtmlMin;
 
 class TwigExtension extends AbstractExtension
 {
     protected RouteCollectorInterface $routeCollector;
+
+    private HtmlMin $htmlMin;
 
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
         $this->routeCollector = $container->get(RouteCollectorInterface::class);
+        $this->htmlMin = new HtmlMin();
     }
 
     public function getName()
@@ -46,6 +52,7 @@ class TwigExtension extends AbstractExtension
     {
         return [
             new LocaleParser(),
+            new MinifyHtmlTokenParser(),
         ];
     }
 
@@ -58,7 +65,23 @@ class TwigExtension extends AbstractExtension
             new TwigFilter('dfm', [$this, 'dfm']),
             new TwigFilter('locale', '__', ['is_safe' => ['html']]),
             new TwigFilter('trans', [$this, 'trans'], ['is_safe' => ['html']]),
+            new TwigFilter('htmlcompress', [$this, 'compress'], ['is_safe' => ['html'], 'needs_environment' => true]),
         ];
+    }
+
+    /**
+     * Minify HTML - only outside Twig's debug mode, same as the abandoned
+     * voku/html-compress-twig this replaces. Backs both the {% htmlcompress %}
+     * tag (see MinifyHtmlNode) and the htmlcompress filter/function.
+     */
+    public function compress(Environment $twig, string $html): string
+    {
+        return $this->isCompressionActive($twig) ? $this->htmlMin->minify($html) : $html;
+    }
+
+    public function isCompressionActive(Environment $twig): bool
+    {
+        return !$twig->isDebug();
     }
 
     public function getTests()
@@ -78,6 +101,7 @@ class TwigExtension extends AbstractExtension
         return [
             new TwigFunction('current_url', [$this, 'currentUrl']),
             new TwigFunction('parse_url', [$this, 'parseUrl']),
+            new TwigFunction('htmlcompress', [$this, 'compress'], ['is_safe' => ['html'], 'needs_environment' => true]),
 
             // slim functions
             new TwigFunction('path_for', [$this, 'pathFor']),
