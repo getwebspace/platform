@@ -5,16 +5,14 @@ namespace App\Domain\McpTools;
 use App\Domain\AbstractMcpTool;
 use App\Domain\Casts\Catalog\Status as CatalogStatus;
 use App\Domain\Models\CatalogProduct;
+use App\Domain\Service\Catalog\ProductService;
 
 class CatalogProductSearchTool extends AbstractMcpTool
 {
     public const NAME = 'catalog_product_search';
     public const TITLE = 'Search products';
-    public const DESCRIPTION = 'Searches catalog products by text (title, vendor code, barcode) and/or category. Returns short product cards; use catalog_product_get for full details.';
+    public const DESCRIPTION = 'Searches catalog products by title (case-insensitive substring), vendor code or barcode, and/or category. Returns short product cards; use catalog_product_get for full details.';
     public const SCOPE = 'catalog/product';
-
-    private const LIMIT_DEFAULT = 20;
-    private const LIMIT_MAX = 100;
 
     public function getInputSchema(): array
     {
@@ -23,7 +21,15 @@ class CatalogProductSearchTool extends AbstractMcpTool
             'properties' => [
                 'query' => [
                     'type' => 'string',
-                    'description' => 'Text to search in title, vendor code or barcode',
+                    'description' => 'Part of the product title',
+                ],
+                'vendorcode' => [
+                    'type' => 'string',
+                    'description' => 'Exact vendor code',
+                ],
+                'barcode' => [
+                    'type' => 'string',
+                    'description' => 'Exact barcode',
                 ],
                 'category_uuid' => [
                     'type' => 'string',
@@ -33,71 +39,50 @@ class CatalogProductSearchTool extends AbstractMcpTool
                     'type' => 'boolean',
                     'description' => 'Only special offers',
                 ],
-                'limit' => [
-                    'type' => 'integer',
-                    'minimum' => 1,
-                    'maximum' => self::LIMIT_MAX,
-                    'default' => self::LIMIT_DEFAULT,
-                ],
-                'offset' => [
-                    'type' => 'integer',
-                    'minimum' => 0,
-                    'default' => 0,
-                ],
-            ],
+            ] + $this->paginationSchema(),
         ];
     }
 
     public function execute(array $args = []): mixed
     {
-        $query = CatalogProduct::query()->where('status', CatalogStatus::WORK);
+        /** @var ProductService $productService */
+        $productService = $this->container->get(ProductService::class);
 
-        if (!blank($text = trim((string) ($args['query'] ?? '')))) {
-            $query->where(function ($query) use ($text): void {
-                $query
-                    ->where('title', 'like', '%' . $text . '%')
-                    ->orWhere('vendorcode', $text)
-                    ->orWhere('barcode', $text);
-            });
+        $filter = ['status' => CatalogStatus::WORK];
+
+        if (!blank($query = trim((string) ($args['query'] ?? '')))) {
+            $filter['search'] = $query;
         }
-        if (!blank($args['category_uuid'] ?? null)) {
-            $query->where('category_uuid', $args['category_uuid']);
+        // array form: a list, not a single-product lookup that throws on a miss
+        foreach (['vendorcode', 'barcode', 'category_uuid'] as $key) {
+            if (!blank($args[$key] ?? null)) {
+                $filter[$key] = [(string) $args[$key]];
+            }
         }
         if (isset($args['special'])) {
-            $query->where('special', (bool) $args['special']);
+            $filter['special'] = (bool) $args['special'];
         }
 
-        $total = $query->count();
-        $limit = min(self::LIMIT_MAX, max(1, (int) ($args['limit'] ?? self::LIMIT_DEFAULT)));
-        $offset = max(0, (int) ($args['offset'] ?? 0));
-
-        $products = $query
-            ->orderBy('order')
-            ->orderBy('title')
-            ->limit($limit)
-            ->offset($offset)
-            ->get();
-
-        return [
-            'total' => $total,
-            'limit' => $limit,
-            'offset' => $offset,
-            'items' => $products
-                ->map(fn (CatalogProduct $product) => [
-                    'uuid' => (string) $product->uuid,
-                    'title' => $product->title,
-                    'address' => $product->address,
-                    'category_uuid' => (string) $product->category_uuid,
-                    'vendorcode' => $product->vendorcode,
-                    'barcode' => $product->barcode,
-                    'price' => $product->price('price', 2),
-                    'price_wholesale' => $product->price('price_wholesale', 2),
-                    'quantity' => $product->quantity,
-                    'stock' => $product->stock,
-                    'special' => $product->special,
-                ])
-                ->values()
-                ->all(),
-        ];
+        return ['total' => $productService->count($filter)] + $this->paginate(
+            $args,
+            fn (int $limit, int $offset) => $productService->read($filter + [
+                'order' => ['order' => 'asc', 'title' => 'asc'],
+                'limit' => $limit,
+                'offset' => $offset,
+            ]),
+            fn (CatalogProduct $product) => [
+                'uuid' => (string) $product->uuid,
+                'title' => $product->title,
+                'address' => $product->address,
+                'category_uuid' => (string) $product->category_uuid,
+                'vendorcode' => $product->vendorcode,
+                'barcode' => $product->barcode,
+                'price' => $product->price('price', 2),
+                'price_wholesale' => $product->price('price_wholesale', 2),
+                'quantity' => $product->quantity,
+                'stock' => $product->stock,
+                'special' => $product->special,
+            ]
+        );
     }
 }

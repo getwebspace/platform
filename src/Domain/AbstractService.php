@@ -81,6 +81,15 @@ abstract class AbstractService
     {
         foreach ($criteria as $key => $value) {
             if (is_array($value)) {
+                // null in the list means "or not set": whereIn alone never matches NULL
+                if (in_array(null, $value, true)) {
+                    $values = array_values(array_filter($value, fn ($item) => $item !== null));
+
+                    $query->where(fn (Builder $query) => $query->whereNull($key)->when($values, fn (Builder $query) => $query->orWhereIn($key, $values)));
+
+                    continue;
+                }
+
                 $query->whereIn($key, $value);
             } else {
                 $query->where($key, $value);

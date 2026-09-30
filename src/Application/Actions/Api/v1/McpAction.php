@@ -112,10 +112,16 @@ class McpAction extends ActionApi
      */
     private function getTools(): Collection
     {
-        $apiKey = $this->request->getAttribute('apikey');
-        $apiKey = $apiKey instanceof ApiKey ? $apiKey : null;
+        $apiKey = $this->getApiKey();
 
         return $this->container->get('mcp')->get()->filter(fn (AbstractMcpTool $tool) => $tool->isAllowed($apiKey));
+    }
+
+    private function getApiKey(): ?ApiKey
+    {
+        $apiKey = $this->request->getAttribute('apikey');
+
+        return $apiKey instanceof ApiKey ? $apiKey : null;
     }
 
     private function callTool(mixed $id, array $params): array
@@ -130,6 +136,8 @@ class McpAction extends ActionApi
             return $this->error($id, self::INVALID_PARAMS, 'Unknown tool: ' . (is_string($name) ? $name : ''));
         }
 
+        $tool->setApiKey($this->getApiKey());
+
         try {
             $result = $tool->execute($args);
 
@@ -143,7 +151,7 @@ class McpAction extends ActionApi
             ]);
         } catch (AbstractException $e) {
             $text = $e->getDescription() ?: $e->getTitle();
-        } catch (\InvalidArgumentException|\DomainException $e) {
+        } catch (\DomainException|\InvalidArgumentException $e) {
             $text = $e->getMessage();
         } catch (\Throwable $e) {
             $this->logger->error('MCP tool call failed', ['tool' => $name, 'exception' => $e->getMessage()]);

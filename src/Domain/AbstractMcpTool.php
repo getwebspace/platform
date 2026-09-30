@@ -6,6 +6,7 @@ use App\Domain\Casts\ApiKey\Status as ApiKeyStatus;
 use App\Domain\Models\ApiKey;
 use App\Domain\Traits\HasParameters;
 use Illuminate\Cache\ArrayStore as ArrayCache;
+use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -48,11 +49,22 @@ abstract class AbstractMcpTool
      */
     public const SCOPE = '';
 
+    /**
+     * Page size for list tools
+     */
+    public const LIMIT_DEFAULT = 20;
+    public const LIMIT_MAX = 100;
+
     protected ContainerInterface $container;
 
     protected ArrayCache $arrayCache;
 
     protected LoggerInterface $logger;
+
+    /**
+     * API key of the current request, null when called without a key
+     */
+    protected ?ApiKey $apiKey = null;
 
     public function __construct(ContainerInterface $container)
     {
@@ -90,6 +102,55 @@ abstract class AbstractMcpTool
         }
 
         return $apiKey->can(static::SCOPE, static::READ_ONLY ? 'read' : 'write');
+    }
+
+    public function setApiKey(?ApiKey $apiKey): static
+    {
+        $this->apiKey = $apiKey;
+
+        return $this;
+    }
+
+    /**
+     * Whether the caller may read the entity (see App\Domain\References\ApiEntity)
+     * Useful for tools that combine data of several entities
+     */
+    protected function canRead(string $entity): bool
+    {
+        return $this->apiKey !== null && $this->apiKey->can($entity, 'read');
+    }
+
+    /**
+     * JSON Schema properties limit/offset for list tools
+     */
+    protected function paginationSchema(): array
+    {
+        return [
+            'limit' => ['type' => 'integer', 'minimum' => 1, 'maximum' => static::LIMIT_MAX, 'default' => static::LIMIT_DEFAULT],
+            'offset' => ['type' => 'integer', 'minimum' => 0, 'default' => 0],
+        ];
+    }
+
+    /**
+     * Page of a list: $read gets limit/offset for service read() and returns rows,
+     * one extra row is requested to know if there is a next page without count()
+     *
+     * @param callable(int $limit, int $offset): Collection $read
+     * @param callable(mixed $row): array                   $map  compact representation of a row
+     */
+    protected function paginate(array $args, callable $read, callable $map): array
+    {
+        $limit = min(static::LIMIT_MAX, max(1, (int) ($args['limit'] ?? static::LIMIT_DEFAULT)));
+        $offset = max(0, (int) ($args['offset'] ?? 0));
+
+        $rows = collect($read($limit + 1, $offset))->values();
+
+        return [
+            'items' => $rows->take($limit)->map($map)->values()->all(),
+            'limit' => $limit,
+            'offset' => $offset,
+            'has_more' => $rows->count() > $limit,
+        ];
     }
 
     /**

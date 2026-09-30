@@ -198,6 +198,11 @@ return function (ContainerBuilder $containerBuilder): void {
                     $this->register(\App\Domain\McpTools\CatalogProductSearchTool::class);
                     $this->register(\App\Domain\McpTools\CatalogProductGetTool::class);
                     $this->register(\App\Domain\McpTools\CatalogOrderGetTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogOrderListTool::class);
+                    $this->register(\App\Domain\McpTools\SiteOverviewTool::class);
+                    $this->register(\App\Domain\McpTools\ReferenceListTool::class);
+                    $this->register(\App\Domain\McpTools\FormDataListTool::class);
+                    $this->register(\App\Domain\McpTools\FormDataGetTool::class);
                 }
 
                 /**
