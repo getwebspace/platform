@@ -80,7 +80,13 @@ class EntityAction extends ActionApi
                                 } else {
                                     $status = 409;
                                 }
-                            } catch (AbstractNotFoundException|\Exception $e) {
+                            } catch (AbstractNotFoundException $e) {
+                                $status = 404;
+                            } catch (AbstractException $e) {
+                                // a rejected value (e-mail already taken, wrong phone...): tell the caller why
+                                $status = 422;
+                                $result = $e->getMessage();
+                            } catch (\Exception $e) {
                                 $status = 404;
                             }
                         } else {

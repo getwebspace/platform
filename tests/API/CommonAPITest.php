@@ -80,6 +80,30 @@ class CommonAPITest extends TestCase
         $this->assertEquals(404, $response->getStatusCode());
     }
 
+    public function testPatchTellsWhyValueIsRejected(): void
+    {
+        $this->getService(ParameterService::class)->create(['name' => 'entity_access', 'value' => 'key']);
+        $token = $this->createApiKeyToken();
+
+        $users = $this->getService(\App\Domain\Service\User\UserService::class);
+        $users->create(['username' => 'first', 'email' => 'taken@example.com']);
+        $second = $users->create(['username' => 'second', 'email' => 'free@example.com']);
+
+        $response = $this->createRequest()->patch('/api/v1/user?uuid=' . $second->uuid, [
+            'headers' => ['key' => $token],
+            'json' => ['email' => 'taken@example.com'],
+        ]);
+        $this->assertEquals(422, $response->getStatusCode());
+        $this->assertEquals('EXCEPTION_EMAIL_ALREADY_EXISTS', json_decode((string) $response->getBody(), true)['data']);
+
+        // nothing found is still 404
+        $response = $this->createRequest()->patch('/api/v1/user?uuid=' . \Ramsey\Uuid\Uuid::uuid4(), [
+            'headers' => ['key' => $token],
+            'json' => ['email' => 'other@example.com'],
+        ]);
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
     public function testAPIKeyRevocationTakesEffectImmediately(): void
     {
         $parameters = $this->getService(ParameterService::class);
