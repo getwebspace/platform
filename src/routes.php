@@ -36,6 +36,12 @@ return function (App $app, Container $container): void {
                                 ->setName('api:v1:search')
                                 ->add(\App\Application\Middlewares\AuthorizationAPIMiddleware::class);
 
+                            // mcp server
+                            $proxy
+                                ->map(['GET', 'POST', 'OPTIONS'], '/mcp', \App\Application\Actions\Api\v1\McpAction::class)
+                                ->setName('api:v1:mcp')
+                                ->add(\App\Application\Middlewares\AuthorizationAPIMiddleware::class);
+
                             // models getter/setter
                             $proxy
                                 ->map(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], '/{args:.*}', \App\Application\Actions\Api\v1\EntityAction::class)

@@ -82,6 +82,9 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
         if (blank($token)) {
             $token = $request->getHeaderLine('apikey');
         }
+        if (blank($token) && str_starts_with($request->getHeaderLine('Authorization'), 'Bearer ')) {
+            $token = trim(mb_substr($request->getHeaderLine('Authorization'), 7));
+        }
         if (!is_string($token) || blank($token)) {
             return false;
         }

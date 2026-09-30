@@ -178,6 +178,72 @@ return function (ContainerBuilder $containerBuilder): void {
         },
     ]);
 
+    // mcp tools
+    $containerBuilder->addDefinitions([
+        'mcp' => function (ContainerInterface $c) {
+            return new class($c) {
+                private ContainerInterface $container;
+
+                /**
+                 * @var array<string, \App\Domain\AbstractMcpTool|string>
+                 */
+                private array $tools = [];
+
+                final public function __construct(ContainerInterface $container)
+                {
+                    $this->container = $container;
+
+                    // built-in tools
+                    $this->register(\App\Domain\McpTools\CatalogCategoryListTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogProductSearchTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogProductGetTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogOrderGetTool::class);
+                }
+
+                /**
+                 * Register tool, instance is created on first use
+                 */
+                final public function register(\App\Domain\AbstractMcpTool|string $tool): bool
+                {
+                    $name = $tool::NAME;
+
+                    if (!isset($this->tools[$name])) {
+                        $this->tools[$name] = $tool;
+
+                        return true;
+                    }
+
+                    return false;
+                }
+
+                final public function has(string $name): bool
+                {
+                    return isset($this->tools[$name]);
+                }
+
+                final public function find(string $name): ?\App\Domain\AbstractMcpTool
+                {
+                    if (!isset($this->tools[$name])) {
+                        return null;
+                    }
+                    if (is_string($this->tools[$name])) {
+                        $this->tools[$name] = new $this->tools[$name]($this->container);
+                    }
+
+                    return $this->tools[$name];
+                }
+
+                /**
+                 * @return Collection<string, \App\Domain\AbstractMcpTool>
+                 */
+                final public function get(): Collection
+                {
+                    return collect(array_keys($this->tools))->mapWithKeys(fn ($name) => [$name => $this->find($name)]);
+                }
+            };
+        },
+    ]);
+
     // view twig file render
     $containerBuilder->addDefinitions([
         'view' => function (ContainerInterface $c) {

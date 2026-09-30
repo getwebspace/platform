@@ -2,6 +2,7 @@
 
 namespace App\Domain;
 
+use App\Domain\Traits\HasMcpTools;
 use App\Domain\Traits\HasParameters;
 use App\Domain\Traits\HasRenderer;
 use App\Domain\Traits\HasStorage;
@@ -17,6 +18,7 @@ use Slim\Psr7\Response;
 
 abstract class AbstractPlugin
 {
+    use HasMcpTools;
     use HasParameters;
     use HasRenderer;
     use HasStorage;

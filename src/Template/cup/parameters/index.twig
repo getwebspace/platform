@@ -522,6 +522,17 @@
                                                     }
                                                 } %}
 
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Enable MCP server',
+                                                    'description': 'Access for AI assistants via /api/v1/mcp, private tools require API key',
+                                                    'type': 'select',
+                                                    'name': 'mcp[is_enabled]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+
                                                 <ul class="nav nav-pills nav-info justify-content-end" role="tablist">
                                                     <li class="nav-item">
                                                         <a class="nav-link active show" data-toggle="pill" href="#other-api-access" role="tab">
