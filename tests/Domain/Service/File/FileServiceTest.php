@@ -23,19 +23,52 @@ class FileServiceTest extends TestCase
         $this->service = $this->getService(FileService::class);
     }
 
+    /**
+     * Files published to the web root for the "remote" test
+     */
+    private array $published = [];
+
+    public function tearDown(): void
+    {
+        foreach ($this->published as $path) {
+            @unlink($path);
+        }
+
+        parent::tearDown();
+    }
+
+    /**
+     * The image is served by the app itself (same host as API tests use),
+     * so the remote download path is tested without depending on the internet
+     */
     protected function getTestFileUrl()
     {
-        return 'https://loremflickr.com/300/400?t=' . time();
+        $name = 'test-' . uniqid() . '.jpg';
+
+        $this->published[] = $path = PUBLIC_DIR . '/' . $name;
+        $this->createTestImage($path);
+
+        return 'http://127.0.0.1:80/' . $name . '?t=' . time();
     }
 
     protected function getTestFile()
     {
-        $from = $this->getTestFileUrl();
-        $to = CACHE_DIR . '/' . md5('tmp' . time()) . '.jpg';
+        $path = CACHE_DIR . '/' . md5('tmp' . uniqid()) . '.jpg';
 
-        file_put_contents($to, file_get_contents($from));
+        $this->createTestImage($path);
 
-        return $to;
+        return $path;
+    }
+
+    /**
+     * Unique JPEG, so files never collide by hash
+     */
+    private function createTestImage(string $path): void
+    {
+        $image = imagecreatetruecolor(300, 400);
+        imagefill($image, 0, 0, imagecolorallocate($image, random_int(0, 255), random_int(0, 255), random_int(0, 255)));
+        imagestring($image, 5, 10, 10, uniqid('', true), imagecolorallocate($image, 255, 255, 255));
+        imagejpeg($image, $path);
     }
 
     public function testCreateSuccessFromLocal(): void
