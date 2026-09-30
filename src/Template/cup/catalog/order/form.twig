@@ -111,7 +111,7 @@
                                     'name': 'payment_uuid',
                                     'message': '<a href="/cup/reference/payments/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'' ~ ('Are you sure you want to go to another page?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Create method'|locale) ~ '</a>',
                                     'args': {
-                                        'option': ({(null):'---'})|merge(payment_list.pluck('title', 'uuid').all()),
+                                        'option': ({'':'---'})|merge(payment_list.pluck('title', 'uuid').all()),
                                         'selected': order.payment_uuid ? order.payment_uuid : null
                                     }
                                 } %}
@@ -123,7 +123,7 @@
                                     'name': 'status_uuid',
                                     'message': '<a href="/cup/reference/order-status/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'' ~ ('Are you sure you want to go to another page?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Create status'|locale) ~ '</a>',
                                     'args': {
-                                        'option': ({(null):'---'})|merge(status_list.pluck('title', 'uuid').all()),
+                                        'option': ({'':'---'})|merge(status_list.pluck('title', 'uuid').all()),
                                         'selected': order.status_uuid ? order.status_uuid : null
                                     }
                                 } %}
