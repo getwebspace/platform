@@ -13,7 +13,7 @@ class CatalogOrderListTool extends AbstractMcpTool
 {
     public const NAME = 'catalog_order_list';
     public const TITLE = 'Orders';
-    public const DESCRIPTION = 'Lists orders, newest first. "new_only" - orders not handled yet (no status or the first order status). '
+    public const DESCRIPTION = 'Lists orders, newest first, optionally for a period (date_from / date_to). "new_only" - orders not handled yet (no status or the first order status). '
         . 'Filter by status title (see reference_list type=order_status) or search by order number, phone or e-mail. Use catalog_order_get for the full order.';
     public const PRIVATE = true;
     public const SCOPE = 'catalog/order';
@@ -26,6 +26,8 @@ class CatalogOrderListTool extends AbstractMcpTool
                 'new_only' => ['type' => 'boolean', 'default' => false],
                 'status' => ['type' => 'string', 'description' => 'Order status title or uuid'],
                 'search' => ['type' => 'string', 'description' => 'Part of order number, phone or e-mail'],
+                'date_from' => ['type' => 'string', 'description' => 'Orders created from this date, YYYY-MM-DD (whole day) or YYYY-MM-DD HH:MM'],
+                'date_to' => ['type' => 'string', 'description' => 'Orders created up to this date, inclusive, same format'],
             ] + $this->paginationSchema(),
         ];
     }
@@ -43,6 +45,15 @@ class CatalogOrderListTool extends AbstractMcpTool
         }
         if (!blank($search = trim((string) ($args['search'] ?? '')))) {
             $filter['search'] = $search;
+        }
+
+        foreach (['date_from', 'date_to'] as $key) {
+            if (!blank($args[$key] ?? null)) {
+                $filter[$key] = $this->date((string) $args[$key], $key);
+            }
+        }
+        if (isset($filter['date_from'], $filter['date_to']) && datetime($filter['date_from']) > datetime($filter['date_to'])) {
+            throw new \InvalidArgumentException('date_from is later than date_to');
         }
 
         /** @var OrderService $orderService */
@@ -69,6 +80,17 @@ class CatalogOrderListTool extends AbstractMcpTool
                 'comment' => str_truncate((string) $order->comment, 100),
             ]
         );
+    }
+
+    private function date(string $value, string $field): string
+    {
+        $value = trim($value);
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}(:\d{2})?)?$/', $value) !== 1 || strtotime($value) === false) {
+            throw new \InvalidArgumentException("Field {$field} must be YYYY-MM-DD or YYYY-MM-DD HH:MM");
+        }
+
+        return $value;
     }
 
     private function statuses(): \Illuminate\Support\Collection

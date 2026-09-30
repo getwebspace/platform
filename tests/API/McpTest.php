@@ -190,6 +190,37 @@ class McpTest extends TestCase
         $this->assertTrue($error);
     }
 
+    public function testOrderListDateRange(): void
+    {
+        $orders = $this->getService(CatalogOrderService::class);
+        $dates = ['2026-03-10 09:00:00', '2026-03-10 23:30:00', '2026-03-11 00:00:00', '2026-04-01 12:00:00'];
+        $created = [];
+        foreach ($dates as $i => $date) {
+            $created[$i] = $orders->create(['phone' => '+7900000000' . $i, 'email' => "o{$i}@example.com"]);
+        }
+        // the serial is built from today, so the dates are set after all orders exist
+        foreach ($created as $i => $order) {
+            \App\Domain\Models\CatalogOrder::query()->where('uuid', $order->uuid)->update(['date' => $dates[$i]]);
+        }
+
+        $token = $this->createApiKeyToken(['read' => ['catalog/order']], false);
+        $emails = fn (array $args) => array_column($this->tool($token, 'catalog_order_list', $args)[1]['items'] ?? [], 'email');
+
+        // a plain date covers the whole day on both ends
+        $this->assertEqualsCanonicalizing(['o0@example.com', 'o1@example.com'], $emails(['date_from' => '2026-03-10', 'date_to' => '2026-03-10']));
+        $this->assertEqualsCanonicalizing(['o2@example.com', 'o3@example.com'], $emails(['date_from' => '2026-03-11']));
+        $this->assertEqualsCanonicalizing(['o0@example.com', 'o1@example.com', 'o2@example.com'], $emails(['date_to' => '2026-03-11']));
+        $this->assertEquals(['o1@example.com'], $emails(['date_from' => '2026-03-10 12:00', 'date_to' => '2026-03-10 23:59']));
+        $this->assertCount(4, $emails([]));
+
+        [$error, $text] = $this->tool($token, 'catalog_order_list', ['date_from' => '10.03.2026']);
+        $this->assertTrue($error);
+        $this->assertStringContainsString('YYYY-MM-DD', $text);
+
+        [$error] = $this->tool($token, 'catalog_order_list', ['date_from' => '2026-04-02', 'date_to' => '2026-04-01']);
+        $this->assertTrue($error);
+    }
+
     public function testSiteOverviewFollowsKeyScopes(): void
     {
         $this->getService(CatalogOrderService::class)->create(['phone' => '+79000000001']);

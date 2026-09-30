@@ -60,6 +60,8 @@ class OrderService extends AbstractService
             'payment_uuid' => null,
             'external_id' => null,
             'export' => null,
+            'date_from' => null,
+            'date_to' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -103,7 +105,17 @@ class OrderService extends AbstractService
                 return $catalogOrder ?: throw new OrderNotFoundException();
 
             default:
-                return $this->buildQuery(CatalogOrder::query(), $criteria, $data)->get();
+                $query = $this->buildQuery(CatalogOrder::query(), $criteria, $data);
+
+                // a date without time covers the whole day: from - its start, to - its end
+                if ($data['date_from'] !== null) {
+                    $query->where('date', '>=', $this->boundary($data['date_from'], false));
+                }
+                if ($data['date_to'] !== null) {
+                    $query->where('date', '<=', $this->boundary($data['date_to'], true));
+                }
+
+                return $query->get();
         }
     }
 
@@ -168,6 +180,21 @@ class OrderService extends AbstractService
         $count = CatalogOrder::query()->whereDate('date', $date)->count();
 
         return $count + 1;
+    }
+
+    /**
+     * Range boundary in the format the column is stored in (dates are compared as strings in SQLite):
+     * a plain date (Y-m-d) is expanded to the start or the end of the day
+     */
+    private function boundary(mixed $value, bool $end): string
+    {
+        $date = datetime($value);
+
+        if (is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) === 1) {
+            $date = $end ? $date->endOfDay() : $date->startOfDay();
+        }
+
+        return $date->format('Y-m-d H:i:s');
     }
 
     private function generateSerial(): string
