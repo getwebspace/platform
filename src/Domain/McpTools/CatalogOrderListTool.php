@@ -3,14 +3,14 @@
 namespace App\Domain\McpTools;
 
 use App\Domain\AbstractMcpTool;
-use App\Domain\Casts\Reference\Type as ReferenceType;
+use App\Domain\McpTools\Concerns\FindsOrderStatus;
 use App\Domain\Models\CatalogOrder;
-use App\Domain\Models\Reference;
 use App\Domain\Service\Catalog\OrderService;
-use App\Domain\Service\Reference\ReferenceService;
 
 class CatalogOrderListTool extends AbstractMcpTool
 {
+    use FindsOrderStatus;
+
     public const NAME = 'catalog_order_list';
     public const TITLE = 'Orders';
     public const DESCRIPTION = 'Lists orders, newest first, optionally for a period (date_from / date_to). "new_only" - orders not handled yet (no status or the first order status). '
@@ -38,10 +38,10 @@ class CatalogOrderListTool extends AbstractMcpTool
 
         if (!empty($args['new_only'])) {
             // same rule as the admin main page: no status yet or still the first one
-            $first = $this->firstStatus();
+            $first = $this->firstOrderStatus();
             $filter['status_uuid'] = $first ? [null, (string) $first->uuid] : [null];
         } elseif (!blank($args['status'] ?? null)) {
-            $filter['status_uuid'] = [(string) $this->findStatus((string) $args['status'])->uuid];
+            $filter['status_uuid'] = [(string) $this->findOrderStatus((string) $args['status'])->uuid];
         }
         if (!blank($search = trim((string) ($args['search'] ?? '')))) {
             $filter['search'] = $search;
@@ -91,31 +91,5 @@ class CatalogOrderListTool extends AbstractMcpTool
         }
 
         return $value;
-    }
-
-    private function statuses(): \Illuminate\Support\Collection
-    {
-        return $this->container->get(ReferenceService::class)->read([
-            'type' => ReferenceType::ORDER_STATUS,
-            'status' => true,
-            'order' => ['order' => 'asc'],
-        ]);
-    }
-
-    private function firstStatus(): ?Reference
-    {
-        return $this->statuses()->first();
-    }
-
-    private function findStatus(string $status): Reference
-    {
-        $statuses = $this->statuses();
-        $found = $statuses->first(fn (Reference $item) => (string) $item->uuid === $status || mb_strtolower($item->title) === mb_strtolower($status));
-
-        if ($found === null) {
-            throw new \InvalidArgumentException('Unknown order status, allowed: ' . $statuses->pluck('title')->implode(', '));
-        }
-
-        return $found;
     }
 }

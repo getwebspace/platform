@@ -203,6 +203,13 @@ return function (ContainerBuilder $containerBuilder): void {
                     $this->register(\App\Domain\McpTools\ReferenceListTool::class);
                     $this->register(\App\Domain\McpTools\FormDataListTool::class);
                     $this->register(\App\Domain\McpTools\FormDataGetTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogOrderUpdateStatusTool::class);
+                    $this->register(\App\Domain\McpTools\ReviewListTool::class);
+                    $this->register(\App\Domain\McpTools\ReviewModerateTool::class);
+                    $this->register(\App\Domain\McpTools\GuestBookListTool::class);
+                    $this->register(\App\Domain\McpTools\GuestBookModerateTool::class);
+                    $this->register(\App\Domain\McpTools\TaskListTool::class);
+                    $this->register(\App\Domain\McpTools\TaskRetryTool::class);
                 }
 
                 /**

@@ -2,14 +2,19 @@
 
 namespace tests\API;
 
+use App\Domain\Casts\Review\Status as ReviewStatus;
 use App\Domain\Casts\Reference\Type as ReferenceType;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
+use App\Domain\Casts\Task\Status as TaskStatus;
 use App\Domain\Service\Form\DataService as FormDataService;
 use App\Domain\Service\Form\FormService;
+use App\Domain\Service\GuestBook\GuestBookService;
 use App\Domain\Service\Parameter\ParameterService;
 use App\Domain\Service\Reference\ReferenceService;
+use App\Domain\Service\Review\ReviewService;
+use App\Domain\Service\Task\TaskService;
 use tests\TestCase;
 
 /**
@@ -219,6 +224,160 @@ class McpTest extends TestCase
 
         [$error] = $this->tool($token, 'catalog_order_list', ['date_from' => '2026-04-02', 'date_to' => '2026-04-01']);
         $this->assertTrue($error);
+    }
+
+    // wave 2: handling
+
+    public function testWave2ToolsFollowKeyScopes(): void
+    {
+        $orders = $this->tools($this->createApiKeyToken(['read' => ['catalog/order'], 'write' => []], false));
+        $this->assertContains('catalog_order_list', $orders);
+        $this->assertNotContains('catalog_order_update_status', $orders);
+
+        $writer = $this->tools($this->createApiKeyToken(['read' => ['review'], 'write' => ['review', 'catalog/order']], false));
+        $this->assertContains('review_list', $writer);
+        $this->assertContains('review_moderate', $writer);
+        $this->assertContains('catalog_order_update_status', $writer);
+        $this->assertNotContains('guestbook_moderate', $writer);
+        $this->assertNotContains('task_retry', $writer);
+
+        $full = $this->tools($this->createApiKeyToken());
+        foreach (['catalog_order_update_status', 'review_list', 'review_moderate', 'guestbook_list', 'guestbook_moderate', 'task_list', 'task_retry'] as $name) {
+            $this->assertContains($name, $full);
+        }
+    }
+
+    public function testOrderUpdateStatus(): void
+    {
+        $references = $this->getService(ReferenceService::class);
+        $references->create(['type' => ReferenceType::ORDER_STATUS, 'title' => 'Новый', 'order' => 1]);
+        $references->create(['type' => ReferenceType::ORDER_STATUS, 'title' => 'Выполнен', 'order' => 2]);
+        $order = $this->getService(CatalogOrderService::class)->create(['phone' => '+79000000001']);
+
+        $token = $this->createApiKeyToken(['read' => ['catalog/order'], 'write' => ['catalog/order']], false);
+
+        [$error, $result] = $this->tool($token, 'catalog_order_update_status', ['serial' => $order->serial, 'status' => 'выполнен']);
+        $this->assertFalse($error);
+        $this->assertTrue($result['changed']);
+        $this->assertNull($result['status_before']);
+        $this->assertEquals('Выполнен', $result['status']);
+
+        [, $result] = $this->tool($token, 'catalog_order_get', ['uuid' => (string) $order->uuid]);
+        $this->assertEquals('Выполнен', $result['status']['title']);
+
+        // same status again changes nothing
+        [, $result] = $this->tool($token, 'catalog_order_update_status', ['uuid' => (string) $order->uuid, 'status' => 'Выполнен']);
+        $this->assertFalse($result['changed']);
+
+        [$error, $text] = $this->tool($token, 'catalog_order_update_status', ['uuid' => (string) $order->uuid, 'status' => 'нет такого']);
+        $this->assertTrue($error);
+        $this->assertStringContainsString('Новый', $text);
+
+        [$error] = $this->tool($token, 'catalog_order_update_status', ['status' => 'Новый']);
+        $this->assertTrue($error);
+        [$error] = $this->tool($token, 'catalog_order_update_status', ['serial' => 'nope', 'status' => 'Новый']);
+        $this->assertTrue($error);
+    }
+
+    public function testReviewModeration(): void
+    {
+        $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Телефоны', 'address' => 'phones']);
+        $product = $this->getService(CatalogProductService::class)->create(['title' => 'Смартфон', 'address' => 'phone', 'category_uuid' => $category->uuid]);
+        $reviews = $this->getService(ReviewService::class);
+        $entry = fn (string $message, string $status) => $reviews->create([
+            'type' => 'review', 'entity_type' => 'catalog_product', 'entity_uuid' => $product->uuid, 'rating' => 5, 'message' => $message, 'status' => $status,
+        ]);
+        $waiting = $entry('Отличный товар', ReviewStatus::MODERATE);
+        $entry('Уже на сайте', ReviewStatus::WORK);
+
+        $token = $this->createApiKeyToken(['read' => ['review'], 'write' => ['review']], false);
+
+        [, $result] = $this->tool($token, 'review_list');
+        $this->assertCount(1, $result['items']);
+        $this->assertEquals('Отличный товар', $result['items'][0]['message']);
+        $this->assertEquals('Смартфон', $result['items'][0]['about']['title']);
+        $this->assertNull($result['items'][0]['reply']);
+
+        [, $result] = $this->tool($token, 'review_list', ['status' => 'all']);
+        $this->assertCount(2, $result['items']);
+
+        [, $result] = $this->tool($token, 'review_moderate', ['uuid' => (string) $waiting->uuid, 'decision' => 'publish', 'response' => 'Спасибо за отзыв!']);
+        $this->assertEquals('work', $result['status']);
+        $this->assertEquals('Спасибо за отзыв!', $result['reply']);
+
+        // the answer is a child row, not a separate top-level entry
+        [, $result] = $this->tool($token, 'review_list', ['status' => 'work']);
+        $this->assertCount(2, $result['items']);
+        $this->assertContains('Спасибо за отзыв!', array_column($result['items'], 'reply'));
+
+        // change the answer, then remove it
+        [, $result] = $this->tool($token, 'review_moderate', ['uuid' => (string) $waiting->uuid, 'response' => 'Благодарим!']);
+        $this->assertEquals('Благодарим!', $result['reply']);
+        [, $result] = $this->tool($token, 'review_moderate', ['uuid' => (string) $waiting->uuid, 'decision' => 'hide', 'response' => '']);
+        $this->assertEquals('moderate', $result['status']);
+        $this->assertNull($result['reply']);
+
+        [$error] = $this->tool($token, 'review_moderate', ['uuid' => (string) $waiting->uuid]);
+        $this->assertTrue($error);
+        [$error] = $this->tool($token, 'review_moderate', ['uuid' => (string) $waiting->uuid, 'decision' => 'delete']);
+        $this->assertTrue($error);
+        [$error] = $this->tool($token, 'review_list', ['status' => 'bad']);
+        $this->assertTrue($error);
+    }
+
+    public function testGuestBookModeration(): void
+    {
+        $guestBook = $this->getService(GuestBookService::class);
+        $entry = $guestBook->create(['name' => 'Иван', 'email' => 'ivan@example.com', 'message' => 'Хороший сайт', 'status' => 'moderate']);
+
+        $token = $this->createApiKeyToken(['read' => ['guestbook'], 'write' => ['guestbook']], false);
+
+        [, $result] = $this->tool($token, 'guestbook_list');
+        $this->assertEquals(['Хороший сайт'], array_column($result['items'], 'message'));
+
+        [, $result] = $this->tool($token, 'guestbook_moderate', ['uuid' => (string) $entry->uuid, 'decision' => 'publish', 'response' => 'Спасибо!']);
+        $this->assertEquals('work', $result['status']);
+        $this->assertEquals('Спасибо!', $result['response']);
+
+        [, $result] = $this->tool($token, 'guestbook_list');
+        $this->assertCount(0, $result['items']);
+        [, $result] = $this->tool($token, 'guestbook_list', ['status' => 'work', 'search' => 'ИВАН']);
+        $this->assertCount(1, $result['items']);
+
+        [$error] = $this->tool($token, 'guestbook_moderate', ['uuid' => (string) $entry->uuid]);
+        $this->assertTrue($error);
+    }
+
+    public function testTaskListAndRetry(): void
+    {
+        $tasks = $this->getService(TaskService::class);
+        $failed = $tasks->create(['title' => 'Упавшая', 'action' => \App\Domain\Tasks\ConvertImageTask::class, 'params' => ['uuid' => []], 'status' => TaskStatus::FAIL, 'output' => 'Файл не найден']);
+        $mail = $tasks->create(['title' => 'Письмо', 'action' => \App\Domain\Tasks\SendMailTask::class, 'status' => TaskStatus::FAIL]);
+        $done = $tasks->create(['title' => 'Готово', 'action' => \App\Domain\Tasks\ConvertImageTask::class, 'status' => TaskStatus::DONE]);
+
+        $token = $this->createApiKeyToken(['read' => ['task'], 'write' => ['task']], false);
+
+        [, $result] = $this->tool($token, 'task_list');
+        $this->assertEqualsCanonicalizing(['Упавшая', 'Письмо'], array_column($result['items'], 'title'));
+        $this->assertContains('Файл не найден', array_column($result['items'], 'output'));
+
+        [, $result] = $this->tool($token, 'task_list', ['status' => 'all']);
+        $this->assertCount(3, $result['items']);
+
+        [$error, $text] = $this->tool($token, 'task_retry', ['uuid' => (string) $mail->uuid]);
+        $this->assertTrue($error);
+        $this->assertStringContainsString('e-mails', $text);
+
+        [$error] = $this->tool($token, 'task_retry', ['uuid' => (string) $done->uuid]);
+        $this->assertTrue($error);
+
+        [$error, $result] = $this->tool($token, 'task_retry', ['uuid' => (string) $failed->uuid]);
+        $this->assertFalse($error);
+        $this->assertEquals('queue', $result['status']);
+
+        // the background worker may already be done with it, but it is not failed with the old output
+        $task = $tasks->read(['uuid' => (string) $failed->uuid]);
+        $this->assertNotEquals('Файл не найден', $task->output);
     }
 
     public function testSiteOverviewFollowsKeyScopes(): void
