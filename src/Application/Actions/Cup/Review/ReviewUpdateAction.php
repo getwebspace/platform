@@ -21,7 +21,7 @@ class ReviewUpdateAction extends ReviewAction
                     'entity_type' => $context['entity_type'],
                 ]);
 
-                /** @var Review $reply */
+                /** @var null|Review $reply */
                 $reply = $entry->getRelationValue('children')->first();
 
                 if ($this->isPost()) {
@@ -30,6 +30,7 @@ class ReviewUpdateAction extends ReviewAction
                         'rating' => (int) $this->getParam('rating', $entry->rating),
                         'status' => $this->getParam('status', $entry->status),
                     ]);
+                    /** @var \App\Domain\Models\Review $entry */
                     $entry = $this->processEntityFiles($entry);
 
                     $this->syncReply($entry, $reply, trim((string) $this->getParam('response', '')));

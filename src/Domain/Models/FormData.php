@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $form_uuid
  * @property array $data
  * @property string $message
- * @property \DateTime $date
+ * @property null|\DateTime $date
  * @property Form $form
  */
 class FormData extends Model

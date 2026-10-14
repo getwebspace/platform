@@ -119,7 +119,7 @@ class CategoryService extends AbstractService
             case !is_array($data['title']) && $data['title'] !== null:
             case !is_array($data['address']) && $data['address'] !== null:
             case !is_array($data['external_id']) && $data['external_id'] !== null:
-                /** @var CatalogCategory $catalogCategory */
+                /** @var null|CatalogCategory $catalogCategory */
                 $catalogCategory = $this->buildQuery(CatalogCategory::query(), $criteria, $data)->first();
 
                 return $catalogCategory ?: throw new CategoryNotFoundException();

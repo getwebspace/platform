@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $status
  * @property array $params
  * @property string $output
- * @property \DateTime $date
+ * @property null|\DateTime $date
  */
 class Task extends Model
 {

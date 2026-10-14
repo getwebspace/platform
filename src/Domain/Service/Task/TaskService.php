@@ -67,7 +67,7 @@ class TaskService extends AbstractService
 
         switch (true) {
             case !is_array($data['uuid']) && $data['uuid'] !== null:
-                /** @var Task $task */
+                /** @var null|Task $task */
                 $task = $this->buildQuery(Task::query(), $criteria, $data)->first();
 
                 return $task ?: throw new TaskNotFoundException();

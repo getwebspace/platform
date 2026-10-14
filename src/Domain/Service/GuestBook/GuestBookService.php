@@ -70,7 +70,7 @@ class GuestBookService extends AbstractService
 
         switch (true) {
             case !is_array($data['uuid']) && $data['uuid'] !== null:
-                /** @var GuestBook $entry */
+                /** @var null|GuestBook $entry */
                 $entry = $this->buildQuery(GuestBook::query(), $criteria, $data)->first();
 
                 return $entry ?: throw new EntryNotFoundException();

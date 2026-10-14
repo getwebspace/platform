@@ -20,15 +20,31 @@ properties read off a generic `Model`). That took the first run from 349 to 196 
 - `ProductExportAction` called the missing `CatalogProduct::getDate()`: the product export with a `date` column crashed.
 - `SendMailTask` called a private static through `static::`.
 
-### Found, not fixed (in the baseline)
+### Second pass: baseline 196 -> 108
 
-- `CatalogProduct::price()` / the match at ~line 280 have no default arm: an unknown type is an `UnhandledMatchError`.
-- `SystemPageAction::setup_user()`: `$group` may be undefined if `create()` throws something other than
-  `TitleAlreadyExistsException`.
-- `TaskRunAction`: `getHeaderLine('Referer') ?? '/cup'` never falls back, an empty Referer gives an empty redirect.
-- Model PHPDoc says `@property Status $status` while the cast returns a string, so PHPStan reports the
-  `=== UserStatus::WORK` checks as always false. They work (login is covered by tests); the PHPDoc is wrong.
-- `PluginMiddleware` calls `getHandledRoute()`, `before()`, `after()` that `AbstractPlugin` does not declare.
+Real bugs fixed:
+
+- `FormAction` CORS: `mb_strpos($origin, $remote) >= 0` is always true (`false >= 0`), so any caller got its own
+  origin echoed in `Access-Control-Allow-Origin` as soon as the form had one origin listed. Now a strict
+  comparison with `isSameOrigin()`, accepting `https://site.tld` or a bare `site.tld`; covered by `testFormCorsOrigin`.
+- `TokenService::delete()` by UUID called a non-existent `$this->service->findOneByUuid()`.
+- `SystemPageAction`: `$group` was read in `finally`, undefined if `create()` threw another exception.
+- `TaskRunAction`: `?? '/cup'` never applied to an empty Referer (now `?:`).
+- `array_flatten()` had `int $depth = INF`.
+
+Types and docs: middleware `__invoke()` return `ResponseInterface` (also in `AbstractMiddleware`, a child may still
+declare the narrower Slim response), `@var X|null` before `->first()` in the services, nullable `date`/`status`/`user`
+in the model PHPDoc, enum cast properties documented as `string`, `Dashboard::revenue()` shape, `AbstractTask` params.
+
+### Still in the baseline
+
+- ~60 "always true" checks: `read()` throws on a miss, so `if ($entity = $service->read(...))` is dead code.
+  Harmless, removing them is a separate cleanup.
+- Eloquent relations returning a builder where the method declares `HasMany` (`products()`, `reviews()`, `orders()`...).
+- `CatalogProduct::price()` and the match at ~line 280 have no default arm (`UnhandledMatchError`).
+- `ProductExportAction` reads `$model->volume`, which the model does not have.
+- `ProductImportTask:296` compares an int column index to `'empty'`.
+- `PluginMiddleware` and `AbstractPlugin::$container->set()` rely on `DI\Container` behind `ContainerInterface`.
 
 ## nginx
 

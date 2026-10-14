@@ -85,7 +85,7 @@ class FormService extends AbstractService
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['title']) && $data['title'] !== null:
             case !is_array($data['address']) && $data['address'] !== null:
-                /** @var Form $form */
+                /** @var null|Form $form */
                 $form = $this->buildQuery(Form::query(), $criteria, $data)->first();
 
                 return $form ?: throw new FormNotFoundException();

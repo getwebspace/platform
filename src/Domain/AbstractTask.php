@@ -164,7 +164,7 @@ abstract class AbstractTask
     }
 
     /**
-     * @param mixed $output
+     * @param string $output
      *
      * @throws Service\Task\Exception\TaskNotFoundException
      */
@@ -176,7 +176,7 @@ abstract class AbstractTask
     }
 
     /**
-     * @param mixed $output
+     * @param string $output
      *
      * @throws Service\Task\Exception\TaskNotFoundException
      */
@@ -188,7 +188,7 @@ abstract class AbstractTask
     }
 
     /**
-     * @param mixed $output
+     * @param string $output
      *
      * @throws Service\Task\Exception\TaskNotFoundException
      */
@@ -200,7 +200,7 @@ abstract class AbstractTask
     }
 
     /**
-     * @param mixed $output
+     * @param string $output
      *
      * @throws Service\Task\Exception\TaskNotFoundException
      */

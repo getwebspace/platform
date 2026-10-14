@@ -3,7 +3,7 @@
 namespace App\Application\Middlewares;
 
 use App\Domain\AbstractMiddleware;
-use App\Domain\AbstractPlugin;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Request;
 use Slim\Routing\RouteContext;
@@ -13,7 +13,7 @@ class PluginMiddleware extends AbstractMiddleware
     /**
      * @throws \Exception
      */
-    public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
+    public function __invoke(Request $request, RequestHandlerInterface $handler): ResponseInterface
     {
         /** @var \Illuminate\Support\Collection $plugins */
         $plugins = $this->container->get('plugin')
@@ -25,7 +25,7 @@ class PluginMiddleware extends AbstractMiddleware
             $route = $routeContext->getRoute();
             $routeName = $route->getName();
 
-            /** @var AbstractPlugin $plugin */
+            /** @var \App\Domain\Plugin\AbstractLegacyPlugin $plugin */
             foreach ($plugins as $plugin) {
                 foreach ($plugin->getHandledRoute() as $r) {
                     if ($routeName && str_starts_with($routeName, $r)) {
@@ -34,9 +34,10 @@ class PluginMiddleware extends AbstractMiddleware
                 }
             }
 
+            /** @var \Slim\Psr7\Response $response */
             $response = $handler->handle($request);
 
-            /** @var AbstractPlugin $plugin */
+            /** @var \App\Domain\Plugin\AbstractLegacyPlugin $plugin */
             foreach ($plugins as $plugin) {
                 foreach ($plugin->getHandledRoute() as $r) {
                     if ($routeName && str_starts_with($routeName, $r)) {

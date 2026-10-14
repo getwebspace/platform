@@ -36,7 +36,7 @@ class OrderExportAction extends CatalogAction
         if ($data['from'] && $data['to']) {
             $query = \App\Domain\Models\CatalogOrder::query();
             $query->whereBetween('date', [datetime($data['from']), datetime($data['to'])]);
-            $query->orderBy('date', 'DESC');
+            $query->orderBy('date', 'desc');
 
             // filter by status
             if ($data['status']) {

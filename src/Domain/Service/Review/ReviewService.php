@@ -108,7 +108,7 @@ class ReviewService extends AbstractService
 
         switch (true) {
             case !is_array($data['uuid']) && $data['uuid'] !== null:
-                /** @var Review $review */
+                /** @var null|Review $review */
                 $review = $this->buildQuery($query, $criteria, $data)->first();
 
                 return $review ?: throw new ReviewNotFoundException();

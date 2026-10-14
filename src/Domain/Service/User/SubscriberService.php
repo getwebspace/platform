@@ -66,7 +66,7 @@ class SubscriberService extends AbstractService
         switch (true) {
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['email']) && $data['email'] !== null:
-                /** @var UserSubscriber $page */
+                /** @var null|UserSubscriber $subscriber */
                 $subscriber = $this->buildQuery(UserSubscriber::query(), $criteria, $data)->first();
 
                 return $subscriber ?: throw new UserNotFoundException();

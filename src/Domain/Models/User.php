@@ -47,7 +47,7 @@ use Illuminate\Support\Collection;
  * @property bool $is_allow_mail
  * @property string $password
  * @property string $external_id
- * @property UserStatus $status
+ * @property string $status
  * @property UserGroup $group
  * @property Collection<UserToken> $tokens
  * @property Collection<UserIntegration> $integrations
@@ -231,7 +231,7 @@ class User extends Model
     public function avatar(int $size = 64, string $background = '0D8ABC', string $color = '000000'): string
     {
         if ($this->images->count()) {
-            /** @var File $file */
+            /** @var null|File $file */
             $file = $this->images->first();
 
             return $file->public_path('small');

@@ -22,8 +22,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $rating
  * @property string $message
  * @property string $status
- * @property \DateTime $date
- * @property User $user
+ * @property null|\DateTime $date
+ * @property null|User $user
  * @property Review $parent
  * @property \Illuminate\Database\Eloquent\Collection<Review> $children
  */

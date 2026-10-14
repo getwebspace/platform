@@ -91,7 +91,7 @@ class CategoryService extends AbstractService
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['title']) && $data['title'] !== null:
             case !is_array($data['address']) && $data['address'] !== null:
-                /** @var PublicationCategory $publicationCategory */
+                /** @var null|PublicationCategory $publicationCategory */
                 $publicationCategory = $this->buildQuery(PublicationCategory::query(), $criteria, $data)->first();
 
                 return $publicationCategory ?: throw new CategoryNotFoundException();

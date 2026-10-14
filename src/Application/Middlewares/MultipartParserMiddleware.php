@@ -4,12 +4,13 @@ namespace App\Application\Middlewares;
 
 use App\Domain\AbstractMiddleware;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\UploadedFile;
 
 class MultipartParserMiddleware extends AbstractMiddleware
 {
-    public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
+    public function __invoke(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $method = $request->getMethod();
 

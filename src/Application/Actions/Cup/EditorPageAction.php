@@ -55,6 +55,7 @@ class EditorPageAction extends AbstractAction
 
     private function getFiles(string $theme): \Illuminate\Support\Collection
     {
+        /** @var \Illuminate\Support\Collection<string, mixed> $list */
         $list = collect();
 
         $list['resource'] = [

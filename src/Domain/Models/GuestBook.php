@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $message
  * @property string $response
  * @property string $status
- * @property \DateTime $date
+ * @property null|\DateTime $date
  */
 class GuestBook extends Model
 {

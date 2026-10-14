@@ -462,7 +462,7 @@ abstract class AbstractAction
 
     protected function respondWithText(array|string $output = ''): Response
     {
-        if (is_array($output) || is_a($output, Collection::class)) {
+        if (is_array($output)) {
             $output = json_encode(array_serialize($output), JSON_UNESCAPED_UNICODE);
         }
         $this->response->getBody()->write($output);

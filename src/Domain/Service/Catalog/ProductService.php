@@ -172,7 +172,7 @@ class ProductService extends AbstractService
             case !is_array($data['vendorcode']) && $data['vendorcode'] !== null:
             case !is_array($data['barcode']) && $data['barcode'] !== null:
             case !is_array($data['external_id']) && $data['external_id'] !== null:
-                /** @var CatalogProduct $catalogProduct */
+                /** @var null|CatalogProduct $catalogProduct */
                 $catalogProduct = $this->buildQuery(CatalogProduct::query(), $criteria, $data)->first();
 
                 return $catalogProduct ?: throw new ProductNotFoundException();

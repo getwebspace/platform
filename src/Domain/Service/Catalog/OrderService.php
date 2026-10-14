@@ -99,7 +99,7 @@ class OrderService extends AbstractService
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['serial']) && $data['serial'] !== null:
             case !is_array($data['external_id']) && $data['external_id'] !== null:
-                /** @var CatalogOrder $catalogOrder */
+                /** @var null|CatalogOrder $catalogOrder */
                 $catalogOrder = $this->buildQuery(CatalogOrder::query(), $criteria, $data)->first();
 
                 return $catalogOrder ?: throw new OrderNotFoundException();

@@ -23,13 +23,13 @@ use Illuminate\Support\Collection;
  * @property string $comment
  * @property string $phone
  * @property string $email
- * @property \DateTime $date
+ * @property null|\DateTime $date
  * @property string $system
  * @property string $external_id
  * @property string $export
  * @property Collection<CatalogProduct> $products
- * @property Reference $status
- * @property Reference $payment
+ * @property null|Reference $status
+ * @property null|Reference $payment
  */
 class CatalogOrder extends Model
 {

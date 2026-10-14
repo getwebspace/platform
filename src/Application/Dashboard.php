@@ -126,7 +126,7 @@ class Dashboard
     /**
      * 30-day daily revenue / order counts, aggregated in SQL.
      *
-     * @return array{total: float, orders: int, today_orders: int, avg_check: float, daily: array<int, array{date: string, sum: float, count: int}>}
+     * @return array{total: float, orders: int, today_orders: int, avg_check: float, daily: array<int, array{date: string, order_count: int, sum: float, average_check: float}>}
      */
     public function revenue(): array
     {
@@ -166,7 +166,7 @@ class Dashboard
                 'date' => $key,
                 'order_count' => $count,
                 'sum' => round($sum, 2),
-                'average_check' => $count > 0 ? round($sum / $count, 2) : 0,
+                'average_check' => $count > 0 ? round($sum / $count, 2) : 0.0,
             ];
             $total += $sum;
             $orders += $count;

@@ -3,6 +3,7 @@
 namespace App\Application\Middlewares;
 
 use App\Domain\AbstractMiddleware;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
@@ -12,7 +13,7 @@ class NonWWWMiddleware extends AbstractMiddleware
     /**
      * @throws \Exception
      */
-    public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
+    public function __invoke(Request $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($this->parameter('common_non_www', 'no') === 'yes') {
             $scheme = $request->getUri()->getScheme();

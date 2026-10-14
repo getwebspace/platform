@@ -9,6 +9,7 @@ use App\Domain\Service\User\UserService;
 use App\Domain\Traits\UseSecurity;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\SignatureInvalidException;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
@@ -20,7 +21,7 @@ class AuthorizationMiddleware extends AbstractMiddleware
     /**
      * @throws \Exception
      */
-    public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
+    public function __invoke(Request $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $access_token = $request->getCookieParams()['access_token'] ?? null;
 

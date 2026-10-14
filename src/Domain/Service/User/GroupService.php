@@ -61,7 +61,7 @@ class GroupService extends AbstractService
         switch (true) {
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['title']) && $data['title'] !== null:
-                /** @var UserGroup $userGroup */
+                /** @var null|UserGroup $userGroup */
                 $userGroup = $this->buildQuery(UserGroup::query(), $criteria, $data)->first();
 
                 return $userGroup ?: throw new UserGroupNotFoundException();

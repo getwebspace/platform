@@ -97,7 +97,7 @@ class PublicationService extends AbstractService
             case !is_array($data['title']) && $data['title'] !== null:
             case !is_array($data['address']) && $data['address'] !== null:
             case !is_array($data['external_id']) && $data['external_id'] !== null:
-                /** @var Publication $publication */
+                /** @var null|Publication $publication */
                 $publication = $this->buildQuery(Publication::query(), $criteria, $data)->first();
 
                 return $publication ?: throw new PublicationNotFoundException();

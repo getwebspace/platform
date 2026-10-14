@@ -7,6 +7,7 @@ use Illuminate\Cache\ArrayStore as ArrayCache;
 use Illuminate\Cache\FileStore as FileCache;
 use Illuminate\Database\Connection as DataBase;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Request;
 
@@ -30,7 +31,7 @@ abstract class AbstractMiddleware
         $this->fileCache = $container->get(FileCache::class);
     }
 
-    abstract public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response;
+    abstract public function __invoke(Request $request, RequestHandlerInterface $handler): ResponseInterface;
 
     protected function getRequestRemoteIP(Request $request): string
     {

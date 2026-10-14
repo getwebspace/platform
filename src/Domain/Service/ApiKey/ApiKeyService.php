@@ -57,7 +57,7 @@ class ApiKeyService extends AbstractService
 
         switch (true) {
             case !is_array($data['uuid']) && $data['uuid'] !== null:
-                /** @var ApiKey $apiKey */
+                /** @var null|ApiKey $apiKey */
                 $apiKey = $this->buildQuery(ApiKey::query(), $criteria, $data)->first();
 
                 return $apiKey ?: throw new ApiKeyNotFoundException();

@@ -212,7 +212,7 @@ class FileService extends AbstractService
         switch (true) {
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['hash']) && $data['hash'] !== null:
-                /** @var File $file */
+                /** @var null|File $file */
                 $file = $this->buildQuery(File::query(), $criteria, $data)->first();
 
                 if (empty($file)) {
@@ -222,7 +222,7 @@ class FileService extends AbstractService
                 return $file;
 
             case !is_array($data['name']) && $data['name'] !== null && !is_array($data['ext']) && $data['ext'] !== null:
-                /** @var File $file */
+                /** @var null|File $file */
                 $file = File::firstWhere([
                     'name' => $data['name'],
                     'ext' => $data['ext'],

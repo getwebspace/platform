@@ -75,6 +75,7 @@ class ReviewModerateTool extends AbstractMcpTool
      */
     private function syncReply(ReviewService $reviewService, Review $review, string $message): void
     {
+        /** @var null|Review $reply */
         $reply = $review->children->first();
 
         if ($message === '') {

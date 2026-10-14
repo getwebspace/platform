@@ -35,7 +35,7 @@ use Illuminate\Support\Collection;
  * @property string $export
  * @property string $system
  * @property array $specifics
- * @property CatalogCategory $parent
+ * @property null|CatalogCategory $parent
  * @property Collection<CatalogAttribute> $attributes
  * @property Collection<CatalogAttribute> $filters
  * @property Collection<CatalogProduct> $products

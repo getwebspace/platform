@@ -7,12 +7,6 @@ parameters:
 			path: src/Application/Actions/Auth/RevokeTokenAction.php
 
 		-
-			message: '#^Left side of && is always true\.$#'
-			identifier: booleanAnd.leftAlwaysTrue
-			count: 1
-			path: src/Application/Actions/Common/Catalog/CartAction.php
-
-		-
 			message: '#^If condition is always true\.$#'
 			identifier: if.alwaysTrue
 			count: 1
@@ -37,44 +31,8 @@ parameters:
 			path: src/Application/Actions/Common/Catalog/ListAction.php
 
 		-
-			message: '#^Comparison operation "\>\=" between int\<0, max\>\|false and 0 is always true\.$#'
-			identifier: greaterOrEqual.alwaysTrue
-			count: 1
-			path: src/Application/Actions/Common/FormAction.php
-
-		-
 			message: '#^Dead catch \- DomainException is never thrown in the try block\.$#'
 			identifier: catch.neverThrown
-			count: 1
-			path: src/Application/Actions/Common/User/UserConfirmationAction.php
-
-		-
-			message: '#^Method App\\Application\\Actions\\Common\\User\\UserConfirmationAction\:\:resolveToken\(\) never returns App\\Domain\\Models\\User so it can be removed from the return type\.$#'
-			identifier: return.unusedType
-			count: 1
-			path: src/Application/Actions/Common/User/UserConfirmationAction.php
-
-		-
-			message: '#^Result of && is always false\.$#'
-			identifier: booleanAnd.alwaysFalse
-			count: 1
-			path: src/Application/Actions/Common/User/UserConfirmationAction.php
-
-		-
-			message: '#^Strict comparison using \!\=\= between App\\Domain\\Casts\\User\\Status and ''confirmation'' will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
-			count: 1
-			path: src/Application/Actions/Common/User/UserConfirmationAction.php
-
-		-
-			message: '#^Strict comparison using \=\=\= between App\\Domain\\Casts\\User\\Status and ''confirmation'' will always evaluate to false\.$#'
-			identifier: identical.alwaysFalse
-			count: 1
-			path: src/Application/Actions/Common/User/UserConfirmationAction.php
-
-		-
-			message: '#^Unreachable statement \- code above always terminates\.$#'
-			identifier: deadCode.unreachable
 			count: 1
 			path: src/Application/Actions/Common/User/UserConfirmationAction.php
 
@@ -127,12 +85,6 @@ parameters:
 			path: src/Application/Actions/Cup/Catalog/Order/OrderDocumentAction.php
 
 		-
-			message: '#^Parameter \#2 \$direction of method Illuminate\\Database\\Query\\Builder\:\:orderBy\(\) expects ''asc''\|''desc''\|SortDirection, ''DESC'' given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Application/Actions/Cup/Catalog/Order/OrderExportAction.php
-
-		-
 			message: '#^If condition is always true\.$#'
 			identifier: if.alwaysTrue
 			count: 1
@@ -161,24 +113,6 @@ parameters:
 			identifier: if.alwaysTrue
 			count: 2
 			path: src/Application/Actions/Cup/Catalog/Product/ProductImportAction.php
-
-		-
-			message: '#^Cannot assign offset ''resource'' to Illuminate\\Support\\Collection\<\*NEVER\*, \*NEVER\*\>\.$#'
-			identifier: offsetAssign.dimType
-			count: 1
-			path: src/Application/Actions/Cup/EditorPageAction.php
-
-		-
-			message: '#^Cannot assign offset ''theme'' to Illuminate\\Support\\Collection\<\*NEVER\*, \*NEVER\*\>\.$#'
-			identifier: offsetAssign.dimType
-			count: 1
-			path: src/Application/Actions/Cup/EditorPageAction.php
-
-		-
-			message: '#^Illuminate\\Support\\Collection\<\*NEVER\*, \*NEVER\*\> does not accept array\<string, Illuminate\\Support\\Collection\|string\>\.$#'
-			identifier: offsetAssign.valueType
-			count: 2
-			path: src/Application/Actions/Cup/EditorPageAction.php
 
 		-
 			message: '#^Negated boolean expression is always false\.$#'
@@ -265,24 +199,6 @@ parameters:
 			path: src/Application/Actions/Cup/Review/ReviewDeleteAction.php
 
 		-
-			message: '#^Parameter \#1 \$entry of method App\\Application\\Actions\\Cup\\Review\\ReviewUpdateAction\:\:syncReply\(\) expects App\\Domain\\Models\\Review, Illuminate\\Database\\Eloquent\\Model given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Application/Actions/Cup/Review/ReviewUpdateAction.php
-
-		-
-			message: '#^Variable \$group might not be defined\.$#'
-			identifier: variable.undefined
-			count: 1
-			path: src/Application/Actions/Cup/SystemPageAction.php
-
-		-
-			message: '#^Expression on left side of \?\? is not nullable\.$#'
-			identifier: nullCoalesce.expr
-			count: 1
-			path: src/Application/Actions/Cup/TaskRunAction.php
-
-		-
 			message: '#^If condition is always true\.$#'
 			identifier: if.alwaysTrue
 			count: 1
@@ -307,39 +223,9 @@ parameters:
 			path: src/Application/Actions/Cup/User/UserViewAction.php
 
 		-
-			message: '#^Result of && is always false\.$#'
-			identifier: booleanAnd.alwaysFalse
-			count: 2
-			path: src/Application/Auth/BasicAuthProvider.php
-
-		-
-			message: '#^Strict comparison using \=\=\= between App\\Domain\\Casts\\User\\Status and ''confirmation'' will always evaluate to false\.$#'
-			identifier: identical.alwaysFalse
-			count: 1
-			path: src/Application/Auth/BasicAuthProvider.php
-
-		-
-			message: '#^Strict comparison using \=\=\= between App\\Domain\\Casts\\User\\Status and ''work'' will always evaluate to false\.$#'
-			identifier: identical.alwaysFalse
-			count: 1
-			path: src/Application/Auth/BasicAuthProvider.php
-
-		-
-			message: '#^Method App\\Application\\Dashboard\:\:revenue\(\) should return array\{total\: float, orders\: int, today_orders\: int, avg_check\: float, daily\: array\<int, array\{date\: string, sum\: float, count\: int\}\>\} but returns array\{total\: float, orders\: int, today_orders\: int, avg_check\: float, daily\: non\-empty\-list\<array\{date\: non\-falsy\-string, order_count\: int, sum\: float, average_check\: 0\|float\}\>\}\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Application/Dashboard.php
-
-		-
 			message: '#^Left side of && is always true\.$#'
 			identifier: booleanAnd.leftAlwaysTrue
 			count: 1
-			path: src/Application/Middlewares/AccessCheckerMiddleware.php
-
-		-
-			message: '#^Method App\\Application\\Middlewares\\AccessCheckerMiddleware\:\:__invoke\(\) should return Slim\\Psr7\\Response but returns Psr\\Http\\Message\\ResponseInterface\.$#'
-			identifier: return.type
-			count: 2
 			path: src/Application/Middlewares/AccessCheckerMiddleware.php
 
 		-
@@ -365,84 +251,6 @@ parameters:
 			identifier: nullCoalesce.expr
 			count: 1
 			path: src/Application/Middlewares/AuthorizationAPIMiddleware.php
-
-		-
-			message: '#^Method App\\Application\\Middlewares\\AuthorizationAPIMiddleware\:\:__invoke\(\) should return Slim\\Psr7\\Response but returns Psr\\Http\\Message\\ResponseInterface\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Application/Middlewares/AuthorizationAPIMiddleware.php
-
-		-
-			message: '#^Method App\\Application\\Middlewares\\AuthorizationMiddleware\:\:__invoke\(\) should return Slim\\Psr7\\Response but returns Psr\\Http\\Message\\ResponseInterface\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Application/Middlewares/AuthorizationMiddleware.php
-
-		-
-			message: '#^Method App\\Application\\Middlewares\\CORSMiddleware\:\:__invoke\(\) should return Slim\\Psr7\\Response but returns Psr\\Http\\Message\\ResponseInterface\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Application/Middlewares/CORSMiddleware.php
-
-		-
-			message: '#^Method App\\Application\\Middlewares\\IsRouteEnabledAPIMiddleware\:\:__invoke\(\) should return Slim\\Psr7\\Response but returns Psr\\Http\\Message\\ResponseInterface\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Application/Middlewares/IsRouteEnabledAPIMiddleware.php
-
-		-
-			message: '#^Method App\\Application\\Middlewares\\IsRouteEnabledMiddleware\:\:__invoke\(\) should return Slim\\Psr7\\Response but returns Psr\\Http\\Message\\ResponseInterface\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Application/Middlewares/IsRouteEnabledMiddleware.php
-
-		-
-			message: '#^Method App\\Application\\Middlewares\\IsSiteEnabledMiddleware\:\:__invoke\(\) should return Slim\\Psr7\\Response but returns Psr\\Http\\Message\\ResponseInterface\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Application/Middlewares/IsSiteEnabledMiddleware.php
-
-		-
-			message: '#^Method App\\Application\\Middlewares\\LocaleMiddleware\:\:__invoke\(\) should return Slim\\Psr7\\Response but returns Psr\\Http\\Message\\ResponseInterface\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Application/Middlewares/LocaleMiddleware.php
-
-		-
-			message: '#^Method App\\Application\\Middlewares\\MultipartParserMiddleware\:\:__invoke\(\) should return Slim\\Psr7\\Response but returns Psr\\Http\\Message\\ResponseInterface\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Application/Middlewares/MultipartParserMiddleware.php
-
-		-
-			message: '#^Method App\\Application\\Middlewares\\NonWWWMiddleware\:\:__invoke\(\) should return Slim\\Psr7\\Response but returns Psr\\Http\\Message\\ResponseInterface\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Application/Middlewares/NonWWWMiddleware.php
-
-		-
-			message: '#^Call to an undefined method App\\Domain\\AbstractPlugin\:\:after\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Application/Middlewares/PluginMiddleware.php
-
-		-
-			message: '#^Call to an undefined method App\\Domain\\AbstractPlugin\:\:before\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Application/Middlewares/PluginMiddleware.php
-
-		-
-			message: '#^Call to an undefined method App\\Domain\\AbstractPlugin\:\:getHandledRoute\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: src/Application/Middlewares/PluginMiddleware.php
-
-		-
-			message: '#^Method App\\Application\\Middlewares\\PluginMiddleware\:\:__invoke\(\) should return Slim\\Psr7\\Response but returns Psr\\Http\\Message\\ResponseInterface\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Application/Middlewares/PluginMiddleware.php
 
 		-
 			message: '#^Call to an undefined method Twig\\Loader\\LoaderInterface\:\:addPath\(\)\.$#'
@@ -493,20 +301,8 @@ parameters:
 			path: src/Domain/AbstractAction.php
 
 		-
-			message: '#^Call to function is_a\(\) with string and ''Illuminate\\\\Support\\\\Collection'' will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: src/Domain/AbstractAction.php
-
-		-
 			message: '#^Call to function is_array\(\) with array\<Psr\\Http\\Message\\UploadedFileInterface\> will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Domain/AbstractAction.php
-
-		-
-			message: '#^Parameter \#1 \$object_or_class of function is_a expects object, string given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Domain/AbstractAction.php
 
@@ -547,94 +343,10 @@ parameters:
 			path: src/Domain/AbstractTask.php
 
 		-
-			message: '#^PHPDoc tag @param for parameter \$output with type mixed is not subtype of native type string\.$#'
-			identifier: parameter.phpDocType
-			count: 4
-			path: src/Domain/AbstractTask.php
-
-		-
-			message: '#^Using nullsafe method call on non\-nullable type DateTime\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Domain/McpTools/CatalogOrderListTool.php
-
-		-
-			message: '#^Using nullsafe property access on non\-nullable type App\\Domain\\Models\\Reference\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 2
-			path: src/Domain/McpTools/CatalogOrderListTool.php
-
-		-
-			message: '#^Using nullsafe property access on non\-nullable type App\\Domain\\Models\\Reference\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Domain/McpTools/CatalogOrderUpdateStatusTool.php
-
-		-
-			message: '#^Using nullsafe method call on non\-nullable type DateTime\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Domain/McpTools/FormDataListTool.php
-
-		-
-			message: '#^Using nullsafe method call on non\-nullable type DateTime\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Domain/McpTools/GuestBookListTool.php
-
-		-
-			message: '#^Using nullsafe method call on non\-nullable type App\\Domain\\Models\\User\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Domain/McpTools/ReviewListTool.php
-
-		-
-			message: '#^Using nullsafe method call on non\-nullable type DateTime\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Domain/McpTools/ReviewListTool.php
-
-		-
-			message: '#^Parameter \#1 \$entity of method App\\Domain\\Service\\Review\\ReviewService\:\:delete\(\) expects App\\Domain\\Models\\Review\|Ramsey\\Uuid\\UuidInterface\|string, Illuminate\\Database\\Eloquent\\Model given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Domain/McpTools/ReviewModerateTool.php
-
-		-
-			message: '#^Parameter \#1 \$entity of method App\\Domain\\Service\\Review\\ReviewService\:\:update\(\) expects App\\Domain\\Models\\Review\|Ramsey\\Uuid\\UuidInterface\|string, Illuminate\\Database\\Eloquent\\Model given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Domain/McpTools/ReviewModerateTool.php
-
-		-
-			message: '#^Offset ''order_count'' does not exist on array\{date\: string, sum\: float, count\: int\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: src/Domain/McpTools/SiteOverviewTool.php
-
-		-
-			message: '#^Parameter \#1 \$array \(array\{\}\) to function array_values is empty, call has no effect\.$#'
-			identifier: arrayValues.empty
-			count: 1
-			path: src/Domain/McpTools/SiteOverviewTool.php
-
-		-
-			message: '#^Using nullsafe method call on non\-nullable type DateTime\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Domain/McpTools/TaskListTool.php
-
-		-
 			message: '#^Access to an undefined property App\\Domain\\Models\\CatalogAttribute\:\:\$pivot\.$#'
 			identifier: property.notFound
 			count: 1
 			path: src/Domain/Models/CatalogAttribute.php
-
-		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
-			count: 2
-			path: src/Domain/Models/CatalogCategory.php
 
 		-
 			message: '#^Method App\\Domain\\Models\\CatalogCategory\:\:filtres\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany but returns Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\.$#'
@@ -652,12 +364,6 @@ parameters:
 			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<\(int\|string\),Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\|string\)\: array\<''ext''\|''link''\|''name''\|''order''\|''path''\|''type''\|''uuid'', mixed\>, Closure\(App\\Domain\\Models\\File\)\: array\<''ext''\|''link''\|''name''\|''order''\|''path''\|''type''\|''uuid'', mixed\> given\.$#'
 			identifier: argument.type
 			count: 1
-			path: src/Domain/Models/CatalogOrder.php
-
-		-
-			message: '#^Using nullsafe method call on non\-nullable type App\\Domain\\Models\\Reference\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 2
 			path: src/Domain/Models/CatalogOrder.php
 
 		-
@@ -727,12 +433,6 @@ parameters:
 			path: src/Domain/Models/PublicationCategory.php
 
 		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Models/Review.php
-
-		-
 			message: '#^Method App\\Domain\\Models\\User\:\:orders\(\) should return Illuminate\\Database\\Eloquent\\Relations\\HasMany but returns Illuminate\\Database\\Query\\Builder\.$#'
 			identifier: return.type
 			count: 1
@@ -745,148 +445,10 @@ parameters:
 			path: src/Domain/References/ApiEntity.php
 
 		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/ApiKey/ApiKeyService.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/Catalog/AttributeService.php
-
-		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
-			count: 2
-			path: src/Domain/Service/Catalog/CategoryService.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/Catalog/CategoryService.php
-
-		-
-			message: '#^Using nullsafe property access on non\-nullable type App\\Domain\\Models\\CatalogCategory\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Domain/Service/Catalog/CategoryService.php
-
-		-
 			message: '#^If condition is always true\.$#'
 			identifier: if.alwaysTrue
 			count: 1
 			path: src/Domain/Service/Catalog/OrderService.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/Catalog/OrderService.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/Catalog/ProductService.php
-
-		-
-			message: '#^Variable \$file in empty\(\) always exists and is not falsy\.$#'
-			identifier: empty.variable
-			count: 2
-			path: src/Domain/Service/File/FileService.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/Form/DataService.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/Form/FormService.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/GuestBook/GuestBookService.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/Page/PageService.php
-
-		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
-			count: 1
-			path: src/Domain/Service/Parameter/ParameterService.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/Publication/CategoryService.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/Publication/PublicationService.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/Reference/ReferenceService.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/Review/ReviewService.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/Task/TaskService.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/User/GroupService.php
-
-		-
-			message: '#^Method App\\Domain\\Service\\User\\SubscriberService\:\:read\(\) should return App\\Domain\\Models\\UserSubscriber\|Illuminate\\Support\\Collection but returns Illuminate\\Database\\Eloquent\\Model\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Domain/Service/User/SubscriberService.php
-
-		-
-			message: '#^Variable \$page in PHPDoc tag @var does not match assigned variable \$subscriber\.$#'
-			identifier: varTag.differentVariable
-			count: 1
-			path: src/Domain/Service/User/SubscriberService.php
-
-		-
-			message: '#^Access to an undefined property App\\Domain\\Service\\User\\TokenService\:\:\$service\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Domain/Service/User/TokenService.php
-
-		-
-			message: '#^Ternary operator condition is always true\.$#'
-			identifier: ternary.alwaysTrue
-			count: 1
-			path: src/Domain/Service/User/TokenService.php
 
 		-
 			message: '#^Ternary operator condition is always true\.$#'
@@ -917,21 +479,3 @@ parameters:
 			identifier: nullCoalesce.property
 			count: 1
 			path: src/Domain/Traits/HasRenderer.php
-
-		-
-			message: '#^Call to function is_a\(\) with null and ''Carbon\\\\Carbon'' will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: src/helpers.php
-
-		-
-			message: '#^Default value of the parameter \#2 \$depth \(float\) of function array_flatten\(\) is incompatible with type int\.$#'
-			identifier: parameter.defaultValue
-			count: 1
-			path: src/helpers.php
-
-		-
-			message: '#^Parameter \#1 \$object_or_class of function is_a expects object, null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/helpers.php
