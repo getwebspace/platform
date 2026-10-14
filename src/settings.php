@@ -60,6 +60,11 @@ return function (ContainerBuilder $containerBuilder): void {
             break;
 
         case false:
+            // never print warnings/deprecations into the response, log them instead
+            ini_set('display_errors', 0);
+            ini_set('display_startup_errors', 0);
+            ini_set('log_errors', 1);
+
             // should be enabled in production
             $containerBuilder->enableCompilation(CACHE_DIR);
 

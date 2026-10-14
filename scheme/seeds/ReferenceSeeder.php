@@ -163,9 +163,9 @@ class ReferenceSeeder extends AbstractSeed
         }
 
         $documents = [
-            ['title' => 'Order Invoice', 'value' => ['type' => \App\Domain\References\Documents::INVOICE_TYPE, 'template' => INVOICE_TEMPLATE]],
-            ['title' => 'Dispatch note', 'value' => ['type' => \App\Domain\References\Documents::DISPATCH_TYPE, 'template' => DISPATCH_TEMPLATE]],
-            ['title' => 'Act', 'value' => ['type' => \App\Domain\References\Documents::STATEMENT_TYPE, 'template' => STATEMENT_TEMPLATE]],
+            ['title' => 'Order Invoice', 'value' => ['target' => \App\Domain\References\Documents::ORDER_TARGET, 'template' => INVOICE_TEMPLATE]],
+            ['title' => 'Dispatch note', 'value' => ['target' => \App\Domain\References\Documents::ORDER_TARGET, 'template' => DISPATCH_TEMPLATE]],
+            ['title' => 'Act', 'value' => ['target' => \App\Domain\References\Documents::ORDER_TARGET, 'template' => STATEMENT_TEMPLATE]],
         ];
 
         foreach ($documents as $i => $item) {

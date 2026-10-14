@@ -54,10 +54,11 @@ class ListAction extends AbstractAction
                 default:
                     try {
                         $publication = $publicationService->read(['address' => $args['address']]);
+                        $category = $publication->category;
 
                         return $this->respond($category->template['full'] ?? 'publication.full.twig', [
                             'categories' => $categories->where('is_public', true),
-                            'category' => $publication->category,
+                            'category' => $category,
                             'publication' => $publication,
                         ]);
                     } catch (PublicationNotFoundException $e) {
