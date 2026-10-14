@@ -14,7 +14,7 @@ class XMLFileAction extends AbstractAction
         if (file_exists($path)) {
             $this->response->getBody()->write(file_get_contents(VAR_DIR . '/xml/' . $name . '.xml'));
 
-            return $this->response->withAddedHeader('Content-type', 'text/xml; charset=utf-8');
+            return $this->response->withHeader('Content-Type', 'text/xml; charset=utf-8');
         }
 
         return $this->respond('p404.twig')->withStatus(404);

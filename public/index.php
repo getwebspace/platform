@@ -13,8 +13,14 @@ if (PHP_SAPI === 'cli-server') {
     $_SERVER['SCRIPT_NAME'] = '';
 }
 
-// start session
-session_start();
+// the session starts only for a visitor who already has one, or when code asks for it
+// (see session_ensure()), so a plain page view never sets a cookie and stays cacheable;
+// cache headers are left to the response, PHP must not add its own `Expires: 1981`
+session_cache_limiter('');
+
+if (isset($_COOKIE[session_name()])) {
+    session_start();
+}
 
 // Include global const's
 require __DIR__ . '/../src/bootstrap.php';

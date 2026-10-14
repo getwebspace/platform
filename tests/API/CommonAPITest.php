@@ -3,6 +3,7 @@
 namespace tests\API;
 
 use App\Domain\Service\Parameter\ParameterService;
+use PHPUnit\Framework\Attributes\DataProvider;
 use tests\TestCase;
 
 /**
@@ -122,5 +123,86 @@ class CommonAPITest extends TestCase
         // same token, no re-issue - the row's status is checked on every request
         $response = $this->createRequest()->get('/api/v1/user', ['headers' => ['key' => $token]]);
         $this->assertEquals(401, $response->getStatusCode());
+    }
+
+    #[DataProvider('pageFormatProvider')]
+    public function testPageResponseFormat(array $headers, string $query, string $contentType): void
+    {
+        $response = $this->createRequest()->get('/' . $query, ['headers' => $headers]);
+
+        $this->assertStringStartsWith($contentType, $response->getHeaderLine('Content-Type'));
+        $this->assertStringContainsString('Accept', $response->getHeaderLine('Vary'));
+    }
+
+    public static function pageFormatProvider(): array
+    {
+        return [
+            'any type is html' => [['Accept' => '*/*'], '', 'text/html'],
+            'no accept is html' => [['Accept' => ''], '', 'text/html'],
+            'browser is html' => [['Accept' => 'text/html,application/xhtml+xml,application/json;q=0.9,*/*;q=0.8'], '', 'text/html'],
+            'explicit json' => [['Accept' => 'application/json'], '', 'application/json'],
+            'xhr with any type is json' => [['Accept' => '*/*', 'X-Requested-With' => 'XMLHttpRequest'], '', 'application/json'],
+        ];
+    }
+
+    public function testPageFormatQueryIsDebugOnly(): void
+    {
+        $debug = (bool) ($_ENV['DEBUG'] ?? getenv('DEBUG'));
+
+        $response = $this->createRequest()->get('/?format=json', ['headers' => ['Accept' => '*/*']]);
+
+        $this->assertStringStartsWith($debug ? 'application/json' : 'text/html', $response->getHeaderLine('Content-Type'));
+    }
+
+    public function testPublicPageIsCacheableAndVaries(): void
+    {
+        $response = $this->createRequest()->get('/', ['headers' => ['Accept' => 'text/html']]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('public, max-age=3600', $response->getHeaderLine('Cache-Control'));
+        $this->assertStringContainsString('Accept-Language', $response->getHeaderLine('Vary'));
+        $this->assertStringContainsString('Cookie', $response->getHeaderLine('Vary'));
+    }
+
+    public function testPlainPageViewSetsNoCookie(): void
+    {
+        $response = $this->createRequest()->get('/', ['headers' => ['Accept' => 'text/html']]);
+
+        $this->assertFalse($response->hasHeader('Set-Cookie'));
+        $this->assertFalse($response->hasHeader('Pragma'));
+    }
+
+    public function testNotFoundPageIsNotCached(): void
+    {
+        $response = $this->createRequest()->get('/no-such-page-' . uniqid(), ['headers' => ['Accept' => 'text/html']]);
+
+        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertStringContainsString('no-store', $response->getHeaderLine('Cache-Control'));
+        $this->assertStringNotContainsString('public', $response->getHeaderLine('Cache-Control'));
+    }
+
+    public function testLanguageSwitchIsNotCached(): void
+    {
+        $response = $this->createRequest()->get('/?lang=ru', ['headers' => ['Accept' => 'text/html']]);
+
+        $this->assertStringContainsString('no-store', $response->getHeaderLine('Cache-Control'));
+        $this->assertStringNotContainsString('public', $response->getHeaderLine('Cache-Control'));
+    }
+
+    public function testGuestBookPageNumberIsRouted(): void
+    {
+        $first = $this->createRequest()->get('/guestbook', ['headers' => ['Accept' => 'text/html']]);
+        $second = $this->createRequest()->get('/guestbook/2', ['headers' => ['Accept' => 'text/html']]);
+
+        // the pager used to fall through to the catch-all page route and answer 404
+        $this->assertEquals($first->getStatusCode(), $second->getStatusCode());
+    }
+
+    public function testXmlNameCannotLeaveTheDirectory(): void
+    {
+        $response = $this->createRequest()->get('/xml/..%2fsecret', ['headers' => ['Accept' => 'text/html']]);
+
+        $this->assertNotEquals(200, $response->getStatusCode());
+        $this->assertStringNotContainsString('xml', $response->getHeaderLine('Content-Type'));
     }
 }

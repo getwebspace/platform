@@ -631,6 +631,8 @@ class TwigExtension extends AbstractExtension
         $list = $_SESSION['catalog_product_view'] ?? [];
 
         if (is_string($uuid) && \Ramsey\Uuid\Uuid::isValid($uuid)) {
+            session_ensure();
+
             $list[] = $uuid;
             $list = array_unique($list);
 

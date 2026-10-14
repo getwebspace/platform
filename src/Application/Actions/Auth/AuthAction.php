@@ -19,8 +19,6 @@ abstract class AuthAction extends AbstractAction
 
     protected function isRequestJson(): bool
     {
-        $headerAccept = $this->request->getHeaderLine('accept');
-
-        return str_contains($headerAccept, 'application/json') || $headerAccept === '*/*';
+        return $this->getResponseFormat() === 'json';
     }
 }

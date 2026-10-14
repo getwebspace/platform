@@ -410,7 +410,7 @@ return function (App $app, Container $container): void {
                     $proxy
                         ->get('/', \App\Application\Actions\Common\MainPageAction::class)
                         ->setName('common:main')
-                        ->add(new \Slim\HttpCache\Cache('public', 60 * 60));
+                        ->add(new \App\Application\Middlewares\PublicCacheMiddleware(60 * 60));
 
                     // user
                     $proxy
@@ -537,7 +537,7 @@ return function (App $app, Container $container): void {
 
                             // guest book
                             $proxy
-                                ->map(['GET', 'POST'], '/guestbook[/{page:[0-9]+}}]', \App\Application\Actions\Common\GuestBookAction::class)
+                                ->map(['GET', 'POST'], '/guestbook[/{page:[0-9]+}]', \App\Application\Actions\Common\GuestBookAction::class)
                                 ->setName('common:guestbook')
                                 ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
 
@@ -558,14 +558,14 @@ return function (App $app, Container $container): void {
                                 ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
 
                             // xml files
-                            $proxy->get('/xml/{name}', \App\Application\Actions\Common\XMLFileAction::class)
+                            $proxy->get('/xml/{name:[\w-]+}', \App\Application\Actions\Common\XMLFileAction::class)
                                 ->setName('common:xml');
 
                             // page
                             $proxy->get('/{args:.*}', \App\Application\Actions\Common\PageAction::class)
                                 ->setName('common:page');
                         })
-                        ->add(new \Slim\HttpCache\Cache('public', 60 * 60));
+                        ->add(new \App\Application\Middlewares\PublicCacheMiddleware(60 * 60));
                 })
                 ->add(\App\Application\Middlewares\IsSiteEnabledMiddleware::class);
         })

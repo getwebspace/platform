@@ -31,6 +31,8 @@ class OpenAuthProvider extends AbstractAuthProvider
 
     protected function createState(): string
     {
+        session_ensure();
+
         $_SESSION['auth_state'] = $state = bin2hex(random_bytes(8));
         $_SESSION['auth_provider'] = class_basename($this->plugin);
 

@@ -369,31 +369,63 @@ abstract class AbstractAction
     }
 
     /**
+     * Pick the response format of a page route: html, json or text
+     *
+     * Html is the default: "any type" (`*\/*`), an empty header and a browser
+     * (`text/html` listed next to other types) all end up there. Json needs an
+     * explicit ask: `application/json` without `text/html`, or an XHR (jQuery
+     * sends `*\/*` for it, so the `X-Requested-With` marker is what tells it
+     * from a bot or a link preview). `?format=` is a debug knob for theme
+     * authors, honoured only with DEBUG on, so a public URL never changes
+     * format by its query string.
+     */
+    protected function getResponseFormat(): string
+    {
+        if (($_ENV['DEBUG'] ?? false) && in_array($format = $this->request->getQueryParams()['format'] ?? '', ['json', 'text', 'html'], true)) {
+            return $format;
+        }
+
+        $accept = strtolower($this->request->getHeaderLine('accept'));
+
+        if (str_contains($accept, 'text/html')) {
+            return 'html';
+        }
+        if (str_contains($accept, 'application/json') || $this->request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest') {
+            return 'json';
+        }
+        if (str_contains($accept, 'text/plain')) {
+            return 'text';
+        }
+
+        return 'html';
+    }
+
+    /**
      * @throws HttpBadRequestException
      */
     protected function respond(string $template, array $data = []): Response
     {
-        $format = $this->request->getQueryParams()['format'] ?? 'html';
-        $headerAccept = $this->request->getHeaderLine('accept');
-
-        switch (true) {
-            case $format === 'json':
-            case str_contains($headerAccept, 'application/json') || $headerAccept === '*/*':
-                return $this->respondWithJson([
+        switch ($this->getResponseFormat()) {
+            case 'json':
+                $response = $this->respondWithJson([
                     'errors' => $this->error,
                     'params' => $this->request->getQueryParams(),
                     'data' => $data,
                 ]);
 
-            case $format === 'text':
-            case str_contains($headerAccept, 'text/plain'):
-                return $this->respondWithText($data);
+                break;
 
-            case $format === 'html':
-            case str_contains($headerAccept, 'text/html'):
+            case 'text':
+                $response = $this->respondWithText($data);
+
+                break;
+
             default:
-                return $this->respondWithTemplate($template, $data);
+                $response = $this->respondWithTemplate($template, $data);
         }
+
+        // the format depends on these headers, a shared cache must not mix them up
+        return $response->withAddedHeader('Vary', 'Accept, X-Requested-With');
     }
 
     /**

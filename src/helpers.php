@@ -303,6 +303,19 @@ if (!function_exists('__')) {
     }
 }
 
+if (!function_exists('session_ensure')) {
+    /**
+     * Start the session on demand, call it before writing to $_SESSION
+     */
+    function session_ensure(): void
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_cache_limiter('');
+            session_start();
+        }
+    }
+}
+
 if (!function_exists('array_serialize')) {
     function array_serialize(mixed $array): mixed
     {
