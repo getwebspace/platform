@@ -1,0 +1,28 @@
+parameters:
+    level: 5
+    paths:
+        - src
+        - bin
+    # plugin/ and theme/ are maintained outside this repo
+    bootstrapFiles:
+        - config/vars.php
+    tmpDir: var/cache/phpstan
+    ignoreErrors:
+        # Eloquent forwards static calls to the query builder (__callStatic); PHPStan
+        # cannot see that without Larastan, which needs a booted Laravel app
+        -
+            identifier: staticMethod.notFound
+            path: src
+            message: '#^Call to an undefined static method App\\Domain\\Models\\\w+::(find|firstWhere|where|whereIn|orderBy|orderByDesc|count|sum|max|min|avg|pluck|query|create|all)\(\)\.$#'
+        # a service returns the generic Model, the concrete type is known only to the caller
+        -
+            identifier: property.notFound
+            path: src
+            message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model(\|Illuminate\\Support\\Collection)?::\$\w+\.$#'
+        # relation helpers return a builder in the trait, a relation in the model
+        -
+            identifier: return.type
+            path: src/Domain/Traits
+            message: '#should return Illuminate\\Database\\Eloquent\\Relations\\MorphToMany but returns#'
+includes:
+    - phpstan-baseline.neon

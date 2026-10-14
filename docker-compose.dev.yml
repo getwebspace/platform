@@ -27,5 +27,7 @@ services:
             - ./composer.lock:/var/container/composer.lock:rw
             - ./phpunit.xml:/var/container/phpunit.xml:rw
             - ./phinx.php:/var/container/phinx.php:rw
+            - ./phpstan.neon.dist:/var/container/phpstan.neon.dist:ro
+            - ./phpstan-baseline.neon:/var/container/phpstan-baseline.neon:rw
         ports:
             - 9000:80

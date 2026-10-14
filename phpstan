@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+docker-compose exec platform vendor/bin/phpstan analyse --memory-limit=1G "$@"

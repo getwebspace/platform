@@ -13,6 +13,9 @@ down:
 run-test:
 	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/phpunit --color=always --configuration phpunit.xml
 
+run-stan:
+	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress
+
 run-lint:
 	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php
 

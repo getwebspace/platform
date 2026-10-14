@@ -23,6 +23,7 @@ whatever's already running):
 ```bash
 make up              # docker-compose up + composer install + phinx migrate
 make run-test         # ./vendor/bin/phpunit --configuration phpunit.xml
+make run-stan         # ./vendor/bin/phpstan analyse (level 5, known findings in phpstan-baseline.neon)
 make run-lint         # ./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php
 make migrate-up       # phinx migrate
 make migrate-down     # phinx rollback
@@ -38,7 +39,7 @@ vendor/bin/phpunit --configuration phpunit.xml --filter testMethodName
 vendor/bin/phpunit --configuration phpunit.xml tests/Domain/Service/User/UserServiceTest.php
 ```
 
-`./phpunit`, `./phpcs`, `./phinx`, `./composer` at the repo root are thin
+`./phpunit`, `./phpcs`, `./phpstan`, `./phinx`, `./composer` at the repo root are thin
 wrappers around the same commands via `docker-compose exec`, for running
 from the host without `make`.
 

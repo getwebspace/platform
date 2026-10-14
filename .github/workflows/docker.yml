@@ -69,6 +69,12 @@ jobs:
           docker exec -e TEST=1 platform-test \
             ./vendor/bin/phpunit --configuration phpunit.xml --colors=never
 
+      # level 5, known findings are in phpstan-baseline.neon: only new ones fail
+      - name: Static analysis
+        run: |
+          docker exec platform-test \
+            ./vendor/bin/phpstan analyse --memory-limit=1G --no-progress --error-format=github
+
       - name: Container logs
         if: failure()
         run: docker logs platform-test
