@@ -70,7 +70,7 @@ if (!function_exists('array_flatten')) {
     /**
      * Flatten a multi-dimensional array into a single level.
      */
-    function array_flatten(array $array, int $depth = INF): array
+    function array_flatten(array $array, int|float $depth = INF): array
     {
         return Arr::flatten($array, $depth);
     }

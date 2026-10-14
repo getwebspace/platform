@@ -2,6 +2,7 @@
 
 namespace tests\API;
 
+use App\Domain\Service\Form\FormService;
 use App\Domain\Service\Parameter\ParameterService;
 use PHPUnit\Framework\Attributes\DataProvider;
 use tests\TestCase;
@@ -204,5 +205,33 @@ class CommonAPITest extends TestCase
 
         $this->assertNotEquals(200, $response->getStatusCode());
         $this->assertStringNotContainsString('xml', $response->getHeaderLine('Content-Type'));
+    }
+
+    #[DataProvider('formOriginProvider')]
+    public function testFormCorsOrigin(string $origin, ?string $expected): void
+    {
+        $this->getService(FormService::class)->create([
+            'title' => 'CORS form',
+            'address' => 'cors-form',
+            'origin' => "https://good.example\nother.example",
+            'mailto' => 'test@example.com',
+        ]);
+
+        $response = $this->createRequest()->post('/form/cors-form', [
+            'headers' => ['Origin' => $origin, 'X-Requested-With' => 'XMLHttpRequest'],
+            'form_params' => ['email' => 'visitor@example.com'],
+        ]);
+
+        $this->assertEquals($expected ?? '', $response->getHeaderLine('Access-Control-Allow-Origin'));
+    }
+
+    public static function formOriginProvider(): array
+    {
+        return [
+            'listed origin' => ['https://good.example', 'https://good.example'],
+            'listed bare host' => ['http://other.example', 'http://other.example'],
+            'stranger' => ['https://evil.example', null],
+            'look-alike' => ['https://good.example.evil.example', null],
+        ];
     }
 }

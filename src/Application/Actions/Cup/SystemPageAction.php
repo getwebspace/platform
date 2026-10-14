@@ -85,9 +85,9 @@ class SystemPageAction extends AbstractAction
                 ]);
             } catch (TitleAlreadyExistsException $e) {
                 $group = $userGroupService->read(['title' => 'Administrators']);
-            } finally {
-                $userData['group_uuid'] = $group->uuid;
             }
+
+            $userData['group_uuid'] = $group->uuid;
 
             try {
                 // create user with administrator group

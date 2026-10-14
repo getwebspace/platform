@@ -8,7 +8,7 @@ class TaskRunAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $redirect = $this->request->getHeaderLine('Referer') ?? '/cup';
+        $redirect = $this->request->getHeaderLine('Referer') ?: '/cup';
 
         if ($this->isPost()) {
             if (($name = $this->getParam('task', null)) !== null && class_exists($name)) {

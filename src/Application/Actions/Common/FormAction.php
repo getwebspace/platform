@@ -35,7 +35,7 @@ class FormAction extends AbstractAction
 
                 // CORS header sets
                 foreach ($form->origin as $origin) {
-                    if ($remote && mb_strpos($origin, $remote) >= 0) {
+                    if ($remote && $this->isSameOrigin($origin, $remote)) {
                         $this->response = $this->response->withHeader('Access-Control-Allow-Origin', $remote);
 
                         break;
@@ -142,5 +142,23 @@ class FormAction extends AbstractAction
         }
 
         return $this->response->withStatus(500);
+    }
+
+    /**
+     * Does the caller (Origin or Referer, so possibly with a path) belong to the allowed origin
+     * from the form settings, written either as `https://site.tld` or just `site.tld`
+     */
+    private function isSameOrigin(string $allowed, string $remote): bool
+    {
+        $allowed = rtrim(trim($allowed), '/');
+        $parts = parse_url($remote);
+
+        if ($allowed === '' || !is_array($parts) || empty($parts['scheme']) || empty($parts['host'])) {
+            return false;
+        }
+
+        $host = $parts['host'] . (isset($parts['port']) ? ':' . $parts['port'] : '');
+
+        return strcasecmp($allowed, $parts['scheme'] . '://' . $host) === 0 || strcasecmp($allowed, $host) === 0;
     }
 }
