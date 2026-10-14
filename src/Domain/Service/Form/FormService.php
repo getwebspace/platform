@@ -31,7 +31,7 @@ class FormService extends AbstractService
 
         // if address generation is enabled
         if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {
-            $form->address = $page->title ?? uniqid();
+            $form->address = $form->title ?? uniqid();
         }
 
         if (Form::firstWhere(['title' => $form->title]) !== null) {
@@ -117,7 +117,7 @@ class FormService extends AbstractService
 
             // if address generation is enabled
             if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {
-                $entity->address = $page->title ?? uniqid();
+                $entity->address = $entity->title ?? uniqid();
             }
 
             if ($entity->isDirty('title')) {

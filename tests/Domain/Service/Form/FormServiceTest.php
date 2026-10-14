@@ -8,6 +8,7 @@ use App\Domain\Service\Form\Exception\FormNotFoundException;
 use App\Domain\Service\Form\Exception\MissingTitleValueException;
 use App\Domain\Service\Form\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Form\FormService;
+use App\Domain\Service\Parameter\ParameterService;
 use tests\TestCase;
 
 /**
@@ -21,7 +22,19 @@ class FormServiceTest extends TestCase
 
     public function setUp(): void
     {
+        parent::setUp();
+
         $this->service = $this->getService(FormService::class);
+    }
+
+    public function testCreateGeneratesAddressFromTitle(): void
+    {
+        $this->getService(ParameterService::class)->create(['name' => 'common_auto_generate_address', 'value' => 'yes']);
+
+        $form = $this->service->create(['title' => 'Feedback form ' . ($suffix = uniqid())]);
+
+        // used to be a random uniqid(): the title was read from an undefined variable
+        $this->assertEquals('feedback-form-' . $suffix, $form->address);
     }
 
     public function testCreateSuccess(): void

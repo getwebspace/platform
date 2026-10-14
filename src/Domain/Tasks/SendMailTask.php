@@ -75,7 +75,7 @@ class SendMailTask extends AbstractTask
             }
         }
 
-        $mailto = static::describeRecipients($args['to']);
+        $mailto = self::describeRecipients($args['to']);
 
         try {
             Mail::send($params);
