@@ -146,13 +146,13 @@ class CommonAPITest extends TestCase
         ];
     }
 
-    public function testPageFormatQueryIsDebugOnly(): void
+    public function testPageFormatQueryOverridesAccept(): void
     {
-        $debug = (bool) ($_ENV['DEBUG'] ?? getenv('DEBUG'));
+        $response = $this->createRequest()->get('/?format=json', ['headers' => ['Accept' => 'text/html']]);
+        $this->assertStringStartsWith('application/json', $response->getHeaderLine('Content-Type'));
 
-        $response = $this->createRequest()->get('/?format=json', ['headers' => ['Accept' => '*/*']]);
-
-        $this->assertStringStartsWith($debug ? 'application/json' : 'text/html', $response->getHeaderLine('Content-Type'));
+        $response = $this->createRequest()->get('/?format=html', ['headers' => ['Accept' => 'application/json']]);
+        $this->assertStringStartsWith('text/html', $response->getHeaderLine('Content-Type'));
     }
 
     public function testPublicPageIsCacheableAndVaries(): void

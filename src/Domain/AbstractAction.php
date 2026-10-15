@@ -381,7 +381,8 @@ abstract class AbstractAction
      */
     protected function getResponseFormat(): string
     {
-        if (($_ENV['DEBUG'] ?? false) && in_array($format = $this->request->getQueryParams()['format'] ?? '', ['json', 'text', 'html'], true)) {
+        // an explicit `?format=` is part of the URL (and of any cache key), so it always wins
+        if (in_array($format = $this->request->getQueryParams()['format'] ?? '', ['json', 'text', 'html'], true)) {
             return $format;
         }
 

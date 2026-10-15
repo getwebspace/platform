@@ -11,7 +11,8 @@ before `Accept`.
 - `AbstractAction::getResponseFormat()`: html by default; `text/html` anywhere in `Accept` wins;
   json only for explicit `application/json` or an XHR; text for `text/plain`.
 - `respond()` adds `Vary: Accept, X-Requested-With` to every branch.
-- `?format=` is honoured only with `DEBUG` on.
+- `?format=` always wins over `Accept` (a response format, not a debug feature; reverted the
+  DEBUG-only restriction on 2026-10-15). It is part of the URL, so caches keep the variants apart.
 - `AuthAction::isRequestJson()` uses the same method.
 
 ## Why the XHR marker
@@ -52,4 +53,4 @@ Open: a theme that prints the signed-in user on a cached page. Anonymous respons
 so a user block cannot leak, but a theme must not render per-visitor data for anonymous visitors.
 
 Tests: `tests/API/CommonAPITest.php` (format negotiation, cache headers, cookies, guestbook, xml). Run in the dev container;
-note that it starts with `DEBUG=1`, where `?format=` is honoured, `testPageFormatQueryIsDebugOnly` reads that flag.
+`testPageFormatQueryOverridesAccept` checks `?format=` against a conflicting `Accept`.
