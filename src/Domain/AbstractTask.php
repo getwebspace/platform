@@ -38,6 +38,13 @@ abstract class AbstractTask
      */
     public static function worker(mixed $action = ''): void
     {
+        // tests re-create the shared SQLite file before every test case, a worker left
+        // running from the previous one holds it and phinx fails with "database is locked";
+        // the task itself stays queued, nothing in the tests waits for it to be processed
+        if (!empty($_ENV['TEST'])) {
+            return;
+        }
+
         if (is_object($action)) {
             $action = get_class($action);
         }

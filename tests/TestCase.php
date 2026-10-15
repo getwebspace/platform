@@ -32,6 +32,24 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         static::$container = static::$app->getContainer();
 
         static::ensureSecretKeys();
+        static::ensureWritableDatabase();
+    }
+
+    /**
+     * phpunit (and phinx inside setUp) usually runs as root via `docker exec`,
+     * while the API tests are answered by php-fpm as www-data. A database file
+     * created here as 0644 then fails every write from the app with "attempt to
+     * write a readonly database" - so make sure www-data can write it too
+     */
+    private static function ensureWritableDatabase(): void
+    {
+        $file = VAR_DIR . '/database-test.sqlite';
+
+        if (!file_exists($file)) {
+            touch($file);
+        }
+
+        @chmod($file, 0o666);
     }
 
     /**
