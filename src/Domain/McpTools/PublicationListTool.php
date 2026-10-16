@@ -14,7 +14,7 @@ class PublicationListTool extends AbstractMcpTool
     public const NAME = 'publication_list';
     public const TITLE = 'Publications';
     public const DESCRIPTION = 'Lists publications (news, articles), newest first, with state: published, scheduled (date in the future) or draft (created by publication_create without publishing). '
-        . 'Search by title or address. Use publication_get for the text.';
+        . 'Search by title or address. Items carry the SEO meta and \'total\' is the number of publications that match, so a list is enough for an audit. Use publication_get for the text.';
     public const PRIVATE = true;
     public const SCOPE = 'publication';
 
@@ -50,18 +50,20 @@ class PublicationListTool extends AbstractMcpTool
         /** @var PublicationService $publicationService */
         $publicationService = $this->container->get(PublicationService::class);
 
-        return $this->paginate(
+        $filter += match ($state) {
+            'published' => ['date_to' => datetime()->addYears(50)->toDateTimeString()],
+            'draft' => ['date_from' => datetime()->addYears(50)->toDateTimeString()],
+            default => [],
+        };
+
+        return ['total' => $publicationService->count($filter)] + $this->paginate(
             $args,
             fn (int $limit, int $offset) => $publicationService->read($filter + [
                 'with' => ['category'],
                 'order' => ['date' => 'desc'],
                 'limit' => $limit,
                 'offset' => $offset,
-            ] + match ($state) {
-                'published' => ['date_to' => datetime()->addYears(50)->toDateTimeString()],
-                'draft' => ['date_from' => datetime()->addYears(50)->toDateTimeString()],
-                default => [],
-            }),
+            ]),
             fn (Publication $publication) => $this->publicationCard($publication)
         );
     }

@@ -38,6 +38,13 @@ class McpAction extends ActionApi
             return $this->response->withHeader('Allow', 'POST')->withStatus(405);
         }
 
+        // a key that was sent but is not valid must not turn into a silent anonymous access
+        if ($this->hasRejectedCredentials()) {
+            $this->response->getBody()->write('Invalid API key');
+
+            return $this->response->withHeader('Content-Type', 'text/plain; charset=utf-8')->withStatus(401);
+        }
+
         $message = json_decode((string) $this->request->getBody(), true);
 
         if (!is_array($message) || !$message) {
@@ -224,14 +231,25 @@ class McpAction extends ActionApi
 
         $tool->setApiKey($this->getApiKey());
 
+        $dryRun = !empty($args['dry_run']);
+        unset($args['dry_run']);
+
+        if ($dryRun && ($tool::READ_ONLY || !$tool::DRY_RUN)) {
+            return $this->result($id, [
+                'content' => [['type' => 'text', 'text' => $tool::READ_ONLY ? 'dry_run is for tools that change data, this one only reads' : 'This tool does not support dry_run']],
+                'isError' => true,
+            ]);
+        }
+
         try {
-            $result = $tool->execute($args);
+            $result = $dryRun ? $this->dryRun($tool, $args) : $tool->execute($args);
 
             $this->logger->info('MCP tool call', ['tool' => $name]);
+            $this->audit($tool, $args, $dryRun, true);
 
             return $this->result($id, [
                 'content' => [
-                    ['type' => 'text', 'text' => $this->encode($result)],
+                    ['type' => 'text', 'text' => $this->encode($dryRun ? $this->markDryRun($result) : $result)],
                 ],
                 'isError' => false,
             ]);
@@ -245,6 +263,8 @@ class McpAction extends ActionApi
             $text = 'Internal error';
         }
 
+        $this->audit($tool, $args, $dryRun, false, $text);
+
         // error of the tool is a result for the model, not protocol error
         return $this->result($id, [
             'content' => [
@@ -252,6 +272,80 @@ class McpAction extends ActionApi
             ],
             'isError' => true,
         ]);
+    }
+
+    /**
+     * Run the tool in a transaction that is always rolled back; events are muted so that plugins do not react
+     */
+    private function dryRun(AbstractMcpTool $tool, array $args): mixed
+    {
+        $this->db->beginTransaction();
+
+        try {
+            return $this->container->get(\App\Application\PubSub::class)->silently(fn () => $tool->execute($args));
+        } finally {
+            $this->db->rollBack();
+        }
+    }
+
+    private function markDryRun(mixed $result): array
+    {
+        $result = is_array($result) ? $result : ['result' => $result];
+
+        return ['dry_run' => true, 'note' => 'Nothing was saved. Show this to the operator and repeat the call without dry_run to apply.'] + $result;
+    }
+
+    /**
+     * Journal of what was changed through MCP: who (API key), which tool, with what, and the outcome. Lives in the application log
+     */
+    private function audit(AbstractMcpTool $tool, array $args, bool $dryRun, bool $ok, ?string $error = null): void
+    {
+        if ($tool::READ_ONLY) {
+            return;
+        }
+
+        $apiKey = $this->getApiKey();
+
+        $this->logger->notice('MCP write', array_filter([
+            'tool' => $tool::NAME,
+            'key' => $apiKey ? ['uuid' => (string) $apiKey->uuid, 'title' => $apiKey->title] : null,
+            'dry_run' => $dryRun,
+            'ok' => $ok,
+            'error' => $error,
+            'arguments' => $this->shorten($args),
+            'ip' => $this->getRequestRemoteIP(),
+        ], fn ($value) => $value !== null));
+    }
+
+    /**
+     * Long texts (HTML of a page) would flood the log
+     */
+    private function shorten(mixed $value): mixed
+    {
+        if (is_array($value)) {
+            return array_map(fn ($item) => $this->shorten($item), $value);
+        }
+
+        return is_string($value) && mb_strlen($value) > 200 ? mb_substr($value, 0, 200) . '... (' . mb_strlen($value) . ' chars)' : $value;
+    }
+
+    /**
+     * A key in the request, but neither a valid API key nor a signed-in user came out of it
+     */
+    private function hasRejectedCredentials(): bool
+    {
+        if ($this->getApiKey() !== null || $this->request->getAttribute('user')) {
+            return false;
+        }
+
+        $sent = str_starts_with($this->request->getHeaderLine('Authorization'), 'Bearer ')
+            || $this->request->getHeaderLine('key') !== ''
+            || $this->request->getHeaderLine('apikey') !== ''
+            || $this->request->getHeaderLine('access_token') !== ''
+            || !blank($this->request->getQueryParams()['apikey'] ?? null)
+            || !blank($this->request->getQueryParams()['access_token'] ?? null);
+
+        return $sent;
     }
 
     private function encode(mixed $result): string

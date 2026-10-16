@@ -29,6 +29,11 @@ trait DescribesPublications
             'category' => $publication->getRelationValue('category')?->title,
             'date' => $this->isDraft($publication) ? null : $date->format('Y-m-d H:i'),
             'address' => $publication->address,
+            'meta' => [
+                'title' => (string) ($publication->meta['title'] ?? ''),
+                'description' => (string) ($publication->meta['description'] ?? ''),
+                'keywords' => (string) ($publication->meta['keywords'] ?? ''),
+            ],
         ];
     }
 

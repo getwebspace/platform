@@ -18,6 +18,11 @@ class TaskRetryTool extends AbstractMcpTool
     public const SCOPE = 'task';
 
     /**
+     * The worker is a separate process, it cannot be rolled back
+     */
+    public const DRY_RUN = false;
+
+    /**
      * Tasks whose repeat could reach people twice
      */
     private const FORBIDDEN = [

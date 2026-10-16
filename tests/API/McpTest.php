@@ -1035,6 +1035,247 @@ class McpTest extends TestCase
         $this->assertTrue($prompt->isAvailable(['no_such_tool']));
     }
 
+    // review follow-up: anonymous access, strict limits, dry run, journal
+
+    public function testAnonymousAccessSeesOnlyPublicData(): void
+    {
+        $this->getService(ParameterService::class)->update($this->getService(ParameterService::class)->read(['name' => 'entity_access']), ['value' => 'all']);
+
+        $categories = $this->getService(CatalogCategoryService::class);
+        $categories->create(['title' => 'Открытая', 'address' => 'open']);
+        $categories->create(['title' => 'Скрытая', 'address' => 'secret', 'is_hidden' => true]);
+
+        $anonymous = $this->tools(null);
+
+        foreach (['catalog_product_search', 'catalog_product_get', 'catalog_category_list', 'catalog_attribute_list', 'page_list', 'page_get'] as $name) {
+            $this->assertContains($name, $anonymous);
+        }
+        // things that are not public: reviews waiting for moderation, files, reference books, everything that writes
+        foreach (['review_list', 'file_list', 'reference_list', 'publication_list', 'user_list', 'catalog_order_list', 'site_overview', 'page_update', 'catalog_product_update'] as $name) {
+            $this->assertNotContains($name, $anonymous, $name);
+        }
+        $this->assertEquals(-32602, $this->call(null, 'tools/call', ['name' => 'review_list'])['error']['code']);
+        $this->assertCount(6, $anonymous);
+
+        // a hidden category is not shown without a key, with a key it is
+        [, $result] = $this->tool(null, 'catalog_category_list');
+        $this->assertEquals(['Открытая'], array_column($result, 'title'));
+        [, $result] = $this->tool($this->createApiKeyToken(), 'catalog_category_list');
+        $this->assertEqualsCanonicalizing(['Открытая', 'Скрытая'], array_column($result, 'title'));
+
+        $resources = array_keys($this->resources(null));
+        $this->assertContains('platform://site', $resources);
+        $this->assertNotContains('platform://catalog/categories', $resources);
+        $this->assertNotContains('platform://reference/order_statuses', $resources);
+    }
+
+    public function testWrongKeyIsNotTreatedAsAnonymous(): void
+    {
+        $this->getService(ParameterService::class)->update($this->getService(ParameterService::class)->read(['name' => 'entity_access']), ['value' => 'all']);
+
+        $ping = ['jsonrpc' => '2.0', 'id' => 1, 'method' => 'ping'];
+
+        // no credentials: anonymous access is allowed by the site settings
+        $this->assertEquals(200, $this->rpc(null, $ping)->getStatusCode());
+        // credentials that do not work: refused, the client must not silently get less than it asked for
+        $this->assertEquals(401, $this->rpc('garbage.token.value', $ping)->getStatusCode());
+        $this->assertEquals(401, $this->createRequest()->post(self::URL, ['headers' => ['apikey' => 'garbage'], 'body' => json_encode($ping)])->getStatusCode());
+        $this->assertEquals(401, $this->createRequest()->post(self::URL . '?apikey=garbage', ['body' => json_encode($ping)])->getStatusCode());
+        $this->assertEquals(200, $this->rpc($this->createApiKeyToken(), $ping)->getStatusCode());
+
+        // not our credentials (a proxy login) are no reason to refuse
+        $response = $this->createRequest()->post(self::URL, ['headers' => ['Authorization' => 'Basic dXNlcjpwYXNz'], 'body' => json_encode($ping)]);
+        $this->assertEquals(200, $response->getStatusCode());
+
+        // a revoked key is refused too
+        $apiKey = $this->getService(\App\Domain\Service\ApiKey\ApiKeyService::class)->create(['title' => 'old', 'is_full_access' => true]);
+        $token = $this->getService(\App\Domain\Service\ApiKey\ApiKeyService::class)->issueToken($apiKey);
+        $this->getService(\App\Domain\Service\ApiKey\ApiKeyService::class)->update($apiKey, ['status' => \App\Domain\Casts\ApiKey\Status::REVOKE]);
+        $this->assertEquals(401, $this->rpc($token, $ping)->getStatusCode());
+    }
+
+    public function testLimitsAreValidatedNotCut(): void
+    {
+        $token = $this->createApiKeyToken();
+
+        foreach ([['limit' => 101], ['limit' => 0], ['limit' => -5], ['limit' => 'many'], ['limit' => 2.5], ['offset' => -1], ['offset' => 'x']] as $args) {
+            [$error, $text] = $this->tool($token, 'page_list', $args);
+            $this->assertTrue($error, json_encode($args));
+            $this->assertStringContainsString(array_key_first($args), $text);
+        }
+
+        [$error, $result] = $this->tool($token, 'page_list', ['limit' => 100, 'offset' => 0]);
+        $this->assertFalse($error);
+        $this->assertEquals(100, $result['limit']);
+        // numbers as strings are fine, empty means the default
+        [, $result] = $this->tool($token, 'page_list', ['limit' => '5', 'offset' => null]);
+        $this->assertEquals(5, $result['limit']);
+        [, $result] = $this->tool($token, 'page_list', ['limit' => '']);
+        $this->assertEquals(20, $result['limit']);
+    }
+
+    public function testPageAndPublicationListsAreEnoughForSeoAudit(): void
+    {
+        $pages = $this->getService(PageService::class);
+        $pages->create(['title' => 'О компании', 'address' => 'about', 'content' => 'x', 'meta' => ['title' => 'О нас', 'description' => 'Описание', 'keywords' => 'a, b']]);
+        $pages->create(['title' => 'Контакты', 'address' => 'contacts', 'content' => 'x']);
+        $pages->create(['title' => 'Условия', 'address' => 'terms', 'content' => 'x']);
+
+        $category = $this->getService(PublicationCategoryService::class)->create(['title' => 'Новости', 'address' => 'news']);
+        $publications = $this->getService(\App\Domain\Service\Publication\PublicationService::class);
+        foreach ([['Первая', 'first', '2026-01-10 10:00:00'], ['Вторая', 'second', '2026-02-10 10:00:00'], ['Черновик', 'draft', '2099-12-31 00:00:00']] as [$title, $slug, $date]) {
+            $publications->create(['title' => $title, 'address' => 'news/' . $slug, 'category_uuid' => $category->uuid, 'content' => ['short' => '', 'full' => ''], 'meta' => ['title' => 'SEO ' . $title], 'date' => $date]);
+        }
+
+        $token = $this->createApiKeyToken();
+
+        [, $result] = $this->tool($token, 'page_list', ['limit' => 2]);
+        $this->assertEquals(3, $result['total']);
+        $this->assertCount(2, $result['items']);
+        $this->assertTrue($result['has_more']);
+        $about = array_column($result['items'], null, 'address')['about'] ?? null;
+        $this->assertNotNull($about);
+        $this->assertEquals(['title' => 'О нас', 'description' => 'Описание', 'keywords' => 'a, b'], $about['meta']);
+        $this->assertNotNull($about['date']);
+
+        // a page without SEO fields shows empty ones - this is what an audit looks for
+        [, $result] = $this->tool($token, 'page_list', ['search' => 'контакты']);
+        $this->assertEquals(1, $result['total']);
+        $this->assertEquals(['title' => '', 'description' => '', 'keywords' => ''], $result['items'][0]['meta']);
+
+        [, $result] = $this->tool($token, 'publication_list');
+        $this->assertEquals(3, $result['total']);
+        [, $result] = $this->tool($token, 'publication_list', ['state' => 'published', 'limit' => 1]);
+        $this->assertEquals(2, $result['total'], 'total is of all matching, not of the page');
+        $this->assertCount(1, $result['items']);
+        $this->assertStringStartsWith('SEO ', $result['items'][0]['meta']['title']);
+        [, $result] = $this->tool($token, 'publication_list', ['state' => 'draft']);
+        $this->assertEquals(1, $result['total']);
+        [, $result] = $this->tool($token, 'publication_list', ['search' => 'Втор']);
+        $this->assertEquals(1, $result['total']);
+    }
+
+    public function testDryRunShowsTheResultAndSavesNothing(): void
+    {
+        $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Телефоны', 'address' => 'phones']);
+        $product = $this->makeProduct('Смартфон', (string) $category->uuid, ['price' => 100]);
+        $products = $this->getService(CatalogProductService::class);
+        $price = fn () => (float) $products->read(['uuid' => (string) $product->uuid])->price;
+
+        $token = $this->createApiKeyToken();
+
+        // write tools announce dry_run, read ones and the worker based one do not
+        $definitions = array_column($this->call($token, 'tools/list')['result']['tools'], null, 'name');
+        $this->assertArrayHasKey('dry_run', $definitions['catalog_product_update']['inputSchema']['properties']);
+        $this->assertArrayHasKey('dry_run', $definitions['page_update']['inputSchema']['properties']);
+        $this->assertArrayNotHasKey('dry_run', $definitions['catalog_product_search']['inputSchema']['properties']);
+        $this->assertArrayNotHasKey('dry_run', $definitions['task_retry']['inputSchema']['properties']);
+
+        [$error, $result] = $this->tool($token, 'catalog_product_update', ['uuid' => (string) $product->uuid, 'price' => 999, 'title' => 'Другое', 'dry_run' => true]);
+        $this->assertFalse($error, json_encode($result));
+        $this->assertTrue($result['dry_run']);
+        $this->assertEquals(999, $result['price']);
+        $this->assertEquals('Другое', $result['title']);
+        $this->assertEquals(100.0, $price());
+        $this->assertEquals('Смартфон', $products->read(['uuid' => (string) $product->uuid])->title);
+
+        // the same call for real
+        [, $result] = $this->tool($token, 'catalog_product_update', ['uuid' => (string) $product->uuid, 'price' => 999]);
+        $this->assertArrayNotHasKey('dry_run', $result);
+        $this->assertEquals(999.0, $price());
+
+        // a failure inside is still a failure and still saves nothing
+        [$error] = $this->tool($token, 'catalog_product_update', ['uuid' => (string) $product->uuid, 'price' => -1, 'dry_run' => true]);
+        $this->assertTrue($error);
+
+        // creating: the new record does not stay
+        $pubCategory = $this->getService(PublicationCategoryService::class)->create(['title' => 'Новости', 'address' => 'news']);
+        [, $result] = $this->tool($token, 'publication_create', ['title' => 'Пробная', 'category_uuid' => (string) $pubCategory->uuid, 'dry_run' => true]);
+        $this->assertEquals('draft', $result['state']);
+        [, $list] = $this->tool($token, 'publication_list');
+        $this->assertEquals(0, $list['total']);
+
+        // bulk prices applied "for show"
+        $this->makeProduct('Чехол', (string) $category->uuid, ['price' => 50]);
+        [, $result] = $this->tool($token, 'catalog_price_bulk_update', ['category_uuid' => (string) $category->uuid, 'percent' => 10, 'apply' => true, 'expected_count' => 2, 'dry_run' => true]);
+        $this->assertTrue($result['dry_run']);
+        $this->assertEquals(999.0, $price());
+
+        // not for tools that only read, not for the ones with effects outside of the database
+        [$error, $text] = $this->tool($token, 'catalog_product_search', ['dry_run' => true]);
+        $this->assertTrue($error);
+        $this->assertStringContainsString('only reads', $text);
+        [$error, $text] = $this->tool($token, 'task_retry', ['uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString(), 'dry_run' => true]);
+        $this->assertTrue($error);
+        $this->assertStringContainsString('does not support', $text);
+    }
+
+    public function testDryRunDoesNotNotifySubscribers(): void
+    {
+        $pubSub = $this->getService(\App\Application\PubSub::class);
+        $calls = 0;
+        $pubSub->subscribe('mcp:test:event', function () use (&$calls): void {
+            ++$calls;
+        });
+
+        $pubSub->publish('mcp:test:event');
+        $this->assertEquals(1, $calls);
+
+        $result = $pubSub->silently(function () use ($pubSub, &$calls) {
+            $pubSub->publish('mcp:test:event');
+
+            return 'done';
+        });
+        $this->assertEquals('done', $result);
+        $this->assertEquals(1, $calls, 'muted');
+
+        $pubSub->publish('mcp:test:event');
+        $this->assertEquals(2, $calls, 'the events are back after the callback, also when it throws');
+
+        try {
+            $pubSub->silently(fn () => throw new \RuntimeException('x'));
+        } catch (\RuntimeException) {
+        }
+        $pubSub->publish('mcp:test:event');
+        $this->assertEquals(3, $calls);
+    }
+
+    public function testWritesAreJournaled(): void
+    {
+        $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Телефоны', 'address' => 'phones']);
+        $product = $this->makeProduct('Смартфон', (string) $category->uuid);
+
+        $apiKey = $this->getService(\App\Domain\Service\ApiKey\ApiKeyService::class)->create(['title' => 'журнал-тест', 'is_full_access' => true]);
+        $token = $this->getService(\App\Domain\Service\ApiKey\ApiKeyService::class)->issueToken($apiKey);
+
+        // the log lives between the test runs: every call carries a mark of this one
+        $marker = 'Журнал ' . uniqid();
+        $this->tool($token, 'catalog_product_update', ['uuid' => (string) $product->uuid, 'title' => $marker . ' ok']);
+        $this->tool($token, 'catalog_product_update', ['uuid' => (string) $product->uuid, 'title' => $marker . ' bad', 'price' => -1]);
+        $this->tool($token, 'catalog_product_update', ['uuid' => (string) $product->uuid, 'title' => $marker . ' dry', 'description' => str_repeat('я', 5000), 'dry_run' => true]);
+        $this->tool($token, 'catalog_product_search', ['query' => $marker]);
+
+        $log = '';
+        foreach (glob(LOG_DIR . '/app*.log') as $file) {
+            $log .= (string) file_get_contents($file);
+        }
+
+        $lines = array_values(array_filter(explode("\n", $log), fn ($line) => str_contains($line, 'MCP write') && str_contains($line, 'журнал-тест')));
+        $this->assertGreaterThanOrEqual(3, count($lines));
+
+        $mine = array_values(array_filter($lines, fn ($line) => str_contains($line, $marker)));
+        $this->assertCount(3, $mine, 'a success, a refusal and a dry run');
+        $this->assertStringContainsString('"tool":"catalog_product_update"', $mine[0]);
+        $this->assertStringContainsString((string) $apiKey->uuid, $mine[0]);
+        $this->assertStringContainsString('"ok":true', implode("\n", $mine));
+        $this->assertStringContainsString('"ok":false', implode("\n", $mine));
+        $this->assertStringContainsString('"dry_run":true', implode("\n", $mine));
+        // a long text does not flood the log
+        $this->assertStringNotContainsString(str_repeat('я', 300), $log);
+        // reads are not journaled
+        $this->assertEmpty(array_filter(explode("\n", $log), fn ($line) => str_contains($line, 'MCP write') && str_contains($line, '"tool":"catalog_product_search"')));
+    }
+
     public function testSiteOverviewFollowsKeyScopes(): void
     {
         $this->getService(CatalogOrderService::class)->create(['phone' => '+79000000001']);

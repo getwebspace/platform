@@ -13,6 +13,7 @@ class CategoriesResource extends AbstractMcpResource
     public const TITLE = 'Catalog structure';
     public const DESCRIPTION = 'The tree of catalog categories with uuid, title and address: use it to find a category without calling a tool.';
     public const SCOPE = 'catalog/category';
+    public const PRIVATE = true;
 
     public function read(): string
     {

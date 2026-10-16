@@ -14,6 +14,7 @@ class OrderStatusesResource extends AbstractMcpResource
     public const TITLE = 'Order statuses';
     public const DESCRIPTION = 'Statuses an order can have, in the order of the admin panel (the first one is "new").';
     public const SCOPE = 'reference';
+    public const PRIVATE = true;
 
     public function read(): string
     {

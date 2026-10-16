@@ -55,6 +55,27 @@ class PublicationService extends AbstractService
     }
 
     /**
+     * Number of publications for the same filters as read() (category, user, search, date_from / date_to)
+     */
+    public function count(array $data = []): int
+    {
+        $criteria = [];
+
+        foreach (['category_uuid', 'user_uuid', 'external_id'] as $key) {
+            if (($data[$key] ?? null) !== null) {
+                $criteria[$key] = $data[$key];
+            }
+        }
+
+        $query = Publication::query();
+        $this->applyCriteria($query, $criteria);
+        $this->applySearch($query, $data['search'] ?? null, static::$search_columns);
+        $this->applyDateRange($query, $data);
+
+        return $query->count();
+    }
+
+    /**
      * @throws PublicationNotFoundException
      *
      * @return Collection|Publication

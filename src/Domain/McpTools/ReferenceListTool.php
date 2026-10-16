@@ -13,6 +13,7 @@ class ReferenceListTool extends AbstractMcpTool
     public const TITLE = 'Reference books';
     public const DESCRIPTION = 'Site reference books: order statuses, payment and delivery methods, currencies, stock statuses, tax rates, countries, manufacturers, etc. '
         . 'Use it to learn allowed values (e.g. order status titles) before filtering or changing data.';
+    public const PRIVATE = true;
     public const SCOPE = 'reference';
 
     public function getInputSchema(): array

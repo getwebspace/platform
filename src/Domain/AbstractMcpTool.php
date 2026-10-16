@@ -51,6 +51,12 @@ abstract class AbstractMcpTool
     public const SCOPE = '';
 
     /**
+     * A writing tool can be run with dry_run=true: everything is done in a transaction that is rolled back,
+     * the caller sees the result without anything saved. Turn off for tools with effects outside of the database
+     */
+    public const DRY_RUN = true;
+
+    /**
      * Page size for list tools
      */
     public const LIMIT_DEFAULT = 20;
@@ -114,6 +120,43 @@ abstract class AbstractMcpTool
     }
 
     /**
+     * Integer argument within a range: a value outside of it is an error the client can see,
+     * not something silently cut
+     */
+    protected function intArgument(array $args, string $name, int $default, int $min, int $max): int
+    {
+        if (!array_key_exists($name, $args) || $args[$name] === null || $args[$name] === '') {
+            return $default;
+        }
+        if (!is_numeric($args[$name]) || (int) $args[$name] != $args[$name]) {
+            throw new \InvalidArgumentException("Field {$name} must be an integer");
+        }
+
+        $value = (int) $args[$name];
+
+        if ($value < $min || $value > $max) {
+            throw new \InvalidArgumentException("Field {$name} must be from {$min}" . ($max === PHP_INT_MAX ? ' and up' : " to {$max}"));
+        }
+
+        return $value;
+    }
+
+    private function withDryRun(array $schema): array
+    {
+        if (static::READ_ONLY || !static::DRY_RUN || !is_array($schema['properties'] ?? null)) {
+            return $schema;
+        }
+
+        $schema['properties']['dry_run'] = [
+            'type' => 'boolean',
+            'default' => false,
+            'description' => 'true - do everything but save nothing: you get the result the change would have, then show it to the operator',
+        ];
+
+        return $schema;
+    }
+
+    /**
      * Page of a list: $read gets limit/offset for service read() and returns rows,
      * one extra row is requested to know if there is a next page without count()
      *
@@ -122,8 +165,8 @@ abstract class AbstractMcpTool
      */
     protected function paginate(array $args, callable $read, callable $map): array
     {
-        $limit = min(static::LIMIT_MAX, max(1, (int) ($args['limit'] ?? static::LIMIT_DEFAULT)));
-        $offset = max(0, (int) ($args['offset'] ?? 0));
+        $limit = $this->intArgument($args, 'limit', static::LIMIT_DEFAULT, 1, static::LIMIT_MAX);
+        $offset = $this->intArgument($args, 'offset', 0, 0, PHP_INT_MAX);
 
         $rows = collect($read($limit + 1, $offset))->values();
 
@@ -144,7 +187,7 @@ abstract class AbstractMcpTool
             'name' => static::NAME,
             'title' => static::TITLE,
             'description' => static::DESCRIPTION,
-            'inputSchema' => $this->getInputSchema(),
+            'inputSchema' => $this->withDryRun($this->getInputSchema()),
             'annotations' => [
                 'readOnlyHint' => static::READ_ONLY,
             ],

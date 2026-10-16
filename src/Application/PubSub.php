@@ -22,6 +22,11 @@ class PubSub
 
     protected array $subscribers = [];
 
+    /**
+     * While true no subscriber is called: a rolled back change must not notify anyone
+     */
+    private bool $muted = false;
+
     final public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
@@ -224,8 +229,27 @@ class PubSub
      */
     public function publish(string $channel, mixed $data = []): void
     {
+        if ($this->muted) {
+            return;
+        }
+
         foreach (static::getSubscribersForChannel($channel) as $handler) {
             call_user_func($handler, $data, $this->container);
+        }
+    }
+
+    /**
+     * Run a callback with the events turned off
+     */
+    public function silently(callable $callback): mixed
+    {
+        $before = $this->muted;
+        $this->muted = true;
+
+        try {
+            return $callback();
+        } finally {
+            $this->muted = $before;
         }
     }
 

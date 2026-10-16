@@ -52,6 +52,26 @@ class PageService extends AbstractService
     }
 
     /**
+     * Number of pages for the same filters as read() (type, template, search)
+     */
+    public function count(array $data = []): int
+    {
+        $criteria = [];
+
+        foreach (['template', 'type'] as $key) {
+            if (($data[$key] ?? null) !== null) {
+                $criteria[$key] = $data[$key];
+            }
+        }
+
+        $query = Page::query();
+        $this->applyCriteria($query, $criteria);
+        $this->applySearch($query, $data['search'] ?? null, static::$search_columns);
+
+        return $query->count();
+    }
+
+    /**
      * @throws PageNotFoundException
      */
     public function read(array $data = []): Collection|Page

@@ -17,6 +17,7 @@ class ReviewListTool extends AbstractMcpTool
     public const TITLE = 'Reviews and questions';
     public const DESCRIPTION = 'Lists reviews and questions of products and publications, newest first. By default - the ones waiting for moderation. '
         . 'Each item has the text, rating, author, what it is about and the current reply of the administrator, if any. Approve / hide / answer with review_moderate.';
+    public const PRIVATE = true;
     public const SCOPE = 'review';
 
     public function getInputSchema(): array

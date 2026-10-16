@@ -11,6 +11,7 @@ class FileListTool extends AbstractMcpTool
     public const NAME = 'file_list';
     public const TITLE = 'Files';
     public const DESCRIPTION = 'Lists uploaded files (images, documents, video), newest first, with type, size and the public link. Search by name; "kind" narrows to images, documents, audio or video.';
+    public const PRIVATE = true;
     public const SCOPE = 'file';
 
     private const KINDS = [

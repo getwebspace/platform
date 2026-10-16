@@ -38,6 +38,11 @@ class CatalogCategoryListTool extends AbstractMcpTool
             'order' => ['order' => 'asc', 'title' => 'asc'],
         ], fn ($value) => $value !== null));
 
+        // hidden categories are not shown in menus: not for a caller without a key
+        if ($this->apiKey === null) {
+            $categories = $categories->reject(fn (CatalogCategory $category) => $category->is_hidden);
+        }
+
         return $categories
             ->map(fn (CatalogCategory $category) => [
                 'uuid' => (string) $category->uuid,

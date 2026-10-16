@@ -87,6 +87,25 @@ Goal: gradually cover the platform functions so an AI assistant can help the per
 - Protocol: `prompts/list`, `prompts/get`, `resources/list`, `resources/read`, `resources/templates/list` (empty); unknown or not
   allowed resource = error -32002, unknown prompt / missing argument = -32602.
 
+## Review follow-up (6.4.1) - DONE
+
+Found by an external review of the 6.4.0 server; all valid:
+
+- **Anonymous access** (site setting `entity_access=all`): only data that is public on the site stays open (products, categories without hidden ones,
+  attributes, pages). `review_list` (it shows reviews waiting for moderation), `file_list`, `reference_list`, `publication_list` and the
+  resources `catalog/categories`, `reference/order_statuses` are `PRIVATE`. `PRIVATE` matters only without a key - with a key the scope decides.
+  Rule for a new tool: if it can return something the public site does not show (drafts, moderation queues, internals) - `PRIVATE = true`.
+- **A key that was sent but does not work = 401**, also in `entity_access=all` mode (a revoked or garbage key used to turn into anonymous access
+  and the client silently saw fewer tools). Only `Authorization: Bearer`, `key`, `apikey` headers and the `apikey` / `access_token` query
+  parameters count; foreign `Authorization: Basic` is ignored.
+- **Limits are validated, not cut:** `limit` outside 1..100 or a non-integer = tool error (`AbstractMcpTool::intArgument()`).
+- **`page_list` / `publication_list`:** `total`, SEO `meta` (title, description, keywords; empty ones stay empty) and `date` in every item.
+  Pages and publications have no "changed" date in the database, only `date`. `PageService::count()`, `PublicationService::count()`.
+- **`dry_run`** for every writing tool (announced in its schema): runs in a transaction that is rolled back, events are muted
+  (`PubSub::silently()`), result is marked `dry_run: true`. `DRY_RUN = false` for tools with effects outside of the database (`task_retry`).
+- **Journal of writes:** every writing call is logged (`MCP write` in `var/log/app.log`): tool, API key uuid + title, arguments (long texts
+  shortened), outcome, `dry_run`, IP. A table with a UI is not done - add it if the log file is not enough.
+
 ## Deliberately NOT covered
 
 - Deleting anything
