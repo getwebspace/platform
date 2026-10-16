@@ -74,10 +74,18 @@ Goal: gradually cover the platform functions so an AI assistant can help the per
 - Newsletters: nothing. There is no draft concept and sending must stay with a human.
 - Shared helper: `McpTools/Concerns/DescribesUsers`.
 
-## Later: other MCP features
+## Prompts and resources - DONE
 
-- Prompts (ready scenarios: "handle new orders", "review moderation")
-- Resources (catalog structure, statuses as context)
+- Base classes `AbstractMcpPrompt` / `AbstractMcpResource`; registry `'mcp'` got `registerPrompt` / `registerResource`; plugins use
+  `addMcpPrompt()` / `addMcpResource()` (trait `HasMcpTools`), same as `addMcpTool()`.
+- Prompts (`src/Domain/McpPrompts/`): `handle_new_orders`, `moderate_content`, `site_report` (days), `change_prices` (category, change),
+  `write_publication` (topic, category), `check_failed_tasks`. A prompt lists the tools it needs in `TOOLS` and is offered only to a
+  caller who may use all of them. They are instructions only; every one ends with the rules (confirm, no deletes, no messages to people).
+- Resources (`src/Domain/McpResources/`): `platform://site`, `platform://guide/rules` (markdown, how the tools behave),
+  `platform://catalog/categories` (tree), `platform://reference/order_statuses`. Access follows `SCOPE` like for tools
+  (`Traits/ChecksMcpAccess` is shared by tools and resources).
+- Protocol: `prompts/list`, `prompts/get`, `resources/list`, `resources/read`, `resources/templates/list` (empty); unknown or not
+  allowed resource = error -32002, unknown prompt / missing argument = -32602.
 
 ## Deliberately NOT covered
 
@@ -93,6 +101,9 @@ Goal: gradually cover the platform functions so an AI assistant can help the per
 
 ## Known gaps / ideas
 
+- `FileService::createFromPath` with a URL: FIXED - only http(s) hosts that resolve to public addresses (`FileService::isPublicUrl`),
+  redirects are followed by hand and every hop is checked. The check is skipped under `TEST` (the tests download from 127.0.0.1).
+  A DNS change between the check and the download is not covered.
 - `OrderService` had no date filter (added: `date_from`, `date_to` in `read()`).
 - `FileService::createFromPath` downloads any URL incl. internal hosts (SSRF) - to check callers.
 - Project plugins (tochkarb `ExpertModeration`) extend this server; keep the base API stable.

@@ -4,6 +4,8 @@ namespace App\Application\Actions\Api\v1;
 
 use App\Application\Actions\Api\ActionApi;
 use App\Domain\AbstractException;
+use App\Domain\AbstractMcpPrompt;
+use App\Domain\AbstractMcpResource;
 use App\Domain\AbstractMcpTool;
 use App\Domain\Models\ApiKey;
 use Illuminate\Database\Eloquent\Model;
@@ -27,6 +29,7 @@ class McpAction extends ActionApi
     private const INVALID_REQUEST = -32600;
     private const METHOD_NOT_FOUND = -32601;
     private const INVALID_PARAMS = -32602;
+    private const RESOURCE_NOT_FOUND = -32002;
 
     protected function action(): \Slim\Psr7\Response
     {
@@ -80,6 +83,11 @@ class McpAction extends ActionApi
             'ping' => $this->result($id, new \stdClass()),
             'tools/list' => $this->result($id, ['tools' => $this->getTools()->map(fn (AbstractMcpTool $tool) => $tool->getDefinition())->values()->all()]),
             'tools/call' => $this->callTool($id, $params),
+            'prompts/list' => $this->result($id, ['prompts' => $this->getPrompts()->map(fn (AbstractMcpPrompt $prompt) => $prompt->getDefinition())->values()->all()]),
+            'prompts/get' => $this->getPrompt($id, $params),
+            'resources/list' => $this->result($id, ['resources' => $this->getResources()->map(fn (AbstractMcpResource $resource) => $resource->getDefinition())->values()->all()]),
+            'resources/templates/list' => $this->result($id, ['resourceTemplates' => []]),
+            'resources/read' => $this->readResource($id, $params),
             default => $this->error($id, self::METHOD_NOT_FOUND, 'Method not found: ' . $message['method']),
         };
     }
@@ -92,6 +100,8 @@ class McpAction extends ActionApi
             'protocolVersion' => in_array($version, self::PROTOCOL_VERSIONS, true) ? $version : self::PROTOCOL_VERSIONS[0],
             'capabilities' => [
                 'tools' => ['listChanged' => false],
+                'prompts' => ['listChanged' => false],
+                'resources' => ['subscribe' => false, 'listChanged' => false],
             ],
             'serverInfo' => [
                 'name' => self::SERVER_NAME,
@@ -115,6 +125,82 @@ class McpAction extends ActionApi
         $apiKey = $this->getApiKey();
 
         return $this->container->get('mcp')->get()->filter(fn (AbstractMcpTool $tool) => $tool->isAllowed($apiKey));
+    }
+
+    /**
+     * Prompts whose tools are all available to the caller
+     *
+     * @return Collection<string, AbstractMcpPrompt>
+     */
+    private function getPrompts(): Collection
+    {
+        $tools = $this->getTools()->keys()->all();
+
+        return $this->container->get('mcp')->prompts()->filter(fn (AbstractMcpPrompt $prompt) => $prompt->isAvailable($tools));
+    }
+
+    /**
+     * @return Collection<string, AbstractMcpResource>
+     */
+    private function getResources(): Collection
+    {
+        $apiKey = $this->getApiKey();
+
+        return $this->container->get('mcp')->resources()->filter(fn (AbstractMcpResource $resource) => $resource->isAllowed($apiKey));
+    }
+
+    private function getPrompt(mixed $id, array $params): array
+    {
+        $name = $params['name'] ?? null;
+        $args = is_array($params['arguments'] ?? null) ? $params['arguments'] : [];
+
+        /** @var null|AbstractMcpPrompt $prompt */
+        $prompt = is_string($name) ? $this->getPrompts()->get($name) : null;
+
+        if ($prompt === null) {
+            return $this->error($id, self::INVALID_PARAMS, 'Unknown prompt: ' . (is_string($name) ? $name : ''));
+        }
+
+        foreach ($prompt->getArguments() as $argument) {
+            if ($argument['required'] && blank($args[$argument['name']] ?? null)) {
+                return $this->error($id, self::INVALID_PARAMS, 'Missing required argument: ' . $argument['name']);
+            }
+        }
+
+        try {
+            return $this->result($id, [
+                'description' => $prompt::DESCRIPTION,
+                'messages' => [
+                    ['role' => 'user', 'content' => ['type' => 'text', 'text' => $prompt->render($args)]],
+                ],
+            ]);
+        } catch (\InvalidArgumentException $e) {
+            return $this->error($id, self::INVALID_PARAMS, $e->getMessage());
+        }
+    }
+
+    private function readResource(mixed $id, array $params): array
+    {
+        $uri = $params['uri'] ?? null;
+
+        /** @var null|AbstractMcpResource $resource */
+        $resource = is_string($uri) ? $this->getResources()->get($uri) : null;
+
+        if ($resource === null) {
+            return $this->error($id, self::RESOURCE_NOT_FOUND, 'Resource not found: ' . (is_string($uri) ? $uri : ''));
+        }
+
+        try {
+            return $this->result($id, [
+                'contents' => [
+                    ['uri' => $resource::URI, 'mimeType' => $resource::MIME, 'text' => $resource->read()],
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            $this->logger->error('MCP resource failed', ['uri' => $uri, 'exception' => $e->getMessage()]);
+
+            return $this->error($id, self::INVALID_PARAMS, 'Cannot read the resource');
+        }
     }
 
     private function getApiKey(): ?ApiKey

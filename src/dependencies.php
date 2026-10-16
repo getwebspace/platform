@@ -178,7 +178,7 @@ return function (ContainerBuilder $containerBuilder): void {
         },
     ]);
 
-    // mcp tools
+    // mcp: tools, prompts and resources
     $containerBuilder->addDefinitions([
         'mcp' => function (ContainerInterface $c) {
             return new class($c) {
@@ -188,6 +188,16 @@ return function (ContainerBuilder $containerBuilder): void {
                  * @var array<string, \App\Domain\AbstractMcpTool|string>
                  */
                 private array $tools = [];
+
+                /**
+                 * @var array<string, \App\Domain\AbstractMcpPrompt|string>
+                 */
+                private array $prompts = [];
+
+                /**
+                 * @var array<string, \App\Domain\AbstractMcpResource|string>
+                 */
+                private array $resources = [];
 
                 final public function __construct(ContainerInterface $container)
                 {
@@ -227,6 +237,16 @@ return function (ContainerBuilder $containerBuilder): void {
                     $this->register(\App\Domain\McpTools\CatalogAttributeListTool::class);
                     $this->register(\App\Domain\McpTools\FileListTool::class);
                     $this->register(\App\Domain\McpTools\SubscriberListTool::class);
+
+                    // built-in prompts
+                    foreach (['NewOrdersPrompt', 'ModerationPrompt', 'SiteReportPrompt', 'PriceChangePrompt', 'WritePublicationPrompt', 'FailedTasksPrompt'] as $prompt) {
+                        $this->registerPrompt('\\App\\Domain\\McpPrompts\\' . $prompt);
+                    }
+
+                    // built-in resources
+                    foreach (['SiteInfoResource', 'RulesResource', 'CategoriesResource', 'OrderStatusesResource'] as $resource) {
+                        $this->registerResource('\\App\\Domain\\McpResources\\' . $resource);
+                    }
                 }
 
                 /**
@@ -234,15 +254,17 @@ return function (ContainerBuilder $containerBuilder): void {
                  */
                 final public function register(\App\Domain\AbstractMcpTool|string $tool): bool
                 {
-                    $name = $tool::NAME;
+                    return $this->add($this->tools, $tool::NAME, $tool);
+                }
 
-                    if (!isset($this->tools[$name])) {
-                        $this->tools[$name] = $tool;
+                final public function registerPrompt(\App\Domain\AbstractMcpPrompt|string $prompt): bool
+                {
+                    return $this->add($this->prompts, $prompt::NAME, $prompt);
+                }
 
-                        return true;
-                    }
-
-                    return false;
+                final public function registerResource(\App\Domain\AbstractMcpResource|string $resource): bool
+                {
+                    return $this->add($this->resources, $resource::URI, $resource);
                 }
 
                 final public function has(string $name): bool
@@ -252,14 +274,17 @@ return function (ContainerBuilder $containerBuilder): void {
 
                 final public function find(string $name): ?\App\Domain\AbstractMcpTool
                 {
-                    if (!isset($this->tools[$name])) {
-                        return null;
-                    }
-                    if (is_string($this->tools[$name])) {
-                        $this->tools[$name] = new $this->tools[$name]($this->container);
-                    }
+                    return $this->make($this->tools, $name);
+                }
 
-                    return $this->tools[$name];
+                final public function findPrompt(string $name): ?\App\Domain\AbstractMcpPrompt
+                {
+                    return $this->make($this->prompts, $name);
+                }
+
+                final public function findResource(string $uri): ?\App\Domain\AbstractMcpResource
+                {
+                    return $this->make($this->resources, $uri);
                 }
 
                 /**
@@ -268,6 +293,45 @@ return function (ContainerBuilder $containerBuilder): void {
                 final public function get(): Collection
                 {
                     return collect(array_keys($this->tools))->mapWithKeys(fn ($name) => [$name => $this->find($name)]);
+                }
+
+                /**
+                 * @return Collection<string, \App\Domain\AbstractMcpPrompt>
+                 */
+                final public function prompts(): Collection
+                {
+                    return collect(array_keys($this->prompts))->mapWithKeys(fn ($name) => [$name => $this->findPrompt($name)]);
+                }
+
+                /**
+                 * @return Collection<string, \App\Domain\AbstractMcpResource>
+                 */
+                final public function resources(): Collection
+                {
+                    return collect(array_keys($this->resources))->mapWithKeys(fn ($uri) => [$uri => $this->findResource($uri)]);
+                }
+
+                private function add(array &$list, string $key, object|string $item): bool
+                {
+                    if (isset($list[$key])) {
+                        return false;
+                    }
+
+                    $list[$key] = $item;
+
+                    return true;
+                }
+
+                private function make(array &$list, string $key): ?object
+                {
+                    if (!isset($list[$key])) {
+                        return null;
+                    }
+                    if (is_string($list[$key])) {
+                        $list[$key] = new $list[$key]($this->container);
+                    }
+
+                    return $list[$key];
                 }
             };
         },

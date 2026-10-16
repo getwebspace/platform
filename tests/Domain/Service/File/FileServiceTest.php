@@ -95,6 +95,47 @@ class FileServiceTest extends TestCase
         $this->assertTrue(file_exists($file->internal_path()));
     }
 
+    public function testRemoteUrlMustBePublic(): void
+    {
+        foreach ([
+            'http://127.0.0.1/a.jpg',
+            'http://127.1.2.3/a.jpg',
+            'http://localhost/a.jpg',
+            'http://[::1]/a.jpg',
+            'http://10.0.0.5/a.jpg',
+            'http://172.16.0.1/a.jpg',
+            'http://192.168.1.10/a.jpg',
+            'http://169.254.169.254/latest/meta-data/',
+            'http://0.0.0.0/a.jpg',
+            'http://user:pass@8.8.8.8/a.jpg',
+            'ftp://8.8.8.8/a.jpg',
+            'file:///etc/passwd',
+            'http:///a.jpg',
+            'http://no-such-host.invalid/a.jpg',
+        ] as $url) {
+            $this->assertFalse(FileService::isPublicUrl($url), $url);
+        }
+
+        foreach (['http://8.8.8.8/a.jpg', 'https://1.1.1.1/a.jpg', 'http://[2606:4700:4700::1111]/a.jpg'] as $url) {
+            $this->assertTrue(FileService::isPublicUrl($url), $url);
+        }
+    }
+
+    public function testRemoteDownloadOfInternalAddressIsRefused(): void
+    {
+        $url = $this->getTestFileUrl(); // served by this very application on 127.0.0.1
+
+        // the test mode allows it (see testCreateSuccessFromRemote), a real site does not
+        $test = $_ENV['TEST'] ?? null;
+        unset($_ENV['TEST']);
+
+        try {
+            $this->assertNull($this->service->createFromPath($url));
+        } finally {
+            $_ENV['TEST'] = $test;
+        }
+    }
+
     public function testCreateWithFileAlreadyExistent(): void
     {
         $file1 = $this->service->createFromPath($this->getTestFile());

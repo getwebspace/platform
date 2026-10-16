@@ -2,8 +2,8 @@
 
 namespace App\Domain;
 
-use App\Domain\Casts\ApiKey\Status as ApiKeyStatus;
 use App\Domain\Models\ApiKey;
+use App\Domain\Traits\ChecksMcpAccess;
 use App\Domain\Traits\HasParameters;
 use Illuminate\Cache\ArrayStore as ArrayCache;
 use Illuminate\Support\Collection;
@@ -15,6 +15,7 @@ use Psr\Log\LoggerInterface;
  */
 abstract class AbstractMcpTool
 {
+    use ChecksMcpAccess;
     use HasParameters;
 
     /**
@@ -83,25 +84,6 @@ abstract class AbstractMcpTool
     public function getInputSchema(): array
     {
         return ['type' => 'object', 'properties' => new \stdClass()];
-    }
-
-    /**
-     * Whether the caller may use this tool
-     *
-     * Same rules as for EntityAction: an API key is checked against its own
-     * scopes, without a key only public read-only tools are available
-     */
-    public function isAllowed(?ApiKey $apiKey): bool
-    {
-        if ($apiKey === null) {
-            return !static::PRIVATE && static::READ_ONLY;
-        }
-        // tool without scope: private or writing tools only for full access keys
-        if (static::SCOPE === '') {
-            return (!static::PRIVATE && static::READ_ONLY) || ($apiKey->is_full_access && $apiKey->status === ApiKeyStatus::WORK);
-        }
-
-        return $apiKey->can(static::SCOPE, static::READ_ONLY ? 'read' : 'write');
     }
 
     public function setApiKey(?ApiKey $apiKey): static

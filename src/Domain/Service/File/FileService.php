@@ -98,6 +98,44 @@ class FileService extends AbstractService
     }
 
     /**
+     * Whether a url may be downloaded: http(s) only, and only hosts that resolve to public addresses.
+     * Loopback, private networks, link-local (cloud metadata 169.254.169.254) and reserved ranges are refused,
+     * otherwise a url from a user could reach services inside the server's network.
+     */
+    public static function isPublicUrl(string $url): bool
+    {
+        $parts = parse_url($url);
+        $host = trim((string) ($parts['host'] ?? ''), '[]');
+
+        if (!in_array($parts['scheme'] ?? '', ['http', 'https'], true) || $host === '' || isset($parts['user']) || isset($parts['pass'])) {
+            return false;
+        }
+
+        $ips = [];
+
+        if (filter_var($host, FILTER_VALIDATE_IP) !== false) {
+            $ips[] = $host;
+        } else {
+            $ips = array_merge(
+                gethostbynamel($host) ?: [],
+                array_column(@dns_get_record($host, DNS_AAAA) ?: [], 'ipv6')
+            );
+        }
+
+        if (!$ips) {
+            return false;
+        }
+
+        foreach ($ips as $ip) {
+            if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Get file from url, recursion when redirect
      */
     protected static function getFileFromRemote(string $path, int $depth = 0): false|string
@@ -106,7 +144,13 @@ class FileService extends AbstractService
             return false;
         }
 
-        $headers = @get_headers($path, true);
+        // every hop is checked, a public address may redirect to an internal one
+        if (empty($_ENV['TEST']) && !static::isPublicUrl($path)) {
+            return false;
+        }
+
+        // redirects are followed by hand below, so that each of them goes through the check above
+        $headers = @get_headers($path, true, stream_context_create(['http' => ['follow_location' => 0, 'timeout' => 15]]));
 
         if ($headers === false) {
             return false;
@@ -139,7 +183,7 @@ class FileService extends AbstractService
             return static::getFileFromRemote($location, $depth + 1);
         }
         if ($code === 200) {
-            $file = @file_get_contents($path, false, stream_context_create(['http' => ['timeout' => 15]]));
+            $file = @file_get_contents($path, false, stream_context_create(['http' => ['follow_location' => 0, 'timeout' => 15]]));
 
             if ($file) {
                 $basename = File::prepareName(($t = basename($path)) && mb_strpos($t, '.') ? $t : '/tmp_' . uniqid());

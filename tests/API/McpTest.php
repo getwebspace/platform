@@ -113,7 +113,7 @@ class McpTest extends TestCase
         $this->assertEquals(400, $response->getStatusCode());
         $this->assertEquals(-32700, json_decode((string) $response->getBody(), true)['error']['code']);
 
-        $this->assertEquals(-32601, $this->call($token, 'resources/list')['error']['code']);
+        $this->assertEquals(-32601, $this->call($token, 'completion/complete')['error']['code']);
         $this->assertEquals(-32602, $this->call($token, 'tools/call', ['name' => 'no_such_tool'])['error']['code']);
     }
 
@@ -866,6 +866,173 @@ class McpTest extends TestCase
         $this->assertCount(2, $result['items']);
         [, $result] = $this->tool($token, 'subscriber_list', ['search' => 'EXAMPLE.ORG']);
         $this->assertEquals(['two@example.org'], array_column($result['items'], 'email'));
+    }
+
+    // prompts and resources
+
+    private function prompts(?string $token): array
+    {
+        return array_column($this->call($token, 'prompts/list')['result']['prompts'], null, 'name');
+    }
+
+    private function resources(?string $token): array
+    {
+        return array_column($this->call($token, 'resources/list')['result']['resources'], null, 'uri');
+    }
+
+    public function testCapabilitiesAnnouncePromptsAndResources(): void
+    {
+        $result = $this->call($this->createApiKeyToken(), 'initialize', ['protocolVersion' => '2025-06-18']);
+
+        $this->assertArrayHasKey('prompts', $result['result']['capabilities']);
+        $this->assertArrayHasKey('resources', $result['result']['capabilities']);
+    }
+
+    public function testPromptsFollowAvailableTools(): void
+    {
+        $full = $this->prompts($this->createApiKeyToken());
+        $this->assertEqualsCanonicalizing(
+            ['handle_new_orders', 'moderate_content', 'site_report', 'change_prices', 'write_publication', 'check_failed_tasks'],
+            array_keys($full)
+        );
+
+        // a prompt is offered only if the caller may use every tool it needs
+        $catalog = $this->prompts($this->createApiKeyToken(['read' => ['catalog/product', 'catalog/category'], 'write' => ['catalog/product']], false));
+        $this->assertArrayHasKey('change_prices', $catalog);
+        $this->assertArrayNotHasKey('handle_new_orders', $catalog);
+        $this->assertArrayNotHasKey('moderate_content', $catalog);
+
+        $reviews = $this->prompts($this->createApiKeyToken(['read' => ['review'], 'write' => ['review']], false));
+        $this->assertArrayNotHasKey('moderate_content', $reviews, 'guestbook tools are missing');
+
+        $this->assertTrue($full['change_prices']['arguments'][0]['required']);
+        $this->assertArrayHasKey('title', $full['site_report']);
+    }
+
+    public function testPromptGet(): void
+    {
+        $token = $this->createApiKeyToken();
+
+        $result = $this->call($token, 'prompts/get', ['name' => 'handle_new_orders', 'arguments' => ['status' => 'В работе']]);
+        $message = $result['result']['messages'][0];
+        $this->assertEquals('user', $message['role']);
+        $this->assertEquals('text', $message['content']['type']);
+        $this->assertStringContainsString('catalog_order_list', $message['content']['text']);
+        $this->assertStringContainsString('"В работе"', $message['content']['text']);
+        $this->assertStringContainsString('Never change or publish anything without', $message['content']['text']);
+
+        $text = $this->call($token, 'prompts/get', ['name' => 'site_report', 'arguments' => ['days' => '30']])['result']['messages'][0]['content']['text'];
+        $this->assertStringContainsString('last 30 days', $text);
+        $this->assertStringContainsString('date_from=' . datetime()->subDays(30)->format('Y-m-d'), $text);
+        // a silly period is clamped
+        $this->assertStringContainsString('last 90 days', $this->call($token, 'prompts/get', ['name' => 'site_report', 'arguments' => ['days' => '5000']])['result']['messages'][0]['content']['text']);
+
+        $text = $this->call($token, 'prompts/get', ['name' => 'change_prices', 'arguments' => ['category' => 'Куртки', 'change' => '-7,5%']])['result']['messages'][0]['content']['text'];
+        $this->assertStringContainsString('percent=-7.5', $text);
+        $this->assertStringContainsString('WITHOUT apply', $text);
+        $text = $this->call($token, 'prompts/get', ['name' => 'change_prices', 'arguments' => ['category' => 'Куртки', 'change' => '+300']])['result']['messages'][0]['content']['text'];
+        $this->assertStringContainsString('amount=300', $text);
+
+        foreach ([
+            ['name' => 'change_prices'],
+            ['name' => 'change_prices', 'arguments' => ['category' => 'Куртки']],
+            ['name' => 'change_prices', 'arguments' => ['category' => 'Куртки', 'change' => 'вдвое']],
+            ['name' => 'write_publication', 'arguments' => ['topic' => ' ']],
+            ['name' => 'no_such_prompt'],
+            [],
+        ] as $params) {
+            $this->assertEquals(-32602, $this->call($token, 'prompts/get', $params)['error']['code'], json_encode($params));
+        }
+
+        // not offered = not available by name either
+        $limited = $this->createApiKeyToken(['read' => ['catalog/product']], false);
+        $this->assertEquals(-32602, $this->call($limited, 'prompts/get', ['name' => 'handle_new_orders'])['error']['code']);
+    }
+
+    public function testResources(): void
+    {
+        $this->getService(ParameterService::class)->create(['name' => 'common_title', 'value' => 'Мой магазин']);
+        $categories = $this->getService(CatalogCategoryService::class);
+        $parent = $categories->create(['title' => 'Одежда', 'address' => 'wear']);
+        $categories->create(['title' => 'Куртки', 'address' => 'jackets', 'parent_uuid' => $parent->uuid]);
+        $references = $this->getService(ReferenceService::class);
+        $references->create(['type' => ReferenceType::ORDER_STATUS, 'title' => 'Новый', 'order' => 1]);
+        $references->create(['type' => ReferenceType::ORDER_STATUS, 'title' => 'Выполнен', 'order' => 2]);
+
+        $token = $this->createApiKeyToken();
+        $list = $this->resources($token);
+
+        $this->assertEqualsCanonicalizing(
+            ['platform://site', 'platform://guide/rules', 'platform://catalog/categories', 'platform://reference/order_statuses'],
+            array_keys($list)
+        );
+        $this->assertEquals('text/markdown', $list['platform://guide/rules']['mimeType']);
+
+        $read = fn (string $uri) => $this->call($token, 'resources/read', ['uri' => $uri])['result']['contents'][0];
+
+        $site = json_decode($read('platform://site')['text'], true);
+        $this->assertEquals('Мой магазин', $site['title']);
+        $this->assertContains('catalog', $site['sections_enabled']);
+
+        $tree = json_decode($read('platform://catalog/categories')['text'], true);
+        $this->assertEquals('Одежда', $tree[0]['title']);
+        $this->assertEquals('Куртки', $tree[0]['children'][0]['title']);
+        $this->assertArrayNotHasKey('children', $tree[0]['children'][0]);
+
+        $statuses = json_decode($read('platform://reference/order_statuses')['text'], true);
+        $this->assertEquals(['Новый', 'Выполнен'], array_column($statuses, 'title'));
+
+        $rules = $read('platform://guide/rules');
+        $this->assertEquals('platform://guide/rules', $rules['uri']);
+        $this->assertStringContainsString('Nothing is deleted', $rules['text']);
+
+        // a key sees only the resources its scopes allow
+        $limited = $this->resources($this->createApiKeyToken(['read' => ['catalog/category']], false));
+        $this->assertArrayHasKey('platform://catalog/categories', $limited);
+        $this->assertArrayHasKey('platform://site', $limited);
+        $this->assertArrayNotHasKey('platform://reference/order_statuses', $limited);
+
+        $other = $this->createApiKeyToken(['read' => ['catalog/category']], false);
+        $this->assertEquals(-32002, $this->call($other, 'resources/read', ['uri' => 'platform://reference/order_statuses'])['error']['code']);
+        $this->assertEquals(-32002, $this->call($token, 'resources/read', ['uri' => 'platform://nope'])['error']['code']);
+        $this->assertEquals(-32002, $this->call($token, 'resources/read')['error']['code']);
+
+        $this->assertEquals([], $this->call($token, 'resources/templates/list')['result']['resourceTemplates']);
+    }
+
+    public function testPluginsCanRegisterPromptsAndResources(): void
+    {
+        $registry = $this->getService('mcp');
+
+        $prompt = new class($this->getService(\Psr\Container\ContainerInterface::class)) extends \App\Domain\AbstractMcpPrompt {
+            public const NAME = 'plugin_prompt';
+            public const TOOLS = ['no_such_tool'];
+
+            public function render(array $args = []): string
+            {
+                return 'x';
+            }
+        };
+        $resource = new class($this->getService(\Psr\Container\ContainerInterface::class)) extends \App\Domain\AbstractMcpResource {
+            public const URI = 'plugin://data';
+            public const NAME = 'plugin_data';
+
+            public function read(): string
+            {
+                return '{}';
+            }
+        };
+
+        $this->assertTrue($registry->registerPrompt($prompt));
+        $this->assertFalse($registry->registerPrompt($prompt), 'the second registration of a name is ignored');
+        $this->assertTrue($registry->registerResource($resource));
+        $this->assertSame($prompt, $registry->findPrompt('plugin_prompt'));
+        $this->assertSame($resource, $registry->findResource('plugin://data'));
+        $this->assertNull($registry->findPrompt('missing'));
+
+        // the prompt needs a tool nobody has: it is never offered
+        $this->assertFalse($prompt->isAvailable(['catalog_order_list']));
+        $this->assertTrue($prompt->isAvailable(['no_such_tool']));
     }
 
     public function testSiteOverviewFollowsKeyScopes(): void
