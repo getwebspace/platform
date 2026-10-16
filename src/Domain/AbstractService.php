@@ -128,6 +128,31 @@ abstract class AbstractService
     }
 
     /**
+     * Optional `date_from` / `date_to` for models with a `date` column
+     *
+     * A plain date (Y-m-d) covers the whole day: from - its start, to - its end.
+     * The value is passed in the format the column is stored in, SQLite compares dates as strings
+     */
+    protected function applyDateRange(Builder $query, array $data): Builder
+    {
+        foreach (['date_from' => ['>=', false], 'date_to' => ['<=', true]] as $key => [$operator, $end]) {
+            if (($value = $data[$key] ?? null) === null) {
+                continue;
+            }
+
+            $date = datetime($value);
+
+            if (is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) === 1) {
+                $date = $end ? $date->endOfDay() : $date->startOfDay();
+            }
+
+            $query->where('date', $operator, $date->format('Y-m-d H:i:s'));
+        }
+
+        return $query;
+    }
+
+    /**
      * Apply order, limit and offset
      */
     protected function applyOptions(Builder $query, array $data): Builder
@@ -158,6 +183,7 @@ abstract class AbstractService
 
         $this->applyCriteria($query, $criteria);
         $this->applySearch($query, $data['search'] ?? null, static::$search_columns);
+        $this->applyDateRange($query, $data);
 
         return $this->applyOptions($query, $data);
     }

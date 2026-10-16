@@ -210,6 +210,23 @@ return function (ContainerBuilder $containerBuilder): void {
                     $this->register(\App\Domain\McpTools\GuestBookModerateTool::class);
                     $this->register(\App\Domain\McpTools\TaskListTool::class);
                     $this->register(\App\Domain\McpTools\TaskRetryTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogProductUpdateTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogCategoryUpdateTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogPriceBulkUpdateTool::class);
+                    $this->register(\App\Domain\McpTools\PublicationListTool::class);
+                    $this->register(\App\Domain\McpTools\PublicationGetTool::class);
+                    $this->register(\App\Domain\McpTools\PublicationCreateTool::class);
+                    $this->register(\App\Domain\McpTools\PublicationUpdateTool::class);
+                    $this->register(\App\Domain\McpTools\PageListTool::class);
+                    $this->register(\App\Domain\McpTools\PageGetTool::class);
+                    $this->register(\App\Domain\McpTools\PageUpdateTool::class);
+                    $this->register(\App\Domain\McpTools\UserListTool::class);
+                    $this->register(\App\Domain\McpTools\UserGetTool::class);
+                    $this->register(\App\Domain\McpTools\UserUpdateTool::class);
+                    $this->register(\App\Domain\McpTools\UserGroupListTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogAttributeListTool::class);
+                    $this->register(\App\Domain\McpTools\FileListTool::class);
+                    $this->register(\App\Domain\McpTools\SubscriberListTool::class);
                 }
 
                 /**
