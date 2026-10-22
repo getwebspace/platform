@@ -3,7 +3,7 @@
 # Composer binary comes straight from the official image - no curl bootstrap
 FROM composer:2 AS composer
 
-FROM php:8.5-fpm-alpine3.22
+FROM php:8.5-fpm-alpine3.23
 
 LABEL org.opencontainers.image.authors="Aleksey Ilyin <alksily@outlook.com>"
 LABEL org.opencontainers.image.source="https://github.com/getwebspace/platform"
