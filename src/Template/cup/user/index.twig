@@ -144,12 +144,12 @@
                                     </div>
                                     <div class="col-6 col-sm">
                                         <div class="float-left">
-                                            {{ user.getPhone() ? (user.getPhone() ~ '<br>')|raw : '' }}
-                                            {{ user.getEmail() ? (user.getEmail() ~ '<br>')|raw : '' }}
+                                            {{ user.phone ? (user.phone ~ '<br>')|raw : '' }}
+                                            {{ user.email ? (user.email ~ '<br>')|raw : '' }}
                                         </div>
 
                                         <div class="text-black-50 float-right d-none d-lg-inline">
-                                            {% if user.allow_mail %}
+                                            {% if user.is_allow_mail %}
                                                 <i class="fa fa-envelope" data-toggle="tooltip" data-placement="right" title="{{ 'Subscribed to newsletter'|locale }}"></i>
                                             {% endif %}
                                         </div>

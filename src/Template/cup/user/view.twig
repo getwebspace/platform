@@ -49,7 +49,7 @@
                         <dt class="col-4">{{ 'Gender'|locale }}</dt>
                         <dd class="col-8">{{ item.gender ?: '&mdash;' }}</dd>
                         <dt class="col-4">{{ 'Birthdate'|locale }}</dt>
-                        <dd class="col-8">{{ item.birthdate|df('d.m.Y') }}</dd>
+                        <dd class="col-8">{{ item.birthdate ? item.birthdate|df('d.m.Y') : '&mdash;' }}</dd>
 
                         {% if item.company.title or item.company.position %}
                             <dt class="col-4">{{ 'Company'|locale }}</dt>
@@ -81,7 +81,7 @@
                             <dt class="col-4">E-Mail</dt>
                             <dd class="col-8"><a href="mailto:{{ item.email }}">{{ item.email }}</a></dd>
                             <dt class="col-4">{{ 'Subscribed to newsletter'|locale }}</dt>
-                            <dd class="col-8">{{ (item.allow_mail ? 'Yes' : 'No')|locale }}</dd>
+                            <dd class="col-8">{{ (item.is_allow_mail ? 'Yes' : 'No')|locale }}</dd>
                         {% endif %}
                         <dt class="col-4">{{ 'Country'|locale }}</dt>
                         <dd class="col-8">{{ item.country ?: '&mdash;' }}</dd>
@@ -147,7 +147,7 @@
                         <dt class="col-4">{{ 'Orders'|locale }}</dt>
                         <dd class="col-8">{{ item.orders|count ?: '&mdash;' }}</dd>
                         <dt class="col-4">{{ 'Social networks'|locale }}</dt>
-                        <dd class="col-8">{{ item.getIntegrations()|count ? item.getIntegrations().pluck('provider').implode(', ') : '&mdash;' }}</dd>
+                        <dd class="col-8">{{ item.integrations|count ? item.integrations.pluck('provider').implode(', ') : '&mdash;' }}</dd>
                     </dl>
                 </div>
             </div>
