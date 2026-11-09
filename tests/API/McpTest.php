@@ -1654,12 +1654,84 @@ class McpTest extends TestCase
         $this->assertEquals('news/bez-adresa', $result['address']);
     }
 
+    /**
+     * The search index lives in files of the cache folder, a developer's machine has them and CI has not:
+     * the existing ones are put aside for the time of a test and put back (the ones the test made are removed)
+     */
+    private function withSearchIndexAside(callable $test): void
+    {
+        $aside = [];
+
+        foreach (glob(CACHE_DIR . '/*.index') ?: [] as $file) {
+            rename($file, $file . '.mcp-aside');
+            $aside[] = $file;
+        }
+
+        try {
+            $test();
+        } finally {
+            foreach (glob(CACHE_DIR . '/*.index') ?: [] as $file) {
+                @unlink($file);
+            }
+            foreach ($aside as $file) {
+                rename($file . '.mcp-aside', $file);
+            }
+        }
+    }
+
+    public function testSiteSearch(): void
+    {
+        $this->withSearchIndexAside(function (): void {
+            $container = $this->getService(\Psr\Container\ContainerInterface::class);
+            $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Goods', 'address' => 'goods']);
+            $this->makeProduct('Waterproof jacket', (string) $category->uuid, ['description' => 'Warm']);
+            $this->makeProduct('Hidden jacket', (string) $category->uuid, ['status' => 'delete']);
+            $this->getService(PageService::class)->create(['title' => 'About jackets', 'address' => 'about-jackets', 'content' => 'We sell jackets']);
+
+            $publicationCategory = $this->getService(PublicationCategoryService::class)->create(['title' => 'News', 'address' => 'news']);
+            $publications = $this->getService(\App\Domain\Service\Publication\PublicationService::class);
+            $publications->create(['title' => 'Jacket sale', 'address' => 'news/sale', 'category_uuid' => $publicationCategory->uuid, 'content' => ['short' => 'jackets', 'full' => 'jackets'], 'date' => '2026-01-01 10:00:00']);
+            $publications->create(['title' => 'Jacket secret draft', 'address' => 'news/draft', 'category_uuid' => $publicationCategory->uuid, 'content' => ['short' => 'jackets', 'full' => 'jackets'], 'date' => '2099-12-31 00:00:00']);
+
+            $token = $this->createApiKeyToken();
+
+            // no index yet: nothing is found and it is said which kinds have none
+            [$error, $result] = $this->tool($token, 'site_search', ['query' => 'jacket']);
+            $this->assertFalse($error, json_encode($result));
+            $this->assertSame(0, $result['count']);
+            $this->assertEqualsCanonicalizing(['catalog_product', 'publication', 'page'], $result['no_index_for']);
+
+            // the index is built the way the worker does it
+            $model = (new \App\Domain\Tasks\SearchIndexTask($container))->execute();
+            (new \App\Domain\Tasks\SearchIndexTask($container, $model))->run();
+            foreach (glob(CACHE_DIR . '/*.index') as $file) {
+                chmod($file, 0o666); // the web server is another user
+            }
+
+            [, $result] = $this->tool($token, 'site_search', ['query' => 'jacket']);
+            $this->assertArrayNotHasKey('no_index_for', $result);
+            $titles = array_column($result['items'], 'title', 'kind');
+            $this->assertEquals('Waterproof jacket', $titles['catalog_product']);
+            $this->assertEquals('About jackets', $titles['page']);
+            $this->assertEquals('Jacket sale', $titles['publication']);
+            $this->assertStringNotContainsString('secret draft', json_encode($result), 'a draft is not on the site yet');
+            $this->assertStringNotContainsString('Hidden jacket', json_encode($result), 'a hidden product is not found');
+            $this->assertStringContainsString('/catalog/', array_column($result['items'], 'url', 'kind')['catalog_product']);
+
+            [, $result] = $this->tool($token, 'site_search', ['query' => 'jacket', 'kind' => 'page']);
+            $this->assertEquals(['page'], array_unique(array_column($result['items'], 'kind')));
+            [, $result] = $this->tool($token, 'site_search', ['query' => 'nothing-like-it-zzz']);
+            $this->assertSame(0, $result['count']);
+            $this->assertSame([], $result['items']);
+
+            // a key finds only what it may read
+            [, $result] = $this->tool($this->createApiKeyToken(['read' => ['page']], false), 'site_search', ['query' => 'jacket']);
+            $this->assertEquals(['page'], array_unique(array_column($result['items'], 'kind')));
+        });
+    }
+
     public function testSearchLogsFormsAndHealth(): void
     {
-        $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Goods', 'address' => 'goods']);
-        $this->makeProduct('Waterproof jacket', (string) $category->uuid, ['description' => 'Warm']);
-        $this->getService(PageService::class)->create(['title' => 'About jackets', 'address' => 'about-jackets', 'content' => 'We sell jackets']);
-
         $form = $this->getService(FormService::class)->create(['title' => 'Feedback', 'address' => 'feedback', 'mailto' => 'boss@example.com']);
         $this->getService(FormDataService::class)->create(['form_uuid' => $form->uuid, 'data' => ['name' => 'Иван'], 'message' => 'x']);
 
@@ -1672,15 +1744,11 @@ class McpTest extends TestCase
         $this->assertNotNull($result[0]['last_submission']);
         $this->assertContains('boss@example.com', $result[0]['recipients']);
 
-        // search: nothing indexed yet, it is said, then the index is built by the worker
-        [$error, $result] = $this->tool($token, 'site_search', ['query' => 'jacket']);
-        $this->assertFalse($error, json_encode($result));
-        $this->assertSame(0, $result['count']);
-        $this->assertNotEmpty($result['no_index_for'] ?? []);
-
+        // the index is rebuilt by a background task: here it is only started (no worker in the tests)
         [, $result] = $this->tool($token, 'site_reindex');
         $this->assertNotEmpty($result['task']);
         $this->assertEquals('queue', $result['status']);
+        $this->assertEquals(\App\Domain\Tasks\SearchIndexTask::class, $this->getService(\App\Domain\Service\Task\TaskService::class)->read(['uuid' => $result['task']])->action);
         [$error] = $this->tool($token, 'site_search', ['query' => ' ']);
         $this->assertTrue($error);
         [$error] = $this->tool($token, 'site_search', ['query' => 'x', 'kind' => 'users']);

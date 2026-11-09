@@ -19,9 +19,6 @@ class SearchIndexTask extends AbstractTask
 
     protected function action(array $args = []): void
     {
-        /** @var \TeamTNT\TNTSearch\TNTSearch $tnt */
-        $tnt = $this->container->get(\TeamTNT\TNTSearch\TNTSearch::class);
-
         $services = [
             'catalog_product' => $this->container->get(CatalogProductService::class),
             'publication' => $this->container->get(PublicationService::class),
@@ -33,6 +30,13 @@ class SearchIndexTask extends AbstractTask
          * @var AbstractService $service
          */
         foreach ($services as $name => $service) {
+            // an own engine for every index: the prepared statements of an engine stay with the first index it has made,
+            // the words of the next ones would be written to it (the pages were not found when the catalog had products)
+            /** @var \TeamTNT\TNTSearch\TNTSearch $tnt */
+            $tnt = $this->container instanceof \DI\FactoryInterface
+                ? $this->container->make(\TeamTNT\TNTSearch\TNTSearch::class)
+                : $this->container->get(\TeamTNT\TNTSearch\TNTSearch::class);
+
             $indexer = $tnt->createIndex("{$name}.index", true);
             $indexer->setPrimaryKey('uuid');
             $indexer->setInMemory(false);

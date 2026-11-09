@@ -148,6 +148,16 @@ Found by an external review of the 6.4.0 server; all valid:
 - Prompt `edit_template` (read -> smallest change -> dry run -> confirm -> apply, backup id, how to undo).
 - `AbstractMcpTool::DRY_RUN_SELF` for tools that do the dry run themselves.
 
+## Search index fix (found by a red test)
+
+- `McpTest::testSearchLogsFormsAndHealth` assumed that the cache folder has no search index. A developer's machine has the `*.index` files, CI has not,
+  so the test was green on one and red on the other. The tests that depend on the index now put the existing ones aside and put them back
+  (`withSearchIndexAside`). Rule: a test must not depend on what the machine has in `var/cache`.
+- That test, written properly (`testSiteSearch`), showed a real bug of the platform: `SearchIndexTask` made all three indexes with ONE engine object, whose
+  prepared statements stay with the first index it made - the words of publications and pages were written into the index of PRODUCTS, the page / publication
+  indexes stayed empty. So the search of the site (and `site_search`) did not find pages and publications on any site that has products. Now an own engine per index.
+  After deploying, rebuild the index once (`site_reindex` or the task in the admin panel).
+
 ## Deliberately NOT covered
 
 - Deleting anything
