@@ -17,36 +17,44 @@ class UserProfileAction extends UserAction
 
         if ($user && $this->isPost()) {
             try {
+                $fields = [
+                    'username' => $this->getParam('username'),
+                    'email' => $this->getParam('email'),
+                    'phone' => $this->getParam('phone'),
+
+                    'firstname' => $this->getParam('firstname'),
+                    'lastname' => $this->getParam('lastname'),
+                    'patronymic' => $this->getParam('patronymic'),
+                    'gender' => $this->getParam('gender'),
+                    'birthdate' => $this->getParam('birthdate'),
+
+                    'country' => $this->getParam('country'),
+                    'city' => $this->getParam('city'),
+                    'address' => $this->getParam('address'),
+                    'postcode' => $this->getParam('postcode'),
+
+                    'company' => $this->getParam('company'),
+                    'legal' => $this->getParam('legal'),
+
+                    'website' => $this->getParam('website'),
+                    'additional' => $this->getParam('additional'),
+
+                    'language' => $this->getParam('language'),
+                ];
+
+                // only what the form actually sent: a field the theme does not
+                // show must keep its value, not be wiped to null (an empty
+                // username then collided with every other empty username)
+                $fields = array_intersect_key($fields, $this->getParams());
+
                 $password = $this->getParam('password');
-                $user = $this->userService->update(
-                    $user,
-                    [
-                        'username' => $this->getParam('username'),
-                        'email' => $this->getParam('email'),
-                        'phone' => $this->getParam('phone'),
-                        'password' => !blank($password) ? $password : null,
 
-                        'firstname' => $this->getParam('firstname'),
-                        'lastname' => $this->getParam('lastname'),
-                        'patronymic' => $this->getParam('patronymic'),
-                        'gender' => $this->getParam('gender'),
-                        'birthdate' => $this->getParam('birthdate'),
+                $user = $this->userService->update($user, array_merge($fields, [
+                    'password' => !blank($password) ? $password : null,
 
-                        'country' => $this->getParam('country'),
-                        'city' => $this->getParam('city'),
-                        'address' => $this->getParam('address'),
-                        'postcode' => $this->getParam('postcode'),
-
-                        'company' => $this->getParam('company'),
-                        'legal' => $this->getParam('legal'),
-
-                        'website' => $this->getParam('website'),
-                        'additional' => $this->getParam('additional'),
-
-                        'is_allow_mail' => $this->getParam('is_allow_mail'),
-                        'language' => $this->getParam('language'),
-                    ]
-                );
+                    // a checkbox is simply absent from the request when unticked
+                    'is_allow_mail' => $this->getParam('is_allow_mail'),
+                ]));
                 $user = $this->processEntityFiles($user);
 
                 $this->container->get(\App\Application\PubSub::class)->publish('common:user:edit', $user);

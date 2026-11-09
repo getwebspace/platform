@@ -19,6 +19,7 @@ class UserLoginAction extends UserAction
         $provider = $this->getParam('provider', $_SESSION['auth_provider'] ?? 'BasicAuthProvider');
 
         $data = [
+            'identifier' => $this->getParam('identifier'),
             'username' => $this->getParam('username'),
             'phone' => $this->getParam('phone'),
             'email' => $this->getParam('email'),
@@ -27,21 +28,25 @@ class UserLoginAction extends UserAction
             'state' => $this->getParam('state'),
         ];
 
+        // a form may send one `identifier` field (e-mail, phone or username,
+        // the same as the cup login), otherwise the field from user_login_type
+        $field = !blank($data['identifier']) ? 'identifier' : $identifier;
+
         if (
             ($this->isGet() && $data['code'] && $data['state'])
-            || ($this->isPost() && (($data[$identifier] && $data['password']) || $provider))
+            || ($this->isPost() && (($data[$field] && $data['password']) || $provider))
         ) {
-            $login = (string) ($data[$identifier] ?? '');
+            $login = (string) ($data[$field] ?? '');
             $ip = $this->getRequestRemoteIP();
 
             if ($this->isPost() && $this->isThrottled(self::THROTTLE_SCOPE, $login, $ip)) {
-                $this->addError($identifier, 'EXCEPTION_TOO_MANY_ATTEMPTS');
+                $this->addError($field, 'EXCEPTION_TOO_MANY_ATTEMPTS');
             } elseif ($this->isPost() && $this->isRecaptchaChecked() || $this->isGet()) {
                 try {
                     $result = $this->auth->login(
                         $provider,
                         [
-                            $identifier => $data[$identifier],
+                            $field => $data[$field],
                             'password' => $this->getParam('password'),
                             'code' => $this->getParam('code'),
                             'state' => $this->getParam('state'),
@@ -60,10 +65,10 @@ class UserLoginAction extends UserAction
                     return $this->respondWithRedirect($this->getRedirectParam('redirect', '/user/profile'));
                 } catch (UserNotConfirmedException $e) {
                     // the credentials were fine, so this is not a failed attempt
-                    $this->addError($identifier, $e->getMessage());
+                    $this->addError($field, $e->getMessage());
                 } catch (UserNotFoundException $e) {
                     $this->throttleHit(self::THROTTLE_SCOPE, $login, $ip);
-                    $this->addError($identifier, $e->getMessage());
+                    $this->addError($field, $e->getMessage());
                 } catch (WrongPasswordException $e) {
                     $this->throttleHit(self::THROTTLE_SCOPE, $login, $ip);
                     $this->addError('password', $e->getMessage());
