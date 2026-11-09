@@ -207,15 +207,18 @@ abstract class AbstractService
         $id = spl_object_id($pdo);
 
         if (!isset($registered[$id])) {
-            if (!method_exists($pdo, 'sqliteCreateFunction')) {
+            $function = fn (?string $value): ?string => $value === null ? null : mb_strtolower($value);
+
+            if (class_exists(\Pdo\Sqlite::class) && $pdo instanceof \Pdo\Sqlite) {
+                $pdo->createFunction('mb_lower', $function, 1);
+            } elseif (method_exists($pdo, 'sqliteCreateFunction')) {
+                // a plain PDO (what Eloquent creates): PHP 8.5 calls the method deprecated and offers
+                // Pdo\Sqlite, which a plain PDO is not - there is no other way to register the function
+                @$pdo->sqliteCreateFunction('mb_lower', $function, 1);
+            } else {
                 return 'lower';
             }
 
-            $pdo->sqliteCreateFunction(
-                'mb_lower',
-                fn (?string $value): ?string => $value === null ? null : mb_strtolower($value),
-                1
-            );
             $registered[$id] = true;
         }
 

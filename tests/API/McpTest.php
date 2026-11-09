@@ -562,6 +562,7 @@ class McpTest extends TestCase
         // a draft by default
         [$error, $created] = $this->tool($token, 'publication_create', [
             'title' => 'Открытие магазина',
+            'address' => 'news/otkrytie-magazina',
             'category_uuid' => (string) $category->uuid,
             'short' => '<p>Коротко</p>',
             'full' => '<p>Полный <i>текст</i></p><script>alert(1)</script><a href="javascript:x()">link</a>',
@@ -610,7 +611,7 @@ class McpTest extends TestCase
             ['tool' => 'publication_create', 'args' => ['title' => 'Без категории']],
             ['tool' => 'publication_create', 'args' => ['title' => 'Плохая категория', 'category_uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString()]],
             ['tool' => 'publication_create', 'args' => ['title' => 'Дата', 'category_uuid' => (string) $category->uuid, 'publish_at' => '01.05.2031']],
-            ['tool' => 'publication_create', 'args' => ['title' => 'Открытие нового магазина', 'category_uuid' => (string) $category->uuid]],
+            ['tool' => 'publication_create', 'args' => ['title' => 'Открытие нового магазина', 'address' => 'news/another', 'category_uuid' => (string) $category->uuid]],
             ['tool' => 'publication_update', 'args' => ['uuid' => $uuid]],
             ['tool' => 'publication_update', 'args' => ['uuid' => $uuid, 'publish' => true, 'unpublish' => true]],
             ['tool' => 'publication_update', 'args' => ['uuid' => $uuid, 'title' => '']],
@@ -892,7 +893,7 @@ class McpTest extends TestCase
     {
         $full = $this->prompts($this->createApiKeyToken());
         $this->assertEqualsCanonicalizing(
-            ['handle_new_orders', 'moderate_content', 'site_report', 'change_prices', 'write_publication', 'check_failed_tasks'],
+            ['handle_new_orders', 'moderate_content', 'site_report', 'change_prices', 'write_publication', 'check_failed_tasks', 'seo_check', 'sales_analysis', 'catalog_check'],
             array_keys($full)
         );
 
@@ -1190,7 +1191,7 @@ class McpTest extends TestCase
 
         // creating: the new record does not stay
         $pubCategory = $this->getService(PublicationCategoryService::class)->create(['title' => 'Новости', 'address' => 'news']);
-        [, $result] = $this->tool($token, 'publication_create', ['title' => 'Пробная', 'category_uuid' => (string) $pubCategory->uuid, 'dry_run' => true]);
+        [, $result] = $this->tool($token, 'publication_create', ['title' => 'Пробная', 'address' => 'news/probnaya', 'category_uuid' => (string) $pubCategory->uuid, 'dry_run' => true]);
         $this->assertEquals('draft', $result['state']);
         [, $list] = $this->tool($token, 'publication_list');
         $this->assertEquals(0, $list['total']);
@@ -1274,6 +1275,456 @@ class McpTest extends TestCase
         $this->assertStringNotContainsString(str_repeat('я', 300), $log);
         // reads are not journaled
         $this->assertEmpty(array_filter(explode("\n", $log), fn ($line) => str_contains($line, 'MCP write') && str_contains($line, '"tool":"catalog_product_search"')));
+    }
+
+    // the last batch: reports, creating, search, logs, health
+
+    private function ordersWithMoney(): array
+    {
+        $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Одежда', 'address' => 'wear']);
+        $other = $this->getService(CatalogCategoryService::class)->create(['title' => 'Обувь', 'address' => 'shoes']);
+
+        $jacket = $this->makeProduct('Куртка', (string) $category->uuid, ['price' => 1000]);
+        $boots = $this->makeProduct('Ботинки', (string) $other->uuid, ['price' => 500, 'tax' => 10, 'discount' => 50]);
+
+        $references = $this->getService(ReferenceService::class);
+        $new = $references->create(['type' => ReferenceType::ORDER_STATUS, 'title' => 'Новый', 'order' => 1]);
+        $done = $references->create(['type' => ReferenceType::ORDER_STATUS, 'title' => 'Выполнен', 'order' => 2]);
+
+        $orders = $this->getService(CatalogOrderService::class);
+        $created = [
+            $orders->create(['phone' => '+79000000001', 'status_uuid' => $new->uuid, 'products' => [(string) $jacket->uuid => ['count' => 2, 'price_type' => 'price']]]),
+            $orders->create(['phone' => '+79000000002', 'status_uuid' => $done->uuid, 'products' => [(string) $jacket->uuid => ['count' => 1, 'price_type' => 'price'], (string) $boots->uuid => ['count' => 3, 'price_type' => 'price']]]),
+            $orders->create(['phone' => '+79000000003', 'status_uuid' => $done->uuid, 'products' => [(string) $boots->uuid => ['count' => 1, 'price_type' => 'price']]]),
+        ];
+
+        // the serial is built from today, so the dates are set when all orders exist
+        foreach ([[0, '2026-03-02 10:00:00'], [1, '2026-03-02 18:00:00'], [2, '2026-04-15 12:00:00']] as [$i, $date]) {
+            \App\Domain\Models\CatalogOrder::query()->where('uuid', $created[$i]->uuid)->update(['date' => $date]);
+        }
+
+        return [$created, $jacket, $boots];
+    }
+
+    public function testSalesMatchTheModel(): void
+    {
+        [$orders] = $this->ordersWithMoney();
+        $token = $this->createApiKeyToken(['read' => ['catalog/order', 'reference']], false);
+
+        // what the model says: price minus discount, tax on top, times quantity
+        $model = collect($orders)->map(fn ($order) => round($this->getService(CatalogOrderService::class)->read(['uuid' => (string) $order->uuid])->totalSum(), 2));
+        $this->assertEquals(2000.0, $model[0]);
+        $this->assertEquals(round(1000 + 3 * (500 - 50) * 1.1, 2), $model[1]);
+
+        [$error, $result] = $this->tool($token, 'catalog_sales_report', ['date_from' => '2026-01-01', 'date_to' => '2026-12-31', 'group_by' => 'month']);
+        $this->assertFalse($error, json_encode($result));
+        $this->assertEquals(3, $result['totals']['orders']);
+        $this->assertEquals(round($model->sum(), 2), $result['totals']['revenue'], 'the report is of the same money as the model');
+        $this->assertEquals(round($model->sum() / 3, 2), $result['totals']['average_check']);
+        $this->assertEquals(['2026-03', '2026-04'], array_column($result['rows'], 'key'));
+        $this->assertEquals(2, $result['rows'][0]['orders']);
+        $this->assertEquals(round($model[0] + $model[1], 2), $result['rows'][0]['revenue']);
+
+        // the admin panel counts the same
+        $dashboard = new \App\Application\Dashboard($this->getService(\Psr\Container\ContainerInterface::class));
+        $this->assertStringContainsString('ABS(cop.discount)', \App\Application\Dashboard::lineSql('cop'));
+        $this->assertNotEmpty($dashboard->revenue());
+    }
+
+    public function testSalesReportGroupings(): void
+    {
+        $this->ordersWithMoney();
+        $token = $this->createApiKeyToken(['read' => ['catalog/order', 'reference']], false);
+        $report = fn (array $args) => $this->tool($token, 'catalog_sales_report', array_merge(['date_from' => '2026-01-01', 'date_to' => '2026-12-31'], $args));
+
+        [, $result] = $report(['group_by' => 'day']);
+        $this->assertEquals(['2026-03-02', '2026-04-15'], array_column($result['rows'], 'key'), 'days without orders are not listed');
+
+        [, $result] = $report(['group_by' => 'week']);
+        $this->assertEquals(['2026-03-02', '2026-04-13'], array_column($result['rows'], 'key'), 'a week starts on Monday');
+
+        [, $result] = $report(['group_by' => 'status']);
+        $byLabel = array_column($result['rows'], null, 'label');
+        $this->assertEquals(1, $byLabel['Новый']['orders']);
+        $this->assertEquals(2, $byLabel['Выполнен']['orders']);
+
+        [, $result] = $report(['group_by' => 'category']);
+        $byLabel = array_column($result['rows'], null, 'label');
+        $this->assertEquals(2, $byLabel['Одежда']['orders']);
+        $this->assertEquals(2, $byLabel['Обувь']['orders']);
+        $this->assertEquals(3, $result['totals']['orders'], 'an order with two categories is one order in the total');
+
+        [, $result] = $report(['group_by' => 'month', 'status' => 'выполнен']);
+        $this->assertEquals(2, $result['totals']['orders']);
+
+        [, $result] = $report(['date_from' => '2026-03-03', 'date_to' => '2026-03-31']);
+        $this->assertEquals(0, $result['totals']['orders']);
+        $this->assertSame([], $result['rows']);
+
+        foreach ([['group_by' => 'year'], ['date_from' => '01.03.2026'], ['date_from' => '2026-05-01', 'date_to' => '2026-04-01'], ['date_from' => '2020-01-01', 'date_to' => '2026-12-31'], ['status' => 'нет такого']] as $args) {
+            [$error] = $this->tool($token, 'catalog_sales_report', $args);
+            $this->assertTrue($error, json_encode($args));
+        }
+    }
+
+    public function testTopProducts(): void
+    {
+        [, $jacket, $boots] = $this->ordersWithMoney();
+        $token = $this->createApiKeyToken(['read' => ['catalog/order']], false);
+        $top = fn (array $args = []) => $this->tool($token, 'catalog_top_products', array_merge(['date_from' => '2026-01-01', 'date_to' => '2026-12-31'], $args))[1]['items'];
+
+        $items = $top();
+        $this->assertEquals(['Куртка', 'Ботинки'], array_column($items, 'title'));
+        $this->assertEquals(3.0, $items[0]['quantity']);
+        $this->assertEquals(2, $items[0]['orders']);
+        $this->assertEquals(3000.0, $items[0]['revenue']);
+
+        $this->assertEquals('Ботинки', $top(['sort' => 'quantity'])[0]['title']);
+        $this->assertEquals(4.0, $top(['sort' => 'quantity'])[0]['quantity']);
+        $this->assertCount(1, $top(['limit' => 1]));
+
+        // a product deleted afterwards is still in the history
+        $this->getService(CatalogProductService::class)->delete($boots);
+        $this->assertContains('deleted product', array_column($top(), 'title'));
+
+        foreach ([['sort' => 'luck'], ['limit' => 0], ['limit' => 101]] as $args) {
+            [$error] = $this->tool($token, 'catalog_top_products', $args);
+            $this->assertTrue($error, json_encode($args));
+        }
+    }
+
+    public function testStockReport(): void
+    {
+        $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Товары', 'address' => 'goods']);
+        $this->makeProduct('Хороший', (string) $category->uuid, ['price' => 10, 'stock' => 5, 'quantityMin' => 1, 'description' => 'Описание']);
+        $this->makeProduct('Нет на складе', (string) $category->uuid, ['price' => 10, 'stock' => 0, 'description' => 'Описание']);
+        $this->makeProduct('Мало', (string) $category->uuid, ['price' => 10, 'stock' => 2, 'quantityMin' => 5, 'description' => 'Описание']);
+        $this->makeProduct('Без цены', (string) $category->uuid, ['price' => 0, 'stock' => 5, 'description' => 'Описание']);
+        $this->makeProduct('Скрытый', (string) $category->uuid, ['price' => 0, 'stock' => 0, 'status' => 'delete']);
+
+        $token = $this->createApiKeyToken(['read' => ['catalog/product']], false);
+
+        [$error, $result] = $this->tool($token, 'catalog_stock_report');
+        $this->assertFalse($error, json_encode($result));
+        $this->assertEquals(4, $result['visible_products'], 'hidden products are not counted');
+        $checks = $result['checks'];
+        $this->assertEquals(['Нет на складе'], array_column($checks['out_of_stock']['examples'], 'title'));
+        $this->assertEquals(['Мало'], array_column($checks['low_stock']['examples'], 'title'));
+        $this->assertEquals(['Без цены'], array_column($checks['no_price']['examples'], 'title'));
+        $this->assertEquals(4, $checks['no_image']['count']);
+        $this->assertEquals(0, $checks['no_description']['count']);
+
+        [, $result] = $this->tool($token, 'catalog_stock_report', ['checks' => ['no_price'], 'examples' => 0]);
+        $this->assertEquals(['no_price'], array_keys($result['checks']));
+        $this->assertSame([], $result['checks']['no_price']['examples']);
+        $this->assertEquals(1, $result['checks']['no_price']['count']);
+
+        $other = $this->getService(CatalogCategoryService::class)->create(['title' => 'Другое', 'address' => 'other']);
+        [, $result] = $this->tool($token, 'catalog_stock_report', ['category_uuid' => (string) $other->uuid]);
+        $this->assertEquals(0, $result['visible_products']);
+
+        foreach ([['checks' => ['luck']], ['checks' => 'no_price'], ['examples' => 51]] as $args) {
+            [$error] = $this->tool($token, 'catalog_stock_report', $args);
+            $this->assertTrue($error, json_encode($args));
+        }
+    }
+
+    public function testSeoAudit(): void
+    {
+        $pages = $this->getService(PageService::class);
+        $pages->create(['title' => 'Хорошая', 'address' => 'good', 'content' => 'x', 'meta' => ['title' => 'Заголовок страницы', 'description' => 'Описание страницы']]);
+        $pages->create(['title' => 'Пустая', 'address' => 'empty', 'content' => 'x']);
+        $pages->create(['title' => 'Длинная', 'address' => 'long', 'content' => 'x', 'meta' => ['title' => str_repeat('я', 71), 'description' => str_repeat('я', 161)]]);
+        $pages->create(['title' => 'Копия 1', 'address' => 'copy-1', 'content' => 'x', 'meta' => ['title' => 'Одинаковый', 'description' => 'д1']]);
+        $pages->create(['title' => 'Копия 2', 'address' => 'copy-2', 'content' => 'x', 'meta' => ['title' => 'одинаковый', 'description' => 'д2']]);
+
+        $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Каталог', 'address' => 'catalog']);
+        $this->makeProduct('Товар без SEO', (string) $category->uuid);
+        $this->makeProduct('Скрытый товар', (string) $category->uuid, ['status' => 'delete']);
+
+        $publicationCategory = $this->getService(PublicationCategoryService::class)->create(['title' => 'Новости', 'address' => 'news']);
+        $publications = $this->getService(\App\Domain\Service\Publication\PublicationService::class);
+        $publications->create(['title' => 'Вышла', 'address' => 'news/out', 'category_uuid' => $publicationCategory->uuid, 'content' => ['short' => '', 'full' => ''], 'date' => '2026-01-01 10:00:00']);
+        $publications->create(['title' => 'Черновик', 'address' => 'news/draft', 'category_uuid' => $publicationCategory->uuid, 'content' => ['short' => '', 'full' => ''], 'date' => '2099-12-31 00:00:00']);
+
+        $token = $this->createApiKeyToken();
+
+        [$error, $result] = $this->tool($token, 'seo_audit');
+        $this->assertFalse($error, json_encode($result));
+        $this->assertEqualsCanonicalizing(['pages', 'publications', 'products', 'categories'], array_keys($result));
+
+        $pagesResult = $result['pages'];
+        $this->assertEquals(5, $pagesResult['total']);
+        $this->assertEquals(1, $pagesResult['problems']['empty_title']['count']);
+        $this->assertEquals('Пустая', $pagesResult['problems']['empty_title']['examples'][0]['title']);
+        $this->assertEquals(1, $pagesResult['problems']['long_title']['count']);
+        $this->assertEquals(71, $pagesResult['problems']['long_title']['examples'][0]['length']);
+        $this->assertEquals(1, $pagesResult['problems']['long_description']['count']);
+        $this->assertEquals(2, $pagesResult['problems']['repeated_title']['count'], 'both records with the same title, whatever the letter case');
+        $this->assertEquals(0, $pagesResult['problems']['repeated_description']['count']);
+
+        $this->assertEquals(1, $result['publications']['total'], 'a draft is not audited');
+        $this->assertEquals(1, $result['products']['total'], 'a hidden product is not audited');
+        $this->assertEquals(1, $result['products']['problems']['empty_title']['count']);
+
+        [, $result] = $this->tool($token, 'seo_audit', ['entity' => 'page', 'examples' => 0]);
+        $this->assertEquals(['pages'], array_keys($result));
+        $this->assertSame([], $result['pages']['problems']['empty_title']['examples']);
+        $this->assertEquals(1, $result['pages']['problems']['empty_title']['count']);
+
+        // a key sees what it can read
+        [, $result] = $this->tool($this->createApiKeyToken(['read' => ['page']], false), 'seo_audit');
+        $this->assertEquals(['pages'], array_keys($result));
+        [$error] = $this->tool($this->createApiKeyToken(['read' => ['user']], false), 'seo_audit');
+        $this->assertTrue($error);
+        [$error] = $this->tool($token, 'seo_audit', ['entity' => 'users']);
+        $this->assertTrue($error);
+    }
+
+    public function testProductCreate(): void
+    {
+        $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Phones', 'address' => 'phones']);
+        $token = $this->createApiKeyToken(['read' => ['catalog/product'], 'write' => ['catalog/product']], false);
+
+        [$error, $result] = $this->tool($token, 'catalog_product_create', [
+            'category_uuid' => (string) $category->uuid,
+            'title' => 'Smartphone Alpha',
+            'price' => 1500,
+            'stock' => 3,
+            'description' => '<p onclick="x()">Новый</p><script>alert(1)</script>',
+            'meta_title' => 'SEO',
+        ]);
+        $this->assertFalse($error, json_encode($result));
+        $this->assertEquals('phones/smartphone-alpha', $result['address']);
+        $this->assertFalse($result['visible'], 'hidden until the operator makes it visible');
+        $this->assertEquals('Phones', $result['category']);
+        $this->assertEquals(1500, $result['price']);
+
+        // hidden = not in the search of the shop, but there for the tools
+        [, $found] = $this->tool($token, 'catalog_product_search', ['query' => 'alpha']);
+        $this->assertEquals(0, $found['total']);
+        $saved = $this->getService(CatalogProductService::class)->read(['uuid' => $result['uuid'], 'status' => ['work', 'delete']]);
+        $this->assertEquals('<p>Новый</p>', $saved->description);
+        $this->assertEquals('SEO', $saved->meta['title']);
+
+        // shown at once
+        [, $visible] = $this->tool($token, 'catalog_product_create', ['category_uuid' => (string) $category->uuid, 'title' => 'Smartphone Beta', 'visible' => true]);
+        $this->assertTrue($visible['visible']);
+        [, $found] = $this->tool($token, 'catalog_product_search', ['query' => 'beta']);
+        $this->assertEquals(1, $found['total']);
+
+        // own address
+        [, $result] = $this->tool($token, 'catalog_product_create', ['category_uuid' => (string) $category->uuid, 'title' => 'Телефон', 'address' => 'phones/telefon-gamma']);
+        $this->assertEquals('phones/telefon-gamma', $result['address']);
+
+        foreach ([
+            ['title' => 'No category'],
+            ['category_uuid' => (string) $category->uuid],
+            ['category_uuid' => (string) $category->uuid, 'title' => '  '],
+            ['category_uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString(), 'title' => 'Lost'],
+            ['category_uuid' => (string) $category->uuid, 'title' => 'Smartphone Alpha'],
+            ['category_uuid' => (string) $category->uuid, 'title' => 'Bad price', 'price' => -5],
+            // the letters of the title give no address and no transliteration is installed in the tests
+            ['category_uuid' => (string) $category->uuid, 'title' => 'Новинка'],
+        ] as $args) {
+            [$error] = $this->tool($token, 'catalog_product_create', $args);
+            $this->assertTrue($error, json_encode($args));
+        }
+
+        // dry run saves nothing
+        [, $result] = $this->tool($token, 'catalog_product_create', ['category_uuid' => (string) $category->uuid, 'title' => 'Only a rehearsal', 'dry_run' => true]);
+        $this->assertTrue($result['dry_run']);
+        $this->assertCount(0, $this->getService(CatalogProductService::class)->read(['search' => 'rehearsal', 'status' => ['work', 'delete']]));
+    }
+
+    public function testCategoryCreate(): void
+    {
+        $categories = $this->getService(CatalogCategoryService::class);
+        $parent = $categories->create(['title' => 'Wear', 'address' => 'wear']);
+        $token = $this->createApiKeyToken(['read' => ['catalog/category'], 'write' => ['catalog/category']], false);
+
+        [$error, $result] = $this->tool($token, 'catalog_category_create', ['title' => 'Jackets', 'parent_uuid' => (string) $parent->uuid, 'description' => '<p>x</p><iframe src="//evil"></iframe>', 'meta_description' => 'SEO']);
+        $this->assertFalse($error, json_encode($result));
+        $this->assertEquals('wear/jackets', $result['address']);
+        $this->assertEquals('Wear', $result['parent']);
+        $this->assertTrue($result['is_hidden'], 'out of the menus until the operator decides');
+
+        $saved = $categories->read(['uuid' => $result['uuid']]);
+        $this->assertEquals('<p>x</p>', $saved->description);
+        $this->assertEquals('SEO', $saved->meta['description']);
+
+        [, $result] = $this->tool($token, 'catalog_category_create', ['title' => 'Top', 'hidden' => false]);
+        $this->assertFalse($result['is_hidden']);
+        $this->assertEquals('top', $result['address']);
+
+        foreach ([
+            [],
+            ['title' => ' '],
+            ['title' => 'Child', 'parent_uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString()],
+            ['title' => 'Child', 'parent_uuid' => 'nope'],
+            ['title' => 'Top'],
+            ['title' => 'Категория'],
+        ] as $args) {
+            [$error] = $this->tool($token, 'catalog_category_create', $args);
+            $this->assertTrue($error, json_encode($args));
+        }
+
+        [, $result] = $this->tool($token, 'catalog_category_create', ['title' => 'Rehearsal', 'dry_run' => true]);
+        $this->assertTrue($result['dry_run']);
+        $this->assertCount(0, $categories->read(['search' => 'rehearsal']));
+    }
+
+    public function testOrderUpdate(): void
+    {
+        $order = $this->getService(CatalogOrderService::class)->create(['phone' => '+79000000001', 'email' => 'old@example.com', 'comment' => 'Старый', 'delivery' => ['client' => 'Иван', 'address' => 'Уфа']]);
+        $token = $this->createApiKeyToken(['read' => ['catalog/order'], 'write' => ['catalog/order']], false);
+
+        [$error, $result] = $this->tool($token, 'catalog_order_update', ['serial' => $order->serial, 'phone' => '+79990000000', 'address' => 'Казань, ул. Мира 1', 'shipping' => '2026-12-24 15:00', 'comment' => 'Позвонить']);
+        $this->assertFalse($error, json_encode($result));
+        $this->assertEquals('+79990000000', $result['phone']);
+        $this->assertEquals('Казань, ул. Мира 1', $result['address']);
+        $this->assertEquals('Иван', $result['client'], 'the delivery data is merged, not replaced');
+        $this->assertEquals('2026-12-24 15:00', $result['shipping']);
+        $this->assertEquals('old@example.com', $result['email']);
+        $this->assertEqualsCanonicalizing(['phone', 'delivery', 'shipping', 'comment'], $result['changed_fields']);
+
+        [, $result] = $this->tool($token, 'catalog_order_update', ['uuid' => (string) $order->uuid, 'shipping' => '', 'email' => 'new@example.com']);
+        $this->assertNull($result['shipping']);
+        $this->assertEquals('new@example.com', $result['email']);
+
+        // dry run
+        [, $result] = $this->tool($token, 'catalog_order_update', ['uuid' => (string) $order->uuid, 'comment' => 'Только пример', 'dry_run' => true]);
+        $this->assertTrue($result['dry_run']);
+        $this->assertEquals('Позвонить', $this->getService(CatalogOrderService::class)->read(['uuid' => (string) $order->uuid])->comment);
+
+        foreach ([
+            ['phone' => '1'],
+            ['serial' => $order->serial],
+            ['serial' => $order->serial, 'email' => 'not an email'],
+            ['serial' => $order->serial, 'shipping' => '24.12.2026'],
+            ['serial' => 'nope', 'phone' => '1'],
+        ] as $args) {
+            [$error] = $this->tool($token, 'catalog_order_update', $args);
+            $this->assertTrue($error, json_encode($args));
+        }
+    }
+
+    public function testPublicationCategoriesAndAddress(): void
+    {
+        $categories = $this->getService(PublicationCategoryService::class);
+        $news = $categories->create(['title' => 'Новости', 'address' => 'news']);
+        $categories->create(['title' => 'Статьи', 'address' => 'articles']);
+        $this->getService(\App\Domain\Service\Publication\PublicationService::class)->create(['title' => 'Первая', 'address' => 'news/first', 'category_uuid' => $news->uuid, 'content' => ['short' => '', 'full' => ''], 'date' => '2026-01-01 10:00:00']);
+
+        $token = $this->createApiKeyToken(['read' => ['publication/category'], 'write' => ['publication']], false);
+
+        [, $result] = $this->tool($token, 'publication_category_list');
+        $this->assertEquals(['Новости', 'Статьи'], array_column($result, 'title'));
+        $this->assertEquals([1, 0], array_column($result, 'publications'));
+
+        // a title in a language that cannot be transliterated gives no address - ask for one instead of a broken page
+        [$error, $text] = $this->tool($this->createApiKeyToken(), 'publication_create', ['title' => 'Без адреса', 'category_uuid' => (string) $news->uuid]);
+        $this->assertTrue($error);
+        $this->assertStringContainsString('address', $text);
+
+        [$error, $result] = $this->tool($this->createApiKeyToken(), 'publication_create', ['title' => 'Без адреса', 'category_uuid' => (string) $news->uuid, 'address' => 'news/bez-adresa']);
+        $this->assertFalse($error, json_encode($result));
+        $this->assertEquals('news/bez-adresa', $result['address']);
+    }
+
+    public function testSearchLogsFormsAndHealth(): void
+    {
+        $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Goods', 'address' => 'goods']);
+        $this->makeProduct('Waterproof jacket', (string) $category->uuid, ['description' => 'Warm']);
+        $this->getService(PageService::class)->create(['title' => 'About jackets', 'address' => 'about-jackets', 'content' => 'We sell jackets']);
+
+        $form = $this->getService(FormService::class)->create(['title' => 'Feedback', 'address' => 'feedback', 'mailto' => 'boss@example.com']);
+        $this->getService(FormDataService::class)->create(['form_uuid' => $form->uuid, 'data' => ['name' => 'Иван'], 'message' => 'x']);
+
+        $token = $this->createApiKeyToken();
+
+        // forms
+        [, $result] = $this->tool($token, 'form_list');
+        $this->assertEquals('feedback', $result[0]['address']);
+        $this->assertEquals(1, $result[0]['submissions']);
+        $this->assertNotNull($result[0]['last_submission']);
+        $this->assertContains('boss@example.com', $result[0]['recipients']);
+
+        // search: nothing indexed yet, it is said, then the index is built by the worker
+        [$error, $result] = $this->tool($token, 'site_search', ['query' => 'jacket']);
+        $this->assertFalse($error, json_encode($result));
+        $this->assertSame(0, $result['count']);
+        $this->assertNotEmpty($result['no_index_for'] ?? []);
+
+        [, $result] = $this->tool($token, 'site_reindex');
+        $this->assertNotEmpty($result['task']);
+        $this->assertEquals('queue', $result['status']);
+        [$error] = $this->tool($token, 'site_search', ['query' => ' ']);
+        $this->assertTrue($error);
+        [$error] = $this->tool($token, 'site_search', ['query' => 'x', 'kind' => 'users']);
+        $this->assertTrue($error);
+
+        // health
+        [, $result] = $this->tool($token, 'site_health');
+        $this->assertNotEmpty($result['php']);
+        $this->assertEquals('sqlite', $result['database']['driver']);
+        $this->assertArrayHasKey('queued', $result['tasks']);
+        $this->assertArrayHasKey('errors_in_the_last_file', $result['logs']);
+
+        // logs: a record we made, tokens hidden, filters
+        $marker = 'Лог ' . uniqid();
+        $this->getService(\Psr\Log\LoggerInterface::class)->error('Проба ' . $marker . ' Bearer abc.def.ghi ' . 'eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ4In0.c2lnbmF0dXJlMTIz', ['password' => 'secret-value']);
+        $this->getService(\Psr\Log\LoggerInterface::class)->info('Инфо ' . $marker);
+
+        [, $result] = $this->tool($token, 'logs_tail', ['contains' => $marker]);
+        $this->assertStringStartsWith('app-', $result['file']);
+        $this->assertCount(2, $result['records']);
+        $text = implode("\n", $result['records']);
+        $this->assertStringNotContainsString('secret-value', $text);
+        $this->assertStringNotContainsString('eyJhbGciOiJSUzI1NiJ9', $text);
+        $this->assertStringContainsString('[token]', $text);
+        $this->assertStringContainsString('Bearer [hidden]', $text);
+
+        [, $result] = $this->tool($token, 'logs_tail', ['contains' => $marker, 'level' => 'ERROR']);
+        $this->assertCount(1, $result['records']);
+        [, $result] = $this->tool($token, 'logs_tail', ['contains' => $marker, 'lines' => 1]);
+        $this->assertCount(1, $result['records']);
+        [, $result] = $this->tool($token, 'logs_tail', ['date' => '2001-01-01']);
+        $this->assertNull($result['file']);
+
+        foreach ([['level' => 'LOUD'], ['date' => 'yesterday'], ['lines' => 501]] as $args) {
+            [$error] = $this->tool($token, 'logs_tail', $args);
+            $this->assertTrue($error, json_encode($args));
+        }
+
+        // these are for full access keys only
+        $limited = $this->tools($this->createApiKeyToken(['read' => ['catalog/product', 'catalog/order', 'page', 'publication', 'catalog/category']], false));
+        foreach (['logs_tail', 'site_health', 'form_list', 'site_reindex'] as $name) {
+            $this->assertNotContains($name, $limited, $name);
+        }
+        $this->assertContains('seo_audit', $limited);
+        $this->assertContains('site_search', $limited);
+    }
+
+    public function testNewToolsFollowKeyScopes(): void
+    {
+        $orders = $this->tools($this->createApiKeyToken(['read' => ['catalog/order']], false));
+        $this->assertContains('catalog_sales_report', $orders);
+        $this->assertContains('catalog_top_products', $orders);
+        $this->assertNotContains('catalog_order_update', $orders);
+        $this->assertNotContains('catalog_stock_report', $orders);
+
+        $writer = $this->tools($this->createApiKeyToken(['write' => ['catalog/order', 'catalog/product', 'catalog/category']], false));
+        foreach (['catalog_order_update', 'catalog_product_create', 'catalog_category_create'] as $name) {
+            $this->assertContains($name, $writer);
+        }
+
+        $this->assertContains('publication_category_list', $this->tools($this->createApiKeyToken(['read' => ['publication/category']], false)));
+        $this->assertNotContains('publication_category_list', $orders);
+
+        // none of the new ones is open without a key
+        $this->getService(ParameterService::class)->update($this->getService(ParameterService::class)->read(['name' => 'entity_access']), ['value' => 'all']);
+        $this->assertCount(6, $this->tools(null));
     }
 
     public function testSiteOverviewFollowsKeyScopes(): void

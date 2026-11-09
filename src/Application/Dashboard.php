@@ -41,6 +41,19 @@ class Dashboard
     }
 
     /**
+     * SQL: the sum of one order line (alias of catalog_order_product), the same as CatalogProduct::totalSum() of the model.
+     *
+     * The discount is stored negative in the line, the price after it is not below zero, the tax is added on top of that price
+     * unless it is already included. One place for the main page, the statistics and the MCP reports.
+     */
+    public static function lineSql(string $alias): string
+    {
+        return "(CASE WHEN {$alias}.price - ABS({$alias}.discount) > 0 THEN {$alias}.price - ABS({$alias}.discount) ELSE 0 END)"
+            . " * (CASE WHEN {$alias}.tax_included = false AND {$alias}.tax > 0 THEN 1 + {$alias}.tax / 100 ELSE 1 END)"
+            . " * {$alias}.count";
+    }
+
+    /**
      * Sections turned on in the site parameters
      */
     public function enabled(): array
@@ -135,12 +148,7 @@ class Dashboard
             ->select(
                 $this->db->raw('DATE(co.date) as date'),
                 $this->db->raw('COUNT(DISTINCT co.uuid) as order_count'),
-                $this->db->raw('SUM(
-                    CASE
-                        WHEN cop.tax_included = false THEN (cop.price * (1 + cop.tax / 100) - cop.discount) * cop.count
-                        ELSE (cop.price - cop.discount) * cop.count
-                    END
-                ) as sum')
+                $this->db->raw('SUM(' . self::lineSql('cop') . ') as sum')
             )
             ->leftJoin('catalog_order_product as cop', 'co.uuid', '=', 'cop.order_uuid')
             ->where('co.date', '>=', datetime()->subDays(29)->startOfDay())

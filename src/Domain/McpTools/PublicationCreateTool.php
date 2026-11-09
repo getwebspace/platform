@@ -4,6 +4,7 @@ namespace App\Domain\McpTools;
 
 use App\Application\PubSub;
 use App\Domain\AbstractMcpTool;
+use App\Domain\McpTools\Concerns\BuildsAddress;
 use App\Domain\McpTools\Concerns\DescribesPublications;
 use App\Domain\McpTools\Concerns\SanitizesHtml;
 use App\Domain\Models\PublicationCategory;
@@ -11,6 +12,7 @@ use App\Domain\Service\Publication\PublicationService;
 
 class PublicationCreateTool extends AbstractMcpTool
 {
+    use BuildsAddress;
     use DescribesPublications;
     use SanitizesHtml;
 
@@ -37,6 +39,7 @@ class PublicationCreateTool extends AbstractMcpTool
                 'meta_description' => $string,
                 'meta_keywords' => $string,
                 'publish_at' => ['type' => 'string', 'description' => 'YYYY-MM-DD HH:MM - show on the site from this moment (leave empty for a draft)'],
+                'address' => $string + ['description' => 'Page address, latin letters, digits and dashes; made of the category and the title by default'],
             ],
             'required' => ['title', 'category_uuid'],
         ];
@@ -73,8 +76,8 @@ class PublicationCreateTool extends AbstractMcpTool
         $publication = $this->container->get(PublicationService::class)->create([
             'title' => trim((string) $args['title']),
             'category_uuid' => (string) $category->uuid,
-            // without an address the page cannot be opened; same pattern as the site's address generation
-            'address' => implode('/', array_filter([$category->address, trim((string) $args['title'])], fn ($part) => (string) $part !== '')),
+            // without an address the page cannot be opened; same rules as the site's address generation
+            'address' => $this->buildAddress((string) $category->address, trim((string) $args['title']), $args['address'] ?? null),
             'content' => [
                 'short' => $this->sanitizeHtml((string) ($args['short'] ?? '')),
                 'full' => $this->sanitizeHtml((string) ($args['full'] ?? '')),

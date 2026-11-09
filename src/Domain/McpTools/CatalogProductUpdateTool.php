@@ -5,13 +5,13 @@ namespace App\Domain\McpTools;
 use App\Application\PubSub;
 use App\Domain\AbstractMcpTool;
 use App\Domain\Casts\Catalog\Status as CatalogStatus;
-use App\Domain\McpTools\Concerns\SanitizesHtml;
+use App\Domain\McpTools\Concerns\ReadsProductFields;
 use App\Domain\Models\CatalogProduct;
 use App\Domain\Service\Catalog\ProductService;
 
 class CatalogProductUpdateTool extends AbstractMcpTool
 {
-    use SanitizesHtml;
+    use ReadsProductFields;
 
     public const NAME = 'catalog_product_update';
     public const TITLE = 'Update product';
@@ -21,41 +21,18 @@ class CatalogProductUpdateTool extends AbstractMcpTool
     public const READ_ONLY = false;
     public const SCOPE = 'catalog/product';
 
-    private const SCALARS = ['title', 'vendorcode', 'barcode', 'country', 'manufacturer'];
-
-    private const NUMBERS = ['price', 'priceWholesale', 'discount', 'quantity', 'quantityMin', 'stock', 'tax'];
-
     public function getInputSchema(): array
     {
         $string = ['type' => 'string'];
-        $number = ['type' => 'number', 'minimum' => 0];
 
         return [
             'type' => 'object',
             'properties' => [
                 'uuid' => $string,
-                'title' => $string,
-                'description' => ['type' => 'string', 'description' => 'Main description, HTML (scripts and event handlers are removed)'],
-                'extra' => ['type' => 'string', 'description' => 'Extra description, HTML'],
-                'price' => $number + ['description' => 'Retail price'],
-                'priceWholesale' => $number,
-                'discount' => $number + ['description' => 'Discount amount from the price'],
-                'quantity' => $number + ['description' => 'Quantity of one sales unit (admin panel: "Quantity", 1 by default)'],
-                'quantityMin' => $number + ['description' => 'Minimum quantity to order (admin panel: "Minimum Quantity")'],
-                'stock' => $number + ['description' => 'Stock: how many units are in stock (admin panel: "In stock")'],
-                'tax' => $number + ['description' => 'Tax rate, percent'],
-                'special' => ['type' => 'boolean', 'description' => 'Special offer'],
                 'status' => ['type' => 'string', 'enum' => CatalogStatus::LIST, 'description' => 'work - visible, delete - hidden'],
                 'category_uuid' => $string + ['description' => 'Move to another category'],
-                'vendorcode' => $string,
-                'barcode' => $string,
-                'country' => $string,
-                'manufacturer' => $string,
-                'meta_title' => $string,
-                'meta_description' => $string,
-                'meta_keywords' => $string,
                 'address' => $string + ['description' => 'Change the page address (breaks existing links!)'],
-            ],
+            ] + $this->productFieldsSchema(),
             'required' => ['uuid'],
         ];
     }
@@ -71,33 +48,8 @@ class CatalogProductUpdateTool extends AbstractMcpTool
         /** @var CatalogProduct $product */
         $product = $productService->read(['uuid' => $args['uuid'], 'status' => CatalogStatus::LIST]);
 
-        $data = [];
+        $data = $this->productData($args, (array) $product->meta);
 
-        foreach (self::SCALARS as $key) {
-            if (array_key_exists($key, $args)) {
-                $data[$key] = trim((string) $args[$key]);
-            }
-        }
-        if (array_key_exists('title', $data) && $data['title'] === '') {
-            throw new \InvalidArgumentException('Field title cannot be empty');
-        }
-        foreach (self::NUMBERS as $key) {
-            if (array_key_exists($key, $args)) {
-                if (!is_numeric($args[$key]) || $args[$key] < 0) {
-                    throw new \InvalidArgumentException("Field {$key} must be a number, zero or more");
-                }
-
-                $data[$key] = round((float) $args[$key], 2);
-            }
-        }
-        foreach (['description', 'extra'] as $key) {
-            if (array_key_exists($key, $args)) {
-                $data[$key] = $this->sanitizeHtml((string) $args[$key]);
-            }
-        }
-        if (array_key_exists('special', $args)) {
-            $data['special'] = (bool) $args['special'];
-        }
         if (array_key_exists('status', $args)) {
             if (!in_array($args['status'], CatalogStatus::LIST, true)) {
                 throw new \InvalidArgumentException('Field status must be one of: ' . implode(', ', CatalogStatus::LIST));
@@ -113,16 +65,6 @@ class CatalogProductUpdateTool extends AbstractMcpTool
             }
 
             $data['category_uuid'] = (string) $category->uuid;
-        }
-
-        $meta = array_filter([
-            'title' => $args['meta_title'] ?? null,
-            'description' => $args['meta_description'] ?? null,
-            'keywords' => $args['meta_keywords'] ?? null,
-        ], fn ($value) => $value !== null);
-
-        if ($meta) {
-            $data['meta'] = array_merge((array) $product->meta, array_map('trim', $meta));
         }
 
         // address generation on update would move the page to another URL

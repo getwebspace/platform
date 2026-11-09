@@ -106,11 +106,36 @@ Found by an external review of the 6.4.0 server; all valid:
 - **Journal of writes:** every writing call is logged (`MCP write` in `var/log/app.log`): tool, API key uuid + title, arguments (long texts
   shortened), outcome, `dry_run`, IP. A table with a UI is not done - add it if the log file is not enough.
 
+## Batch 6.5.0 - reports, creating, search, service tools - DONE
+
+- **Reports (read, `PRIVATE`):** `catalog_sales_report` (period, group by day / week / month / status / category, optional status filter),
+  `catalog_top_products` (revenue / quantity / orders), `catalog_stock_report` (out of stock, below the minimum, no price / image / description),
+  `seo_audit` (empty / too long / repeated SEO title and description of pages, published publications, visible products and categories;
+  per entity filtered by the key's scopes).
+- **Creating and editing:** `catalog_product_create`, `catalog_category_create` (both HIDDEN by default - the operator shows them),
+  `catalog_order_update` (contacts, delivery, shipping date, comment; not the products and not the status), `publication_category_list`.
+  Product fields are shared by create / update in `Concerns/ReadsProductFields`.
+- **Addresses:** `Concerns/BuildsAddress` makes the page address like the site does and REFUSES a title it cannot make an address of
+  (Cyrillic without the transliteration of the language plugin gives an empty path) - "pass address" instead of a broken page.
+  `publication_create` uses it too (it used to create `news/` for such titles).
+- **Search and service:** `site_search` (TNTSearch index, drafts not shown), `site_reindex` (starts `SearchIndexTask`), `form_list`, `logs_tail`
+  (tail of `var/log/app-*.log`, level / text filter, tokens and passwords hidden; reads the last 2 MB), `site_health`.
+- **Prompts:** `seo_check`, `sales_analysis`, `catalog_check`.
+- **Money bug found and fixed:** the order line is stored with a NEGATIVE discount; the model counts `max(0, price - |discount|)` and adds the tax on
+  top, but the SQL of the admin main page and of the catalog statistics did `price * (1 + tax) - discount`, i.e. ADDED the discount and put it after the tax.
+  Revenue was too high for every order with a discount. One formula now: `Dashboard::lineSql()` (main page, statistics, MCP reports); tests compare
+  the report with `CatalogOrder::totalSum()`.
+- PHP 8.5: `PDO::sqliteCreateFunction()` deprecation silenced in `AbstractService` (a plain PDO has no other way).
+- Not done on purpose: order creation by a tool (a phone order should be entered in the admin panel), product import / export tasks, resource templates,
+  site settings and plugins (see "Deliberately NOT covered").
+
 ## Deliberately NOT covered
 
 - Deleting anything
 - Site parameters (`parameter`, secrets; `CUP_ONLY_MAP` in the REST API too)
 - API keys management, password changes
+- Plugins (they are code in `plugin/` registered in `plugin/installed.php`: enabling, installing and removing is a deployment, not data). A plugin can only ADD tools,
+  prompts and resources to the server; the plugin settings are site parameters (`<PluginName>_<field>`) - same as the site settings
 
 ## Decisions
 

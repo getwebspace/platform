@@ -237,9 +237,22 @@ return function (ContainerBuilder $containerBuilder): void {
                     $this->register(\App\Domain\McpTools\CatalogAttributeListTool::class);
                     $this->register(\App\Domain\McpTools\FileListTool::class);
                     $this->register(\App\Domain\McpTools\SubscriberListTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogProductCreateTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogCategoryCreateTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogOrderUpdateTool::class);
+                    $this->register(\App\Domain\McpTools\PublicationCategoryListTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogSalesReportTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogTopProductsTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogStockReportTool::class);
+                    $this->register(\App\Domain\McpTools\SeoAuditTool::class);
+                    $this->register(\App\Domain\McpTools\LogsTailTool::class);
+                    $this->register(\App\Domain\McpTools\SiteSearchTool::class);
+                    $this->register(\App\Domain\McpTools\SiteReindexTool::class);
+                    $this->register(\App\Domain\McpTools\FormListTool::class);
+                    $this->register(\App\Domain\McpTools\SiteHealthTool::class);
 
                     // built-in prompts
-                    foreach (['NewOrdersPrompt', 'ModerationPrompt', 'SiteReportPrompt', 'PriceChangePrompt', 'WritePublicationPrompt', 'FailedTasksPrompt'] as $prompt) {
+                    foreach (['NewOrdersPrompt', 'ModerationPrompt', 'SiteReportPrompt', 'PriceChangePrompt', 'WritePublicationPrompt', 'FailedTasksPrompt', 'SeoCheckPrompt', 'SalesAnalysisPrompt', 'StockCheckPrompt'] as $prompt) {
                         $this->registerPrompt('\\App\\Domain\\McpPrompts\\' . $prompt);
                     }
 

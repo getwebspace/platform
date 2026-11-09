@@ -2,6 +2,7 @@
 
 namespace App\Application\Actions\Cup\Catalog;
 
+use App\Application\Dashboard;
 use Ramsey\Uuid\Uuid;
 
 class CategoryStatisticAction extends CatalogAction
@@ -23,12 +24,7 @@ class CategoryStatisticAction extends CatalogAction
             ->table('catalog_order as co_inner')
             ->select(
                 'co_inner.uuid',
-                $this->db->raw('SUM(
-                    CASE
-                        WHEN cop_inner.tax_included = false THEN (cop_inner.price * (1 + cop_inner.tax / 100) - cop_inner.discount) * cop_inner.count
-                        ELSE (cop_inner.price - cop_inner.discount) * cop_inner.count
-                    END
-                ) as sum')
+                $this->db->raw('SUM(' . Dashboard::lineSql('cop_inner') . ') as sum')
             )
             ->leftJoin('catalog_order_product as cop_inner', 'co_inner.uuid', '=', 'cop_inner.order_uuid')
             ->groupBy('co_inner.uuid');
@@ -39,12 +35,7 @@ class CategoryStatisticAction extends CatalogAction
             ->select(
                 $this->db->raw('DATE(co.date) as date'),
                 $this->db->raw('COUNT(DISTINCT co.uuid) as order_count'),
-                $this->db->raw('SUM(
-                    CASE
-                        WHEN cop.tax_included = false THEN (cop.price * (1 + cop.tax / 100) - cop.discount) * cop.count
-                        ELSE (cop.price - cop.discount) * cop.count
-                    END
-                ) as sum'),
+                $this->db->raw('SUM(' . Dashboard::lineSql('cop') . ') as sum'),
                 $this->db->raw('ROUND(AVG(order_sums.sum)) as average_check')
             )
             ->leftJoin('catalog_order_product as cop', 'co.uuid', '=', 'cop.order_uuid')
@@ -89,10 +80,7 @@ class CategoryStatisticAction extends CatalogAction
             ->leftJoin('catalog_order_product as cop', 'co.uuid', '=', 'cop.order_uuid')
             ->leftJoin('catalog_product as cp', 'cp.uuid', '=', 'cop.product_uuid')
             ->select('cp.uuid', 'cp.title', $this->db->raw('SUM(cop.count) as total_sold'),
-                $this->db->raw('SUM(CASE 
-                        WHEN cop.tax_included = false THEN (cop.price * (1 + cop.tax / 100) - cop.discount) * cop.count
-                        ELSE (cop.price - cop.discount) * cop.count
-                    END) as total_revenue'))
+                $this->db->raw('SUM(' . Dashboard::lineSql('cop') . ') as total_revenue'))
             ->where('co.date', '>=', datetime()->subDays(30))
             ->where('cp.type', '=', 'product')
             ->groupBy('cp.uuid', 'cp.title')
