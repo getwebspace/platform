@@ -58,12 +58,29 @@
                 no_data_text: '{{ 'No data'|locale }}'
             });
 
+            // phone as bare digits without the country prefix:
+            // "+7 (925) 123-45-67", "89251234567" and "9251234567" become the same
+            const phone = (value) => {
+                let digits = value.replace(/\D/g, '');
+
+                return digits.length === 11 && /^[78]/.test(digits) ? digits.slice(1) : digits;
+            };
+
             $('[data-table-search="{{ randomId }}"]').on('keyup', (e) => {
                 let query = e.currentTarget.value.toLowerCase(),
+                    // only a query that looks like a phone is matched by digits
+                    digits = /^[\d\s()+\-]+$/.test(query) ? query.replace(/\D/g, '') : '',
+                    // the typed part of a number, with and without a leading 7/8
+                    query_phone = digits.length >= 3 ? [...new Set([phone(digits), digits.replace(/^[78]/, '')])] : [],
                     result = [];
 
                 for (let i = 0; i < $rows.length; i++) {
-                    if ($rows[i].innerText.toLowerCase().includes(query)) {
+                    let text = $rows[i].innerText.toLowerCase();
+
+                    if (
+                        text.includes(query)
+                        || (query_phone.length && (text.match(/\+?\d[\d\s()\-]{5,}\d/g) || []).some((item) => query_phone.some((q) => q && phone(item).includes(q))))
+                    ) {
                         result.push($rows[i].outerHTML);
                     }
                 }
