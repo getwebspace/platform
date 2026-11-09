@@ -38,6 +38,8 @@ class DataService extends AbstractService
         $default = [
             'uuid' => null,
             'form_uuid' => null,
+            // spam is hidden from lists unless asked: true | 'any'
+            'is_spam' => false,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -58,6 +60,10 @@ class DataService extends AbstractService
                 return $form ?: throw new FormDataNotFoundException();
 
             default:
+                if ($data['is_spam'] !== 'any') {
+                    $criteria['is_spam'] = (bool) $data['is_spam'];
+                }
+
                 return $this->buildQuery(FormData::query(), $criteria, $data)->get();
         }
     }

@@ -82,6 +82,7 @@ class MainPageAction extends AbstractAction
 
         if ($enabled['form']) {
             $activity['forms'] = FormData::with('form')
+                ->where('is_spam', false)
                 ->orderByDesc('date')
                 ->limit(6)
                 ->get();

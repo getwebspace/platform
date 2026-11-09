@@ -2,6 +2,7 @@
 
 namespace App\Application\Actions\Common;
 
+use App\Application\FormGuard;
 use App\Domain\AbstractAction;
 use App\Domain\Models\File;
 use App\Domain\Models\Form;
@@ -32,6 +33,10 @@ class FormAction extends AbstractAction
             if (!$form->recaptcha || $this->isRecaptchaChecked()) {
                 $remote = $_SERVER['HTTP_ORIGIN'] ?? $_SERVER['HTTP_REFERER'] ?? false;
                 $data = $this->getParams();
+
+                // spam protection (local, see FormGuard)
+                $verdict = $this->guardVerdict($form, $data);
+                $data = (new FormGuard())->clean($data);
 
                 // CORS header sets
                 foreach ($form->origin as $origin) {
@@ -64,11 +69,21 @@ class FormAction extends AbstractAction
                 }
 
                 // form data
+                $isSpam = $verdict !== null && (new FormGuard())->isSpam($verdict);
                 $formData = $formDataService->create([
                     'form_uuid' => $form->uuid,
                     'data' => $data,
                     'message' => $this->getParam('body', ''),
+                    'is_spam' => $isSpam,
+                    'spam_reason' => $isSpam ? mb_substr(implode(', ', $verdict['reasons']), 0, 255) : '',
                 ]);
+
+                if ($isSpam) {
+                    $this->logger->info('Form spam', ['form' => $form->address, 'score' => $verdict['score'], 'reasons' => $verdict['reasons']]);
+
+                    // the same answer as for a real one: a bot has nothing to adjust to
+                    return $this->respondWithJson(['status' => 'ok']);
+                }
 
                 // prepare attachments
                 $attachments = [];
@@ -145,12 +160,31 @@ class FormAction extends AbstractAction
     }
 
     /**
+     * Score of the submission, null when the protection is turned off
+     *
+     * @return null|array{score: int, reasons: string[]}
+     */
+    private function guardVerdict(Form $form, array $data): ?array
+    {
+        if ($this->parameter('form_guard_mode', 'on') === 'off') {
+            return null;
+        }
+
+        // every attempt counts, not only the rejected ones: a flood is a flood
+        $key = 'form-guard-' . sha1($form->uuid . '|' . $this->getRequestRemoteIP());
+        $recent = (int) $this->fileCache->get($key);
+        $this->fileCache->put($key, $recent + 1, \App\Domain\References\Date::HOUR);
+
+        return (new FormGuard())->inspect($data, $recent, (int) $this->parameter('form_guard_limit', 10));
+    }
+
+    /**
      * Does the caller (Origin or Referer, so possibly with a path) belong to the allowed origin
      * from the form settings, written either as `https://site.tld` or just `site.tld`
      */
     private function isSameOrigin(string $allowed, string $remote): bool
     {
-        $allowed = rtrim(trim($allowed), '/');
+        $allowed = mb_rtrim(mb_trim($allowed), '/');
         $parts = parse_url($remote);
 
         if ($allowed === '' || !is_array($parts) || empty($parts['scheme']) || empty($parts['host'])) {

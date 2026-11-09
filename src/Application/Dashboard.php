@@ -120,8 +120,8 @@ class Dashboard
         ];
 
         if ($enabled['form']) {
-            $kpi['form_data_week'] = FormData::where('date', '>=', $weekAgo)->count();
-            $kpi['form_data_total'] = FormData::count();
+            $kpi['form_data_week'] = FormData::where('is_spam', false)->where('date', '>=', $weekAgo)->count();
+            $kpi['form_data_total'] = FormData::where('is_spam', false)->count();
         }
 
         if ($enabled['guestbook']) {

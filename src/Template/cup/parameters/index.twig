@@ -652,6 +652,28 @@
                                                         'placeholder': '6Le_gY8UAAAAAAx1_Lv3aKo-L1QnxE2QWhOHCgxS'
                                                     }
                                                 } %}
+
+                                                <hr/>
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Form spam protection',
+                                                    'description': 'Works without external services: a signed token, a hidden trap field and content checks. Suspicious applications are kept in the Spam tab of the form and are not sent by e-mail',
+                                                    'type': 'select',
+                                                    'name': 'form_guard[mode]',
+                                                    'args': {
+                                                        'option': _(['on', 'off'])
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Applications per hour from one address',
+                                                    'description': 'More than this from one IP to one form counts as a sign of spam',
+                                                    'type': 'text',
+                                                    'name': 'form_guard[limit]',
+                                                    'args': {
+                                                        'placeholder': '10'
+                                                    }
+                                                } %}
                                             </div>
 
                                         </div>

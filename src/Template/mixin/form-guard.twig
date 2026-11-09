@@ -1,0 +1,73 @@
+{# Spam protection of forms. Included automatically (HasRenderer), a theme does not need to do anything.
+   Adds a signed token and an invisible trap field to every form that posts to /form/{address}.
+   Override this file in a theme only if you really need to. #}
+{% if parameter('form_guard_mode', 'on') != 'off' %}
+    <script data-form-guard>
+        (function () {
+            var token = '{{ token }}';
+            var pattern = /^\/form\/[^\/?#]+\/?$/;
+
+            function guard(form) {
+                if (form.hasAttribute('data-form-guard')) {
+                    return;
+                }
+
+                var action = form.getAttribute('action');
+                if (!action) {
+                    return;
+                }
+
+                try {
+                    if (!pattern.test(new URL(action, location.href).pathname)) {
+                        return;
+                    }
+                } catch (e) {
+                    return;
+                }
+
+                form.setAttribute('data-form-guard', '');
+
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = '{{ constant('App\\Application\\FormGuard::FIELD_TOKEN') }}';
+                input.value = token;
+                form.appendChild(input);
+
+                var trap = document.createElement('div');
+                trap.setAttribute('aria-hidden', 'true');
+                trap.style.cssText = 'position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden';
+                trap.innerHTML = '<input type="text" name="{{ constant('App\\Application\\FormGuard::FIELD_TRAP') }}" tabindex="-1" autocomplete="off" value="">';
+                form.appendChild(trap);
+            }
+
+            function scan(root) {
+                if (root.nodeType !== 1) {
+                    return;
+                }
+                if (root.tagName === 'FORM') {
+                    guard(root);
+                }
+                var forms = root.querySelectorAll ? root.querySelectorAll('form') : [];
+                for (var i = 0; i < forms.length; i++) {
+                    guard(forms[i]);
+                }
+            }
+
+            function start() {
+                scan(document.documentElement);
+                // forms that appear later (popups, templates, ajax)
+                new MutationObserver(function (list) {
+                    list.forEach(function (m) {
+                        m.addedNodes.forEach(scan);
+                    });
+                }).observe(document.documentElement, {childList: true, subtree: true});
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', start);
+            } else {
+                start();
+            }
+        })();
+    </script>
+{% endif %}

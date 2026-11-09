@@ -125,4 +125,17 @@ class FormDataServiceTest extends TestCase
 
         $this->service->delete(null);
     }
+
+    public function testSpamIsHiddenFromListButReadableByUuid(): void
+    {
+        $form = $this->getFaker()->uuid;
+        $ok = $this->service->create(['form_uuid' => $form, 'message' => 'real']);
+        $spam = $this->service->create(['form_uuid' => $form, 'message' => 'bad', 'is_spam' => true, 'spam_reason' => 'link']);
+
+        $this->assertCount(1, $this->service->read(['form_uuid' => $form]));
+        $this->assertCount(1, $this->service->read(['form_uuid' => $form, 'is_spam' => true]));
+        $this->assertCount(2, $this->service->read(['form_uuid' => $form, 'is_spam' => 'any']));
+        $this->assertSame('link', $this->service->read(['uuid' => $spam->uuid])->spam_reason);
+        $this->assertFalse($ok->is_spam);
+    }
 }

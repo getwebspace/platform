@@ -43,10 +43,34 @@ trait HasRenderer
             // add default errors pages
             $this->renderer->getLoader()->addPath(VIEW_ERROR_DIR);
 
-            return $this->renderer->fetch($template, $data);
-        } catch (\Twig\Error\LoaderError|\Twig\Error\SyntaxError|\Twig\Error\RuntimeError $exception) {
+            return $this->injectFormGuard($this->renderer->fetch($template, $data));
+        } catch (\Twig\Error\LoaderError|\Twig\Error\RuntimeError|\Twig\Error\SyntaxError $exception) {
             throw new HttpBadRequestException($exception->getMessage());
         }
+    }
+
+    /**
+     * Adds the spam protection script (mixin/form-guard.twig) to a public page that has forms
+     *
+     * Themes are not changed by hand: the script finds the forms posting to /form/{address} itself
+     */
+    private function injectFormGuard(string $html): string
+    {
+        if (
+            $this->parameter('form_guard_mode', 'on') === 'off'
+            || mb_stripos($html, '<form') === false
+            || mb_stripos($html, 'data-form-guard') !== false
+            || ($end = mb_strripos($html, '</body>')) === false
+            || (isset($this->request) && str_starts_with($this->request->getUri()->getPath(), '/cup'))
+        ) {
+            return $html;
+        }
+
+        $script = $this->renderer->fetch('mixin/form-guard.twig', [
+            'token' => (new \App\Application\FormGuard())->token(),
+        ]);
+
+        return mb_substr($html, 0, $end) . $script . mb_substr($html, $end);
     }
 
     protected function renderFromString(string $template, array $data = []): string

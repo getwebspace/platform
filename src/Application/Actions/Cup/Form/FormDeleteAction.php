@@ -15,7 +15,7 @@ class FormDeleteAction extends FormAction
                 ]);
 
                 if ($form) {
-                    foreach ($this->formDataService->read(['form_uuid' => $this->resolveArg('uuid')]) as $item) {
+                    foreach ($this->formDataService->read(['form_uuid' => $this->resolveArg('uuid'), 'is_spam' => 'any']) as $item) {
                         $this->formDataService->delete($item);
                     }
 

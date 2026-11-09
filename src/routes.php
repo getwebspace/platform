@@ -249,6 +249,8 @@ return function (App $app, Container $container): void {
                                 ->setName('cup:form:view:preview');
                             $proxy->map(['GET', 'POST'], '/{data}/delete', \App\Application\Actions\Cup\Form\Data\DataDeleteAction::class)
                                 ->setName('cup:form:view:delete');
+                            $proxy->post('/{data}/restore', \App\Application\Actions\Cup\Form\Data\DataRestoreAction::class)
+                                ->setName('cup:form:view:restore');
                         });
                     });
 

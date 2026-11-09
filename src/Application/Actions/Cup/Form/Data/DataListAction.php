@@ -12,8 +12,10 @@ class DataListAction extends FormAction
             $form = $this->formService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($form) {
+                $spam = (bool) $this->getQueryParam('spam');
                 $list = $this->formDataService->read([
                     'form_uuid' => $form->uuid,
+                    'is_spam' => $spam,
                     'order' => [
                         'date' => 'desc',
                     ],
@@ -22,6 +24,8 @@ class DataListAction extends FormAction
                 return $this->respondWithTemplate('cup/form/view/list.twig', [
                     'form' => $form,
                     'list' => $list,
+                    'spam' => $spam,
+                    'spam_count' => $this->formDataService->read(['form_uuid' => $form->uuid, 'is_spam' => true])->count(),
                 ]);
             }
         }

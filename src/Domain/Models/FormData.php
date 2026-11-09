@@ -2,6 +2,7 @@
 
 namespace App\Domain\Models;
 
+use App\Domain\Casts\Boolean;
 use App\Domain\Casts\Json;
 use App\Domain\Casts\Uuid;
 use App\Domain\Traits\HasFiles;
@@ -14,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $form_uuid
  * @property array $data
  * @property string $message
+ * @property bool $is_spam
+ * @property string $spam_reason
  * @property null|\DateTime $date
  * @property Form $form
  */
@@ -33,6 +36,8 @@ class FormData extends Model
         'form_uuid',
         'data',
         'message',
+        'is_spam',
+        'spam_reason',
         'date',
     ];
 
@@ -42,6 +47,8 @@ class FormData extends Model
         'form_uuid' => Uuid::class,
         'data' => Json::class,
         'message' => 'string',
+        'is_spam' => Boolean::class,
+        'spam_reason' => 'string',
         'date' => 'datetime',
     ];
 
@@ -49,6 +56,8 @@ class FormData extends Model
         'form_uuid' => '',
         'data' => '{}',
         'message' => '',
+        'is_spam' => false,
+        'spam_reason' => '',
         'date' => 'now',
     ];
 
