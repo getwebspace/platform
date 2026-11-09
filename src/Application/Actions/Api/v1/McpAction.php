@@ -232,9 +232,14 @@ class McpAction extends ActionApi
         $tool->setApiKey($this->getApiKey());
 
         $dryRun = !empty($args['dry_run']);
-        unset($args['dry_run']);
+        // a tool with its own dry run gets the argument, the others are run in a rolled back transaction
+        $own = $tool::DRY_RUN_SELF;
 
-        if ($dryRun && ($tool::READ_ONLY || !$tool::DRY_RUN)) {
+        if (!$own) {
+            unset($args['dry_run']);
+        }
+
+        if ($dryRun && ($tool::READ_ONLY || !($tool::DRY_RUN || $own))) {
             return $this->result($id, [
                 'content' => [['type' => 'text', 'text' => $tool::READ_ONLY ? 'dry_run is for tools that change data, this one only reads' : 'This tool does not support dry_run']],
                 'isError' => true,
@@ -242,14 +247,14 @@ class McpAction extends ActionApi
         }
 
         try {
-            $result = $dryRun ? $this->dryRun($tool, $args) : $tool->execute($args);
+            $result = $dryRun && !$own ? $this->dryRun($tool, $args) : $tool->execute($args);
 
             $this->logger->info('MCP tool call', ['tool' => $name]);
             $this->audit($tool, $args, $dryRun, true);
 
             return $this->result($id, [
                 'content' => [
-                    ['type' => 'text', 'text' => $this->encode($dryRun ? $this->markDryRun($result) : $result)],
+                    ['type' => 'text', 'text' => $this->encode($dryRun && !$own ? $this->markDryRun($result) : $result)],
                 ],
                 'isError' => false,
             ]);

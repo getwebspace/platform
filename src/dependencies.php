@@ -250,9 +250,15 @@ return function (ContainerBuilder $containerBuilder): void {
                     $this->register(\App\Domain\McpTools\SiteReindexTool::class);
                     $this->register(\App\Domain\McpTools\FormListTool::class);
                     $this->register(\App\Domain\McpTools\SiteHealthTool::class);
+                    $this->register(\App\Domain\McpTools\SettingsGetTool::class);
+                    $this->register(\App\Domain\McpTools\ThemeFileListTool::class);
+                    $this->register(\App\Domain\McpTools\ThemeFileReadTool::class);
+                    $this->register(\App\Domain\McpTools\ThemeFileWriteTool::class);
+                    $this->register(\App\Domain\McpTools\ThemeFileHistoryTool::class);
+                    $this->register(\App\Domain\McpTools\ThemeFileRestoreTool::class);
 
                     // built-in prompts
-                    foreach (['NewOrdersPrompt', 'ModerationPrompt', 'SiteReportPrompt', 'PriceChangePrompt', 'WritePublicationPrompt', 'FailedTasksPrompt', 'SeoCheckPrompt', 'SalesAnalysisPrompt', 'StockCheckPrompt'] as $prompt) {
+                    foreach (['NewOrdersPrompt', 'ModerationPrompt', 'SiteReportPrompt', 'PriceChangePrompt', 'WritePublicationPrompt', 'FailedTasksPrompt', 'SeoCheckPrompt', 'SalesAnalysisPrompt', 'StockCheckPrompt', 'EditTemplatePrompt'] as $prompt) {
                         $this->registerPrompt('\\App\\Domain\\McpPrompts\\' . $prompt);
                     }
 

@@ -57,6 +57,12 @@ abstract class AbstractMcpTool
     public const DRY_RUN = true;
 
     /**
+     * The tool understands dry_run itself (it is passed in the arguments) instead of the rolled back transaction:
+     * for changes that are not in the database (files). It must say "dry_run": true in its result
+     */
+    public const DRY_RUN_SELF = false;
+
+    /**
      * Page size for list tools
      */
     public const LIMIT_DEFAULT = 20;
@@ -143,7 +149,7 @@ abstract class AbstractMcpTool
 
     private function withDryRun(array $schema): array
     {
-        if (static::READ_ONLY || !static::DRY_RUN || !is_array($schema['properties'] ?? null)) {
+        if (static::READ_ONLY || !(static::DRY_RUN || static::DRY_RUN_SELF) || !is_array($schema['properties'] ?? null)) {
             return $schema;
         }
 

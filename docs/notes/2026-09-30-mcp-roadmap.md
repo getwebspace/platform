@@ -129,10 +129,29 @@ Found by an external review of the 6.4.0 server; all valid:
 - Not done on purpose: order creation by a tool (a phone order should be entered in the admin panel), product import / export tasks, resource templates,
   site settings and plugins (see "Deliberately NOT covered").
 
+## Batch 6.5.1 - settings and the files of the design - DONE
+
+- **`settings_get`** (full access key): the site and plugin settings, read only. A secret is not shown: `hidden: true` + `filled`. Recognised by a word of the
+  name (`pass`, `password`, `secret`, `token`, `key`, `private`, `salt`, `hash`, `auth`..., or the name ends with `login`) and by the look of the value
+  (JWT, PEM, bot token, a 28+ run of letters / digits without spaces). `notepad_*` (private notes of the administrators) is not shown at all. Long values
+  are cut to 500 characters, by `name` the whole text. Settings are still changed only in the admin panel.
+- **Design files** (`App\Application\ThemeFiles`, tools `theme_file_list / read / write / history / restore`), paths like the admin editor:
+  `theme/...` (active theme) and `resource/...`. Editable: `twig css js html txt md`, up to 300 KB, UTF-8.
+  Safety: no `..`, hidden names, links out of the folders, new folders; the write needs `expected_version` (sha256 from `theme_file_read`) so a file
+  changed meanwhile is never overwritten; a `.twig` that does not compile is refused; every write keeps the previous text in
+  `var/theme-backups/<path>/` (last 20), `theme_file_restore` puts one back (and keeps the replaced text, so a restore is undoable); own `dry_run`
+  (`DRY_RUN_SELF`: files are not in the database, the argument reaches the tool); writes are journaled.
+  **Write and restore need the site setting `mcp_theme_edit = yes`** (API tab of the settings, OFF by default) and a full access key. Reading does not.
+- **Compiled templates:** a working site (no DEBUG) does not compile Twig on the fly - a changed file is not seen until its compiled copy is gone
+  (checked: a plain file change keeps showing the old text). `ThemeFiles::clearTemplateCache()` removes the compiled copies (the folders `xx` of two hex digits
+  in `var/cache`, nothing else) after every `.twig` write; the admin panel editor (`/cup/editor`) does it now too - it did not.
+- Prompt `edit_template` (read -> smallest change -> dry run -> confirm -> apply, backup id, how to undo).
+- `AbstractMcpTool::DRY_RUN_SELF` for tools that do the dry run themselves.
+
 ## Deliberately NOT covered
 
 - Deleting anything
-- Site parameters (`parameter`, secrets; `CUP_ONLY_MAP` in the REST API too)
+- Changing site parameters (`parameter`, secrets; `CUP_ONLY_MAP` in the REST API too). Reading them is `settings_get`, secrets hidden
 - API keys management, password changes
 - Plugins (they are code in `plugin/` registered in `plugin/installed.php`: enabling, installing and removing is a deployment, not data). A plugin can only ADD tools,
   prompts and resources to the server; the plugin settings are site parameters (`<PluginName>_<field>`) - same as the site settings

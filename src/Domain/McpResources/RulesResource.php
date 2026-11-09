@@ -26,6 +26,8 @@ class RulesResource extends AbstractMcpResource
             - **Bulk price change** is a preview until `apply=true` with the previewed `expected_count`.
             - **Staff accounts** (groups with admin panel access) can not be edited or assigned, user status can be only `work` or `block`, passwords are never touched.
             - **Dates** in filters: `YYYY-MM-DD` covers the whole day, `YYYY-MM-DD HH:MM` is exact.
+            - **Design files** (templates, styles): a change is live for every visitor at once. It is allowed only when the administrator turned it on in the site settings; the file must be read first, the previous text is kept and can be put back.
+            - **Settings** are read only, secrets (passwords, keys, tokens) are never shown.
             - Lists are paged: `limit`, `offset`, and `has_more` tells if there is a next page.
             MD;
     }

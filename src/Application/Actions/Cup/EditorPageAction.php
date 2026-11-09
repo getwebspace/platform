@@ -32,6 +32,7 @@ class EditorPageAction extends AbstractAction
                 // delete file
                 if ($this->getParam('save', 'save') === 'delete' && file_exists($absolute_path)) {
                     @unlink($absolute_path);
+                    $this->forgetCompiledTemplates($absolute_path);
 
                     return $this->response->withAddedHeader('Location', '/cup/editor')->withStatus(301);
                 }
@@ -41,6 +42,7 @@ class EditorPageAction extends AbstractAction
                 }
 
                 @file_put_contents($absolute_path, $content);
+                $this->forgetCompiledTemplates($absolute_path);
 
                 return $this->response->withAddedHeader('Location', '/cup/editor/' . $path)->withStatus(301);
             }
@@ -51,6 +53,16 @@ class EditorPageAction extends AbstractAction
             'file' => $file,
             'content' => $content,
         ]);
+    }
+
+    /**
+     * A working site does not compile templates on the fly: a changed template is not seen until its compiled copy is gone
+     */
+    private function forgetCompiledTemplates(string $path): void
+    {
+        if (strtolower(pathinfo($path, PATHINFO_EXTENSION)) === 'twig') {
+            (new \App\Application\ThemeFiles($this->container))->clearTemplateCache();
+        }
     }
 
     private function getFiles(string $theme): \Illuminate\Support\Collection

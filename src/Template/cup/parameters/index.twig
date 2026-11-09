@@ -533,6 +533,17 @@
                                                     }
                                                 } %}
 
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Edit templates through MCP',
+                                                    'description': 'Lets an AI assistant with a full access key change templates, styles and scripts of the site. The change is live at once; every change keeps the previous version. Off by default',
+                                                    'type': 'select',
+                                                    'name': 'mcp[theme_edit]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'no'
+                                                    }
+                                                } %}
+
                                                 <ul class="nav nav-pills nav-info justify-content-end" role="tablist">
                                                     <li class="nav-item">
                                                         <a class="nav-link active show" data-toggle="pill" href="#other-api-access" role="tab">
