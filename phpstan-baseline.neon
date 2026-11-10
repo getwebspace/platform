@@ -115,18 +115,6 @@ parameters:
 			path: src/Application/Actions/Cup/Catalog/Product/ProductImportAction.php
 
 		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
-			count: 1
-			path: src/Application/Actions/Cup/EditorPageAction.php
-
-		-
-			message: '#^Right side of && is always true\.$#'
-			identifier: booleanAnd.rightAlwaysTrue
-			count: 1
-			path: src/Application/Actions/Cup/EditorPageAction.php
-
-		-
 			message: '#^If condition is always true\.$#'
 			identifier: if.alwaysTrue
 			count: 1
