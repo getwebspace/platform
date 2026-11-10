@@ -15,7 +15,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    {% embed 'mixin/datatable.twig' %}
+                    {% embed 'mixin/datatable.twig' with {'bulk': true} %}
                         {% block thead %}
                             <div class="col-4 col-md-2" data-sort="text">{{ 'Status'|locale }}</div>
                             <div class="col-8 col-md" data-sort="text">{{ 'Author'|locale }}</div>

@@ -16,6 +16,17 @@
     </div>
 </div>
 
+{% if bulk|default(false) %}
+    <div class="row" data-table-bulk="{{ randomId }}" style="display: none">
+        <div class="col-12 py-2">
+            <span class="mr-2">{{ 'Selected'|locale }}: <b data-bulk-count>0</b></span>
+            <button type="button" class="btn btn-sm btn-danger" data-bulk-delete>
+                <i class="fas fa-fw fa-trash-alt"></i> {{ 'Delete selected'|locale }}
+            </button>
+        </div>
+    </div>
+{% endif %}
+
 <div class="row clusterize-header text-nowrap" data-table-head="{{ randomId }}">
     {% block thead %}
         <div class="col clusterize-no-data text-center">
@@ -40,6 +51,17 @@
         let $rows = $('[data-table-content="{{ randomId }}"] div.row:not(.clusterize-no-data)').detach();
 
         (async () => {
+            {% if bulk|default(false) %}
+            // bulk delete reuses the delete form every row already has, so rights and hooks stay as they are
+            $rows.each((i, row) => {
+                let form = row.querySelector('form[action$="/delete"]');
+
+                if (form && row.lastElementChild) {
+                    row.lastElementChild.insertAdjacentHTML('afterbegin', '<input type="checkbox" data-bulk-row="' + form.getAttribute('action') + '" class="mr-2 align-middle" style="width: 16px; height: 16px">');
+                }
+            });
+            {% endif %}
+
             await window.loader([
                 '/assets/js/plugin/clusterize/clusterize.min.css',
                 '/assets/js/plugin/clusterize/clusterize.min.js',
@@ -99,6 +121,62 @@
                 $(el).append(' <i class="fas fa-sort text-black-50" data-sort-icon></i>');
             });
 
+            let visible = $rows.toArray();
+            {% if bulk|default(false) %}
+            const $bar = $('[data-table-bulk="{{ randomId }}"]'),
+                $header_last = $('[data-table-head="{{ randomId }}"] > :last-child');
+
+            $header_last.prepend('<input type="checkbox" data-bulk-all class="mr-2 align-middle" style="width: 16px; height: 16px" title="{{ 'Select all'|locale }}">');
+
+            const checked = () => $rows.toArray().filter((row) => row.querySelector('[data-bulk-row][checked]'));
+            const refreshBar = () => {
+                let n = checked().length;
+
+                $bar.toggle(n > 0).find('[data-bulk-count]').text(n);
+                $header_last.find('[data-bulk-all]').prop('checked', visible.length > 0 && visible.every((row) => row.querySelector('[data-bulk-row][checked]')));
+            };
+            const mark = (row, on) => {
+                let box = row.querySelector('[data-bulk-row]');
+
+                if (box) {
+                    on ? box.setAttribute('checked', 'checked') : box.removeAttribute('checked');
+                }
+            };
+
+            // rows are re-rendered from their markup, so the state lives in the `checked` attribute
+            $content.on('change', '[data-bulk-row]', (e) => {
+                let action = e.currentTarget.getAttribute('data-bulk-row');
+
+                $rows.each((i, row) => {
+                    if (row.querySelector('[data-bulk-row]').getAttribute('data-bulk-row') === action) {
+                        mark(row, e.currentTarget.checked);
+                    }
+                });
+                refreshBar();
+            });
+            $header_last.on('change', '[data-bulk-all]', (e) => {
+                visible.forEach((row) => mark(row, e.currentTarget.checked));
+                clusterize.update(visible.map((row) => row.outerHTML));
+                refreshBar();
+            });
+            $bar.on('click', '[data-bulk-delete]', async (e) => {
+                let actions = checked().map((row) => row.querySelector('[data-bulk-row]').getAttribute('data-bulk-row'));
+
+                if (!actions.length || !confirm('{{ 'Delete selected'|locale }}: ' + actions.length + '?')) {
+                    return;
+                }
+
+                $(e.currentTarget).prop('disabled', true);
+
+                // one by one: SQLite allows a single writer
+                for (const action of actions) {
+                    await fetch(action, {method: 'POST', credentials: 'same-origin'});
+                }
+
+                location.reload();
+            });
+            {% endif %}
+
             const render = () => {
                 let digits = /^[\d\s()+\-]+$/.test(query) ? query.replace(/\D/g, '') : '',
                     query_phone = digits.length >= 3 ? [...new Set([phone(digits), digits.replace(/^[78]/, '')])] : [],
@@ -127,7 +205,9 @@
                     });
                 }
 
+                visible = list;
                 clusterize.update(list.map((row) => row.outerHTML));
+                {% if bulk|default(false) %}refreshBar();{% endif %}
                 $count.text(query ? '{{ 'Found'|locale }}: ' + list.length + ' / ' + $rows.length : '');
             };
 

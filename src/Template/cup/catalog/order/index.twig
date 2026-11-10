@@ -96,7 +96,7 @@
                 </div>
 
                 <div class="card-body">
-                    {% embed 'mixin/datatable.twig' %}
+                    {% embed 'mixin/datatable.twig' with {'bulk': true} %}
                         {% block thead %}
                             <div class="col-4 col-sm-1" data-sort="num">#</div>
                             <div class="col-5 col-sm" data-sort="text">{{ 'Client'|locale }}</div>
