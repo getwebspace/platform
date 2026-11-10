@@ -1,6 +1,6 @@
 {% set randomId = random() %}
 
-<div class="d-flex flex-wrap align-items-center mb-2" style="gap: 8px; min-height: 42px">
+<div class="dt-toolbar d-flex flex-wrap align-items-center mb-2" style="gap: 8px; min-height: 42px">
     {% block tbutton '' %}
     <div class="d-flex flex-wrap align-items-center" data-table-filters="{{ randomId }}"></div>
     {% if bulk|default(false) %}
@@ -44,6 +44,8 @@
 
 <style>
     [data-table-content] .row:has(a.btn-info[href$="/edit"]) { cursor: pointer; }
+    /* select2 replaces the select with its own container, so the gaps are set on it */
+    .dt-toolbar .select2-container { margin: 0 8px 4px 0; vertical-align: middle; }
 </style>
 
 <script type="text/javascript">
