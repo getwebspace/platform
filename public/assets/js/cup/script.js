@@ -557,6 +557,57 @@ $(() => {
             })
         }
 
+        // quick client pick: typing in the main "Client" field suggests existing users
+        {
+            let $client = $('form [name="delivery[client]"]');
+
+            if ($client.length) {
+                let $list = $('<datalist id="order-client-users">').insertAfter($client);
+
+                $client.attr({list: 'order-client-users', autocomplete: 'off'})
+                    .on('keyup', throttle((e) => {
+                        let query = e.target.value.trim();
+
+                        if (query.length >= 2) {
+                            $.get('/cup/api/v1/user', {search: query}, (res) => {
+                                if (res.status === 200) {
+                                    $list.html('');
+
+                                    for (let item of res.data) {
+                                        $list.append(
+                                            $('<option>')
+                                                .attr('data-json', JSON.stringify(item))
+                                                .attr('value', item.name.full)
+                                                .text([item.phone, item.email].join(' ').trim())
+                                        );
+                                    }
+                                }
+                            });
+                        }
+                    }, 300))
+                    .on('change', (e) => {
+                        let $option = $list.find('option').filter((i, el) => el.value === e.target.value).first();
+
+                        if ($option.length) {
+                            let data = JSON.parse($option.attr('data-json'));
+
+                            $('[name="user_uuid"]').val(data.uuid);
+                            // only empty fields are filled, what was typed by hand stays
+                            ['phone', 'email'].forEach((name) => {
+                                let $field = $(`form [name="${name}"]`).first();
+
+                                if (!$field.val() && data[name]) {
+                                    $field.val(data[name]);
+                                }
+                            });
+                        } else {
+                            // a name typed by hand is a guest, not the previously picked user
+                            $('[name="user_uuid"]').val('');
+                        }
+                    });
+            }
+        }
+
         // product select
         {
             let $modal = $('[data-order-modal-product]');
