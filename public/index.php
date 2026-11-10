@@ -45,7 +45,12 @@ $logger = $container->get(\Psr\Log\LoggerInterface::class);
 
 $app->add(\Slim\Views\TwigMiddleware::createFromContainer($app));
 $app->addRoutingMiddleware();
-$app->addErrorMiddleware($displayErrorDetails, $logError, $logErrorDetails, $logger);
+$errorMiddleware = $app->addErrorMiddleware($displayErrorDetails, $logError, $logErrorDetails, $logger);
+$errorMiddleware->setDefaultErrorHandler(new \App\Application\Handlers\ErrorHandler(
+    $app->getCallableResolver(),
+    $app->getResponseFactory(),
+    $logger
+));
 $app->run();
 
 // And nothing more :)
