@@ -274,7 +274,11 @@
                                     </div>
                                 </div>
 
-                                <hr>
+                                <a href="#user-additional" data-toggle="collapse" class="d-block mb-3 text-muted">
+                                    <i class="fas fa-fw fa-chevron-down"></i> {{ 'Additionally'|locale }}
+                                </a>
+                                <div id="user-additional" class="collapse {{ (item.company.title or item.company.position or item.legal.code or item.legal.number or item.website or item.source) ? 'show' : '' }}">
+                                    <hr>
 
                                 <div class="row">
                                     <div class="col-12 col-md-6">
@@ -344,6 +348,8 @@
                                             }
                                         } %}
                                     </div>
+                                </div>
+
                                 </div>
                             </div>
                         </div>
