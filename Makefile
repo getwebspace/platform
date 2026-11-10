@@ -10,6 +10,9 @@ up:
 down:
 	@docker-compose -f docker-compose.dev.yml down
 
+demo:
+	@docker-compose -f docker-compose.dev.yml exec platform php scheme/demo.php
+
 run-test:
 	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/phpunit --color=always --configuration phpunit.xml
 
