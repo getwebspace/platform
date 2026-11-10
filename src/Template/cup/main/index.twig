@@ -33,6 +33,7 @@
 {% endblock %}
 
 {% block content %}
+    {% set show_chart = enabled.catalog and revenue and revenue.orders %}
     {% set attention_total = attention.users
         + attention.tasks_error
         + attention.tasks_active
@@ -41,11 +42,163 @@
         + (attention.orders ?? 0) %}
 
     {# ----------------------------------------------------------------- #}
-    {# Needs attention                                                   #}
+    {# KPI tiles                                                         #}
     {# ----------------------------------------------------------------- #}
     <div class="row">
-        <div class="col-md-12">
-            <div class="card">
+        {% if enabled.catalog and revenue %}
+            <div class="col-6 col-lg">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-success bubble-shadow-small">
+                                    <i class="fas fa-wallet"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">{{ 'Revenue, 30 days'|locale }}</p>
+                                    <h4 class="card-title">{{ revenue.total|number_format(0, '.', ' ') }}</h4>
+                                    <p class="card-category">{{ 'Average check'|locale }}: {{ revenue.avg_check|number_format(0, '.', ' ') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                    <i class="fas fa-shopping-bag"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">{{ 'Orders, 30 days'|locale }}</p>
+                                    <h4 class="card-title">{{ revenue.orders }}</h4>
+                                    <p class="card-category">{{ 'Today'|locale }}: {{ revenue.today_orders }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="col-6 col-lg">
+            <div class="card card-stats card-round">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-icon">
+                            <div class="icon-big text-center icon-info bubble-shadow-small">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                        </div>
+                        <div class="col col-stats ml-3 ml-sm-0">
+                            <div class="numbers">
+                                <p class="card-category">{{ 'New users, 7 days'|locale }}</p>
+                                <h4 class="card-title">{{ kpi.users_week }}</h4>
+                                <p class="card-category">{{ 'Active total'|locale }}: {{ kpi.users_total }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if enabled.form %}
+            <div class="col-6 col-lg">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-secondary bubble-shadow-small">
+                                    <i class="fas fa-inbox"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">{{ 'Form submissions, 7 days'|locale }}</p>
+                                    <h4 class="card-title">{{ kpi.form_data_week }}</h4>
+                                    <p class="card-category">{{ 'All time'|locale }}: {{ kpi.form_data_total }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if enabled.guestbook %}
+            <div class="col-6 col-lg">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-warning bubble-shadow-small">
+                                    <i class="fas fa-comment-dots"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">{{ 'New comments, 7 days'|locale }}</p>
+                                    <h4 class="card-title">{{ kpi.guestbook_week }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if enabled.file and kpi.files_total %}
+            <div class="col-6 col-lg">
+                <div class="card card-stats card-round">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-icon">
+                                <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                    <i class="fas fa-hdd"></i>
+                                </div>
+                            </div>
+                            <div class="col col-stats ml-3 ml-sm-0">
+                                <div class="numbers">
+                                    <p class="card-category">{{ 'Files'|locale }}</p>
+                                    <h4 class="card-title">{{ kpi.files_total }}</h4>
+                                    {% if kpi.files_size %}
+                                        <p class="card-category">{{ convert_size(kpi.files_size) }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="row">
+    {% if show_chart %}
+        <div class="col-lg-8">
+                <div class="card h-100">
+                    <script>window.orders_revenue = {{ json_encode(revenue.daily) }};</script>
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <div class="card-title">{{ 'Orders and Revenue'|locale }} &middot; {{ 'Last 30 Days'|locale }}</div>
+                            <a href="/cup/catalog/statistic" class="btn btn-sm btn-secondary ml-auto">{{ 'Statistic'|locale }}</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="orders_revenue" height="200" style="display: block; width: 100%; height: 200px; max-height: 200px;"></canvas>
+                    </div>
+                </div>
+        </div>
+    {% endif %}
+        <div class="{{ show_chart ? 'col-lg-4' : 'col-12' }}">
+            <div class="card h-100">
                 <div class="card-header">
                     <div class="card-title">
                         <i class="fas fa-bell mr-2"></i>{{ 'Needs attention'|locale }}
@@ -102,173 +255,12 @@
     </div>
 
     {# ----------------------------------------------------------------- #}
-    {# KPI tiles                                                         #}
-    {# ----------------------------------------------------------------- #}
-    <div class="row">
-        {% if enabled.catalog and revenue %}
-            <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center icon-success bubble-shadow-small">
-                                    <i class="fas fa-wallet"></i>
-                                </div>
-                            </div>
-                            <div class="col col-stats ml-3 ml-sm-0">
-                                <div class="numbers">
-                                    <p class="card-category">{{ 'Revenue, 30 days'|locale }}</p>
-                                    <h4 class="card-title">{{ revenue.total|number_format(0, '.', ' ') }}</h4>
-                                    <p class="card-category">{{ 'Average check'|locale }}: {{ revenue.avg_check|number_format(0, '.', ' ') }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center icon-primary bubble-shadow-small">
-                                    <i class="fas fa-shopping-bag"></i>
-                                </div>
-                            </div>
-                            <div class="col col-stats ml-3 ml-sm-0">
-                                <div class="numbers">
-                                    <p class="card-category">{{ 'Orders, 30 days'|locale }}</p>
-                                    <h4 class="card-title">{{ revenue.orders }}</h4>
-                                    <p class="card-category">{{ 'Today'|locale }}: {{ revenue.today_orders }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-
-        <div class="col-sm-6 col-md-3">
-            <div class="card card-stats card-round">
-                <div class="card-body">
-                    <div class="row align-items-center">
-                        <div class="col-icon">
-                            <div class="icon-big text-center icon-info bubble-shadow-small">
-                                <i class="fas fa-user-plus"></i>
-                            </div>
-                        </div>
-                        <div class="col col-stats ml-3 ml-sm-0">
-                            <div class="numbers">
-                                <p class="card-category">{{ 'New users, 7 days'|locale }}</p>
-                                <h4 class="card-title">{{ kpi.users_week }}</h4>
-                                <p class="card-category">{{ 'Active total'|locale }}: {{ kpi.users_total }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {% if enabled.form %}
-            <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center icon-secondary bubble-shadow-small">
-                                    <i class="fas fa-inbox"></i>
-                                </div>
-                            </div>
-                            <div class="col col-stats ml-3 ml-sm-0">
-                                <div class="numbers">
-                                    <p class="card-category">{{ 'Form submissions, 7 days'|locale }}</p>
-                                    <h4 class="card-title">{{ kpi.form_data_week }}</h4>
-                                    <p class="card-category">{{ 'All time'|locale }}: {{ kpi.form_data_total }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-
-        {% if enabled.guestbook %}
-            <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center icon-warning bubble-shadow-small">
-                                    <i class="fas fa-comment-dots"></i>
-                                </div>
-                            </div>
-                            <div class="col col-stats ml-3 ml-sm-0">
-                                <div class="numbers">
-                                    <p class="card-category">{{ 'New comments, 7 days'|locale }}</p>
-                                    <h4 class="card-title">{{ kpi.guestbook_week }}</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-
-        {% if enabled.file and kpi.files_total %}
-            <div class="col-sm-6 col-md-3">
-                <div class="card card-stats card-round">
-                    <div class="card-body">
-                        <div class="row align-items-center">
-                            <div class="col-icon">
-                                <div class="icon-big text-center icon-primary bubble-shadow-small">
-                                    <i class="fas fa-hdd"></i>
-                                </div>
-                            </div>
-                            <div class="col col-stats ml-3 ml-sm-0">
-                                <div class="numbers">
-                                    <p class="card-category">{{ 'Files'|locale }}</p>
-                                    <h4 class="card-title">{{ kpi.files_total }}</h4>
-                                    {% if kpi.files_size %}
-                                        <p class="card-category">{{ convert_size(kpi.files_size) }}</p>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-    </div>
-
-    {# ----------------------------------------------------------------- #}
-    {# Revenue chart (30 days)                                           #}
-    {# ----------------------------------------------------------------- #}
-    {% if enabled.catalog and revenue and revenue.orders %}
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <script>window.orders_revenue = {{ json_encode(revenue.daily) }};</script>
-                    <div class="card-header">
-                        <div class="d-flex align-items-center">
-                            <div class="card-title">{{ 'Orders and Revenue'|locale }} &middot; {{ 'Last 30 Days'|locale }}</div>
-                            <a href="/cup/catalog/statistic" class="btn btn-sm btn-secondary ml-auto">{{ 'Statistic'|locale }}</a>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="orders_revenue" height="200" style="display: block; width: 100%; height: 200px; max-height: 200px;"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-
-    {# ----------------------------------------------------------------- #}
     {# Recent activity                                                   #}
     {# ----------------------------------------------------------------- #}
     <div class="row">
-        {% if enabled.catalog %}
-            <div class="col-md-6">
-                <div class="card">
+        {% if enabled.catalog and activity.orders|length %}
+            <div class="col-lg-6 d-flex">
+                <div class="card w-100">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
                             <div class="card-title">{{ 'Latest orders'|locale }}</div>
@@ -300,9 +292,9 @@
             </div>
         {% endif %}
 
-        {% if enabled.form %}
-            <div class="col-md-6">
-                <div class="card">
+        {% if enabled.form and activity.forms|length %}
+            <div class="col-lg-6 d-flex">
+                <div class="card w-100">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
                             <div class="card-title">{{ 'Latest form submissions'|locale }}</div>
@@ -333,9 +325,9 @@
             </div>
         {% endif %}
 
-        {% if enabled.guestbook %}
-            <div class="col-md-6">
-                <div class="card">
+        {% if enabled.guestbook and activity.guestbook|length %}
+            <div class="col-lg-6 d-flex">
+                <div class="card w-100">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
                             <div class="card-title">{{ 'Latest comments'|locale }}</div>
@@ -366,9 +358,9 @@
             </div>
         {% endif %}
 
-        {% if enabled.publication %}
-            <div class="col-md-6">
-                <div class="card">
+        {% if enabled.publication and activity.publications|length %}
+            <div class="col-lg-6 d-flex">
+                <div class="card w-100">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
                             <div class="card-title">{{ 'Latest publications'|locale }}</div>
@@ -393,8 +385,8 @@
             </div>
         {% endif %}
 
-        <div class="col-md-6">
-            <div class="card">
+        <div class="col-lg-6 d-flex">
+            <div class="card w-100">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
                         <div class="card-title">{{ 'Latest registrations'|locale }}</div>

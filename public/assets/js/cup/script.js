@@ -135,7 +135,7 @@ $(() => {
                     labels: labels,
                     datasets: [
                         {
-                            label: 'SUM',
+                            label: 'Revenue',
                             data: sums,
                             type: 'line',
                             borderColor: '#177dff',
@@ -150,7 +150,7 @@ $(() => {
                             tension: 0.5,
                         },
                         {
-                            label: 'AVG',
+                            label: 'Average check',
                             data: averageChecks,
                             type: 'line',
                             borderColor: '#fdaf4b',
@@ -165,7 +165,7 @@ $(() => {
                             yAxisID: 'y-axis-1',
                         },
                         {
-                            label: 'COUNT',
+                            label: 'Orders',
                             data: orderCounts,
                             type: 'bar',
                             borderColor: 'rgba(104, 97, 206, 0.3)',
