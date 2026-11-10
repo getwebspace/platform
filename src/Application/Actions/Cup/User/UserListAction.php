@@ -8,54 +8,39 @@ class UserListAction extends UserAction
 {
     protected function action(): \Slim\Psr7\Response
     {
+        $q = trim((string) ($this->getParam('q') ?? $this->getParam('username') ?? $this->getParam('email') ?? ''));
+        $group = (string) $this->getParam('group_uuid', '');
+        $state = (string) $this->getParam('state', 'work');
+
         $criteria = [
-            'status' => [UserStatus::WORK],
+            // by default only working accounts, one select instead of three checkboxes
+            'status' => match ($state) {
+                'block' => [UserStatus::BLOCK],
+                'confirmation' => [UserStatus::CONFIRMATION],
+                'delete' => [UserStatus::DELETE],
+                'all' => [UserStatus::WORK, UserStatus::BLOCK, UserStatus::CONFIRMATION, UserStatus::DELETE],
+                default => [UserStatus::WORK],
+            },
             'order' => [
                 'group_uuid' => 'desc',
                 'register' => 'desc',
             ],
         ];
 
-        // filters come in the query string, so a filtered list can be bookmarked and survives a return from the edit form
-        if ($this->getParams() !== []) {
-            $username = $this->getParam('username');
-            $email = $this->getParam('email');
-            $group_uuid = $this->getParam('group_uuid');
+        if ($q !== '') {
+            $criteria['search'] = $q;
+        }
 
-            if ($username) {
-                if ($this->getParam('username_strong')) {
-                    // a scalar makes read() look up a single user, a list filter
-                    // has to be passed as an array
-                    $criteria['username'] = [$username];
-                } else {
-                    $criteria['search'] = $username;
-                }
-            }
-
-            if ($email) {
-                $criteria['email'] = [$email];
-            }
-
-            if ($group_uuid) {
-                $criteria['group_uuid'] = $group_uuid;
-            }
-
-            if ($this->getParam('status_block')) {
-                $criteria['status'][] = UserStatus::BLOCK;
-            }
-
-            if ($this->getParam('status_confirmation')) {
-                $criteria['status'][] = UserStatus::CONFIRMATION;
-            }
-
-            if ($this->getParam('status_delete')) {
-                $criteria['status'][] = UserStatus::DELETE;
-            }
+        if ($group !== '') {
+            $criteria['group_uuid'] = $group;
         }
 
         return $this->respondWithTemplate('cup/user/index.twig', [
             'list' => $this->userService->read($criteria),
             'groups' => $this->userGroupService->read(['order' => ['title' => 'asc']]),
+            'q' => $q,
+            'group' => $group,
+            'state' => $state,
         ]);
     }
 }

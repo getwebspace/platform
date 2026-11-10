@@ -14,103 +14,19 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <form method="get">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Login'|locale,
-                                    'type': 'text',
-                                    'name': 'username',
-                                    'args': {
-                                        'placeholder': 'Pushkin',
-                                        'value': _request.username ?? ''
-                                    }
-                                } %}
-
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Login exact match'|locale,
-                                    'type': 'checkbox',
-                                    'name': 'username_strong',
-                                    'args': {
-                                        'value': 1,
-                                        'checked': _request.username_strong ? true : false
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'E-Mail',
-                                    'type': 'email',
-                                    'name': 'email',
-                                    'args': {
-                                        'placeholder': 'pushkin@example.com',
-                                        'value': _request.email ?? ''
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Group'|locale,
-                                    'type': 'select',
-                                    'name': 'group_uuid',
-                                    'args': {
-                                        'option': _({'': '---'}|merge(groups.pluck('title', 'uuid').all())),
-                                        'selected': _request.group_uuid ?? ''
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-12">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Banned'|locale,
-                                    'type': 'checkbox',
-                                    'name': 'status_block',
-                                    'args': {
-                                        'value': 1,
-                                        'checked': _request.status_block ? true : false
-                                    }
-                                } %}
-
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Deleted'|locale,
-                                    'type': 'checkbox',
-                                    'name': 'status_delete',
-                                    'args': {
-                                        'value': 1,
-                                        'checked': _request.status_delete ? true : false
-                                    }
-                                } %}
-
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Awaiting confirmation'|locale,
-                                    'type': 'checkbox',
-                                    'name': 'status_confirmation',
-                                    'args': {
-                                        'value': 1,
-                                        'checked': _request.status_confirmation ? true : false
-                                    }
-                                } %}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <button type="submit" class="btn btn-primary">{{ 'Search'|locale }}</button>
-                        <a href="/cup/user" class="btn btn-danger">{{ 'Reset'|locale }}</a>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
                 <div class="card-header">
-                    <div class="d-flex align-items-center">
-                        <a href="/cup/user/add" class="btn btn-primary btn-round ml-auto">
+                    <div class="d-flex flex-wrap align-items-center" style="gap: 8px">
+                        {% include 'cup/filterbar.twig' with {
+                            'fields': [
+                                {'type': 'search', 'name': 'q', 'value': q, 'label': 'Search'|locale, 'placeholder': ('Login'|locale) ~ ' / E-Mail / ' ~ ('Phone'|locale) ~ ' / ' ~ ('Full name'|locale)},
+                                {'type': 'select', 'name': 'group_uuid', 'label': 'Group'|locale, 'value': group, 'options': {'': 'Group'|locale}|merge(groups.pluck('title', 'uuid').all())},
+                                {'type': 'select', 'name': 'state', 'label': 'Status'|locale, 'value': state, 'default': 'work', 'options': {'work': 'Active'|locale, 'block': 'Banned'|locale, 'confirmation': 'Awaiting confirmation'|locale, 'delete': 'Deleted'|locale, 'all': 'All'|locale}},
+                            ],
+                            'reset': '/cup/user',
+                            'active': (q ? 1 : 0) + (group ? 1 : 0) + (state != 'work' ? 1 : 0),
+                        } %}
+
+                        <a href="/cup/user/add" class="btn btn-primary btn-round">
                             <i class="fa fa-plus"></i>
                             {{ 'Create user'|locale }}
                         </a>

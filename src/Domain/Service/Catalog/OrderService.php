@@ -13,7 +13,7 @@ class OrderService extends AbstractService
 {
     protected static array $eager = ['status', 'payment', 'products', 'products.files'];
 
-    protected static array $search_columns = ['serial', 'phone', 'email'];
+    protected static array $search_columns = ['serial', 'phone', 'email', 'external_id', 'delivery'];
 
     /**
      * @throws Exception\WrongEmailValueException

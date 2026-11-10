@@ -1,0 +1,43 @@
+{#
+    Compact GET filter bar, one row, applied on change.
+    fields - list of {name, type: select|search|date, label, options (select: value => title), value, placeholder, hidden}
+    reset  - url of the "reset" link, shown only while some filter is on (active)
+    active - number of filters that differ from the default
+#}
+<form method="get" class="d-flex flex-wrap align-items-center" style="gap: 8px; flex: 1 1 0; min-width: 0" data-filterbar>
+    {% for f in fields %}
+        {% if f.type == 'select' %}
+            <select name="{{ f.name }}" class="form-control form-control-sm {{ f.value is not empty and f.value != f.default ? 'border-primary' : '' }}" style="width: auto; max-width: 200px" title="{{ f.label }}" data-autosubmit {{ f.hidden ? 'hidden' : '' }}>
+                {% for value, title in f.options %}
+                    <option value="{{ value }}" {{ (f.value ?? '') ~ '' == value ~ '' ? 'selected' : '' }}>{{ title }}</option>
+                {% endfor %}
+            </select>
+        {% elseif f.type == 'date' %}
+            <input type="date" name="{{ f.name }}" value="{{ f.value }}" class="form-control form-control-sm" style="width: auto" title="{{ f.label }}" data-autosubmit {{ f.hidden ? 'hidden' : '' }}>
+        {% else %}
+            <input type="search" name="{{ f.name }}" value="{{ f.value }}" class="form-control form-control-sm" style="width: 190px" placeholder="{{ f.placeholder ?? f.label }}" autocomplete="off">
+        {% endif %}
+    {% endfor %}
+
+    <button type="submit" class="btn btn-sm btn-primary" title="{{ 'Search'|locale }}"><i class="fas fa-search"></i></button>
+    {% if active %}
+        <a href="{{ reset }}" class="btn btn-sm btn-link text-danger px-1" title="{{ 'Reset'|locale }}">
+            <i class="fas fa-times"></i> {{ 'Reset'|locale }} <span class="badge badge-primary">{{ active }}</span>
+        </a>
+    {% endif %}
+</form>
+
+<script type="text/javascript">
+    document.querySelectorAll('[data-filterbar]').forEach((form) => {
+        form.querySelectorAll('[data-autosubmit]').forEach((el) => el.addEventListener('change', () => {
+            // choosing "custom period" only reveals the date fields, the dates themselves submit
+            if (el.name === 'period' && el.value === 'custom') {
+                form.querySelectorAll('input[type="date"]').forEach((d) => d.hidden = false);
+
+                return;
+            }
+
+            form.submit();
+        }));
+    });
+</script>

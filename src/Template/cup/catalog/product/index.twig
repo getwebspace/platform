@@ -42,6 +42,15 @@
                 </div>
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' with {'filters': [{'name': 'stock', 'label': 'Stock'|locale}, {'name': 'price', 'label': 'Price'|locale}]} %}
+                        {% block tbutton %}
+                            <select class="form-control form-control-sm {{ category ? 'border-primary' : '' }}" style="width: auto; max-width: 240px" title="{{ 'Category'|locale }}" onchange="location.href = '/cup/catalog/product' + (this.value ? '/' + this.value : '')">
+                                <option value="">{{ 'Category'|locale }}</option>
+                                {% for item in categories.sortBy('title') %}
+                                    <option value="{{ item.uuid }}" {{ category.uuid == item.uuid ? 'selected' : '' }}>{{ item.title }}</option>
+                                {% endfor %}
+                            </select>
+                        {% endblock %}
+
                         {% block thead %}
                             <div class="col-12 col-sm" data-sort="text">{{ 'Title'|locale }}</div>
                             <div class="col-4 col-sm-2" data-sort="text">{{ 'Vendor code'|locale }}</div>

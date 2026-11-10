@@ -14,81 +14,27 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <form method="get">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-6 col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Date From'|locale,
-                                    'type': 'date',
-                                    'name': 'date[from]',
-                                    'args': {
-                                        'value': date.from
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-6 col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Date To'|locale,
-                                    'type': 'date',
-                                    'name': 'date[to]',
-                                    'args': {
-                                        'value': date.to
-                                    }
-                                } %}
-                            </div>
-
-                            <div class="col-6 col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Status'|locale,
-                                    'type': 'select',
-                                    'name': 'status',
-                                    'args': {
-                                        'option': {'': '---'}|merge(status_list.pluck('title', 'uuid').all()),
-                                        'selected': status,
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-6 col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Payment method'|locale,
-                                    'type': 'select',
-                                    'name': 'payment',
-                                    'args': {
-                                        'option': {'': '---'}|merge(payment_list.pluck('title', 'uuid').all()),
-                                        'selected': payment,
-                                    }
-                                } %}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <div class="btn-group">
-                            <button type="submit" class="btn btn-primary">{{ 'Search'|locale }}</button>
-                        </div>
-                        <div class="btn-group ml-2">
-                            {% set today = 'now'|date('Y-m-d') %}
-                            <a href="?{{ {'status': status, 'payment': payment, 'date': {'from': today, 'to': today}}|url_encode }}" class="btn btn-secondary">{{ 'Today'|locale }}</a>
-                            <a href="?{{ {'status': status, 'payment': payment, 'date': {'from': '-6 days'|date('Y-m-d'), 'to': today}}|url_encode }}" class="btn btn-secondary">{{ 'Week'|locale }}</a>
-                            <a href="?{{ {'status': status, 'payment': payment, 'date': {'from': 'first day of this month'|date('Y-m-d'), 'to': today}}|url_encode }}" class="btn btn-secondary">{{ 'Month'|locale }}</a>
-                        </div>
-                        <a href="/cup/catalog/order" class="btn btn-link">{{ 'Reset'|locale }}</a>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
                 <div class="card-header">
-                    <div class="d-flex align-items-center">
-                        <a href="{{ path_for('cup:catalog:order:export', [], {'status': status}|merge(date)) }}" class="btn btn-secondary btn-icon ml-auto text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Export current order list'|locale }}">
+                    <div class="d-flex flex-wrap align-items-center" style="gap: 8px">
+                        {% set period_names = {'today': 'Today'|locale, 'week': 'Week'|locale, 'month': 'Month'|locale, '30days': '30 days'|locale, 'all': 'All time'|locale, 'custom': 'Custom period'|locale} %}
+                        {% include 'cup/filterbar.twig' with {
+                            'fields': [
+                                {'type': 'search', 'name': 'q', 'value': q, 'label': 'Search'|locale, 'placeholder': '# / ' ~ ('Client'|locale) ~ ' / ' ~ ('Phone'|locale) ~ ' / E-Mail'},
+                                {'type': 'select', 'name': 'period', 'label': 'Period'|locale, 'value': period, 'default': '30days', 'options': period_names},
+                                {'type': 'date', 'name': 'date[from]', 'value': date.from, 'label': 'Date From'|locale, 'hidden': period != 'custom'},
+                                {'type': 'date', 'name': 'date[to]', 'value': date.to, 'label': 'Date To'|locale, 'hidden': period != 'custom'},
+                                {'type': 'select', 'name': 'status', 'label': 'Status'|locale, 'value': status, 'options': {'': 'Status'|locale}|merge(status_list.pluck('title', 'uuid').all())},
+                                {'type': 'select', 'name': 'payment', 'label': 'Payment method'|locale, 'value': payment, 'options': {'': 'Payment method'|locale}|merge(payment_list.pluck('title', 'uuid').all())},
+                            ],
+                            'reset': '/cup/catalog/order',
+                            'active': (q ? 1 : 0) + (period != '30days' ? 1 : 0) + (status ? 1 : 0) + (payment ? 1 : 0),
+                        } %}
+
+                        <a href="{{ path_for('cup:catalog:order:export', [], {'status': status}|merge(date)) }}" class="btn btn-secondary btn-icon text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Export current order list'|locale }}">
                             <i class="fas fa-file-export"></i>
                         </a>
 
-                        <a href="/cup/catalog/order/add" class="btn btn-primary btn-round ml-1">
+                        <a href="/cup/catalog/order/add" class="btn btn-primary btn-round">
                             <i class="fa fa-plus"></i>
                             {{ 'Create order'|locale }}
                         </a>
