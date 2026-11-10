@@ -47,7 +47,13 @@
 
 /* tabs */
 .vsc-main { grid-row: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--bg); }
-.vsc-tabs { display: flex; background: var(--bg-side); overflow-x: auto; flex: none; min-height: 35px; scrollbar-width: thin; }
+.vsc-tabbar { display: flex; background: var(--bg-side); flex: none; min-height: 35px; }
+.vsc-tabs { display: flex; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
+.vsc-actions { display: flex; align-items: center; gap: 4px; padding: 0 8px; flex: none; }
+.vsc-actions button { height: 26px; padding: 0 10px; border-radius: 3px; color: var(--fg); font-size: 12px; white-space: nowrap; }
+.vsc-actions button:not(:disabled):hover { background: #3a3a3a; color: #fff; }
+.vsc-actions button:not(:disabled) i { color: #75beff; }
+.vsc-actions button:disabled { opacity: .4; cursor: default; }
 .vsc-tab { display: flex; align-items: center; gap: 6px; padding: 0 10px 0 12px; height: 35px; background: var(--bg-tab); color: var(--fg-dim); border-right: 1px solid var(--bg-side); cursor: pointer; white-space: nowrap; flex: none; border-top: 1px solid transparent; }
 .vsc-tab.active { background: var(--bg); color: #fff; border-top-color: var(--accent); }
 .vsc-tab:hover { color: #fff; }

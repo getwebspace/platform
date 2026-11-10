@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const cm = CodeMirror(el.cm, {
         lineNumbers: true, theme: 'vscode', indentUnit: 4, tabSize: 4, matchBrackets: true, styleActiveLine: true, styleSelectedText: true, viewportMargin: 50,
         extraKeys: {
-            'Ctrl-S': () => save(), 'Cmd-S': () => save(), 'Ctrl-/': 'toggleCommentLines', 'Cmd-/': 'toggleCommentLines',
+            'Ctrl-S': () => save(), 'Cmd-S': () => save(), 'Shift-Ctrl-S': () => saveAll(), 'Shift-Cmd-S': () => saveAll(), 'Ctrl-/': 'toggleCommentLines', 'Cmd-/': 'toggleCommentLines',
             Tab: (c) => (c.somethingSelected() ? c.indentSelection('add') : c.replaceSelection('    ', 'end')), 'Shift-Tab': (c) => c.indentSelection('subtract'),
         },
     });
@@ -154,7 +154,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ---- tabs ---------------------------------------------------------------------------------------------------
     const renderTabs = () => {
         el.tabs.innerHTML = tabs.map((t) => `<div class="vsc-tab ${t.path === active ? 'active' : ''} ${dirty(t) ? 'dirty' : ''}" data-tab="${esc(t.path)}" title="${esc(t.path)}">${icon(t.path)}<span>${esc(t.path.split('/').pop())}</span><span class="x" data-close="${esc(t.path)}"><i class="fas fa-times"></i></span></div>`).join('');
-        let a = $('.vsc-tab.active', el.tabs);
+        let a = $('.vsc-tab.active', el.tabs), cur = tab();
+
+        $('[data-act="save"]', root).disabled = !(cur && cur.writable && dirty(cur));
+        $('[data-act="saveall"]', root).disabled = !tabs.some((t) => t.writable && dirty(t));
 
         if (a) { a.scrollIntoView({block: 'nearest', inline: 'nearest'}); }
     };
@@ -248,10 +251,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         return res.json().catch(() => ({ok: false, error: 'Bad response'}));
     };
 
-    const save = async () => {
-        let t = tab();
-
-        if (!t || !t.writable) { return; }
+    const save = async (t = tab()) => {
+        if (!t || !t.writable || !dirty(t)) { return true; }
 
         let content = t.doc.getValue(), gen = t.doc.changeGeneration(true), data = await post(t.path, {save: 'ajax', content});
 
@@ -261,8 +262,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             refresh();
             say(T.saved + ' · ' + t.path.split('/').pop());
         } else {
-            say(data.error || 'Error', 6000);
+            say(t.path.split('/').pop() + ': ' + (data.error || 'Error'), 6000);
         }
+
+        return !!data.ok;
+    };
+
+    // every changed tab, one after another (a single writer on the server side)
+    const saveAll = async () => {
+        let list = tabs.filter((t) => t.writable && dirty(t)), done = 0;
+
+        for (const t of list) {
+            if (await save(t)) { done++; }
+        }
+        if (list.length) { say(`${T.saved}: ${done} / ${list.length}`); }
     };
 
     const createFile = async (path) => {
@@ -404,7 +417,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!b) { return; }
         ({
             sidebar: () => { el.side.classList.toggle('is-hidden'); b.classList.toggle('active', !el.side.classList.contains('is-hidden')); cm.refresh(); },
-            quick, new: () => newFile(''), collapse: () => { expanded.clear(); store.set({expanded: []}); renderTree(); },
+            save: () => save(), saveall: saveAll, quick, new: () => newFile(''), collapse: () => { expanded.clear(); store.set({expanded: []}); renderTree(); },
         })[b.dataset.act]();
     });
 
@@ -426,7 +439,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         let mod = e.ctrlKey || e.metaKey, k = e.key.toLowerCase();
 
         if (mod && k === 'p') { e.preventDefault(); quick(); }
-        if (mod && k === 's') { e.preventDefault(); save(); }
+        if (mod && k === 's') { e.preventDefault(); e.shiftKey ? saveAll() : save(); }
         if (mod && k === 'b') { e.preventDefault(); $('[data-act="sidebar"]', root).click(); }
         if (mod && k === 'w' && active) { e.preventDefault(); closeTab(active); }
     }, true);
