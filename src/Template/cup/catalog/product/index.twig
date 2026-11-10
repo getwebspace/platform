@@ -43,7 +43,7 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' with {'filters': [{'name': 'stock', 'label': 'Stock'|locale}, {'name': 'price', 'label': 'Price'|locale}]} %}
                         {% block tbutton %}
-                            <select class="form-control form-control-sm {{ category ? 'border-primary' : '' }}" style="width: auto; max-width: 240px" title="{{ 'Category'|locale }}" onchange="location.href = '/cup/catalog/product' + (this.value ? '/' + this.value : '')">
+                            <select data-wse-select data-width="200px" data-search="5" data-nav-category title="{{ 'Category'|locale }}">
                                 <option value="">{{ 'Category'|locale }}</option>
                                 {% for item in categories.sortBy('title') %}
                                     <option value="{{ item.uuid }}" {{ category.uuid == item.uuid ? 'selected' : '' }}>{{ item.title }}</option>
@@ -121,5 +121,13 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            // select2 reports changes through jQuery
+            $('[data-nav-category]').on('change', (e) => {
+                location.href = '/cup/catalog/product' + (e.currentTarget.value ? '/' + e.currentTarget.value : '');
+            });
+        });
+    </script>
 {% endblock %}
 

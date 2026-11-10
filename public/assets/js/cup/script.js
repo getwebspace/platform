@@ -116,7 +116,8 @@ $(() => {
             allowClear: $el.data('allow-clear') ? $el.data('allow-clear') : false,
         });
     }
-    $('[data-input] select').each((i, el) => init_select2($(el)));
+    $('[data-input] select, select[data-wse-select]').each((i, el) => init_select2($(el)));
+    window.wseSelect2 = init_select2;
 
     // main catalog stats
     {

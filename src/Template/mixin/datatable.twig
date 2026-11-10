@@ -141,19 +141,20 @@
             (() => {
                 let name = '{{ f.name }}',
                     values = [...new Set($rows.toArray().map((row) => row.getAttribute('data-f-' + name)).filter((v) => v))].sort(),
-                    $select = $('<select class="form-control form-control-sm mr-2 mb-1" style="width: auto"></select>');
+                    $select = $('<select class="mr-2 mb-1" data-width="160px"></select>');
 
                 if (values.length < 2) {
                     return;
                 }
 
-                $select.append($('<option value="">').text('{{ f.label|raw }}: ' + '—'));
+                $select.append($('<option value="">').text('{{ f.label|raw }}'));
                 values.forEach((v) => $select.append($('<option>').val(v).text(v)));
                 $select.on('change', (e) => {
                     active[name] = e.currentTarget.value;
                     render();
                 });
                 $('[data-table-filters="{{ randomId }}"]').append($select);
+                window.wseSelect2($select);
             })();
             {% endfor %}
 

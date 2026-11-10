@@ -7,7 +7,7 @@
 <form method="get" class="d-flex flex-wrap align-items-center" style="gap: 8px; flex: 1 1 0; min-width: 0" data-filterbar>
     {% for f in fields %}
         {% if f.type == 'select' %}
-            <select name="{{ f.name }}" class="form-control form-control-sm {{ f.value is not empty and f.value != f.default ? 'border-primary' : '' }}" style="width: auto; max-width: 200px" title="{{ f.label }}" data-autosubmit {{ f.hidden ? 'hidden' : '' }}>
+            <select name="{{ f.name }}" title="{{ f.label }}" data-wse-select data-width="{{ f.width ?? '170px' }}" data-autosubmit {{ f.hidden ? 'hidden' : '' }}>
                 {% for value, title in f.options %}
                     <option value="{{ value }}" {{ (f.value ?? '') ~ '' == value ~ '' ? 'selected' : '' }}>{{ title }}</option>
                 {% endfor %}
@@ -33,16 +33,19 @@
 </style>
 
 <script type="text/javascript">
-    document.querySelectorAll('[data-filterbar]').forEach((form) => {
-        form.querySelectorAll('[data-autosubmit]').forEach((el) => el.addEventListener('change', () => {
-            // choosing "custom period" only reveals the date fields, the dates themselves submit
-            if (el.name === 'period' && el.value === 'custom') {
-                form.querySelectorAll('input[type="date"]').forEach((d) => d.hidden = false);
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[data-filterbar]').forEach((form) => {
+            // jQuery events, because select2 announces its changes that way
+            $(form).find('[data-autosubmit]').on('change', (e) => {
+                // choosing "custom period" only reveals the date fields, the dates themselves submit
+                if (e.currentTarget.name === 'period' && e.currentTarget.value === 'custom') {
+                    form.querySelectorAll('input[type="date"]').forEach((d) => d.hidden = false);
 
-                return;
-            }
+                    return;
+                }
 
-            form.submit();
-        }));
+                form.submit();
+            });
+        });
     });
 </script>
