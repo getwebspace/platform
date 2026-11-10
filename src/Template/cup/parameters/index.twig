@@ -6,6 +6,9 @@
             <div>
                 <h2 class="text-white pb-2 fw-bold">{{ 'Settings'|locale }}</h2>
             </div>
+            <div class="ml-md-auto" style="min-width: 260px">
+                <input type="search" class="form-control" data-settings-search placeholder="{{ 'Search settings'|locale }}" autocomplete="off">
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -1424,4 +1427,59 @@
             </div>
         </div>
     </div>
+
+    <style>
+        .settings-found { outline: 2px solid #f9a825; outline-offset: 4px; border-radius: 4px; }
+    </style>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.querySelector('[data-settings-search]');
+            let found = [], index = 0;
+
+            // open every tab above the field, outermost first
+            const reveal = (el) => {
+                let panes = [];
+
+                for (let p = el.closest('.tab-pane'); p; p = p.parentElement && p.parentElement.closest('.tab-pane')) {
+                    panes.unshift(p);
+                }
+                panes.forEach((p) => {
+                    let link = document.querySelector('a[data-toggle="pill"][href="#' + p.id + '"]');
+
+                    if (link && !link.classList.contains('active')) {
+                        $(link).tab('show');
+                    }
+                });
+            };
+
+            const go = () => {
+                document.querySelectorAll('.settings-found').forEach((el) => el.classList.remove('settings-found'));
+
+                if (!found.length) {
+                    return;
+                }
+
+                let el = found[index % found.length];
+
+                reveal(el);
+                el.classList.add('settings-found');
+                setTimeout(() => el.scrollIntoView({block: 'center', behavior: 'smooth'}), 150);
+            };
+
+            input.addEventListener('input', () => {
+                let q = input.value.trim().toLowerCase();
+
+                found = q.length < 2 ? [] : [...document.querySelectorAll('form [data-input]')].filter((el) => el.textContent.toLowerCase().includes(q));
+                index = 0;
+                go();
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    index++;
+                    go();
+                }
+            });
+        });
+    </script>
 {% endblock %}
