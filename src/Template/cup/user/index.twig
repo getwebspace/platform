@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <form method="post">
+                <form method="get">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4">
@@ -23,7 +23,8 @@
                                     'type': 'text',
                                     'name': 'username',
                                     'args': {
-                                        'placeholder': 'Pushkin'
+                                        'placeholder': 'Pushkin',
+                                        'value': _request.username ?? ''
                                     }
                                 } %}
 
@@ -32,7 +33,8 @@
                                     'type': 'checkbox',
                                     'name': 'username_strong',
                                     'args': {
-                                        'value': 1
+                                        'value': 1,
+                                        'checked': _request.username_strong ? true : false
                                     }
                                 } %}
                             </div>
@@ -42,7 +44,8 @@
                                     'type': 'email',
                                     'name': 'email',
                                     'args': {
-                                        'placeholder': 'pushkin@example.com'
+                                        'placeholder': 'pushkin@example.com',
+                                        'value': _request.email ?? ''
                                     }
                                 } %}
                             </div>
@@ -66,7 +69,8 @@
                                     'type': 'checkbox',
                                     'name': 'status_block',
                                     'args': {
-                                        'value': 1
+                                        'value': 1,
+                                        'checked': _request.status_block ? true : false
                                     }
                                 } %}
 
@@ -75,7 +79,8 @@
                                     'type': 'checkbox',
                                     'name': 'status_delete',
                                     'args': {
-                                        'value': 1
+                                        'value': 1,
+                                        'checked': _request.status_delete ? true : false
                                     }
                                 } %}
 
@@ -84,7 +89,8 @@
                                     'type': 'checkbox',
                                     'name': 'status_confirmation',
                                     'args': {
-                                        'value': 1
+                                        'value': 1,
+                                        'checked': _request.status_confirmation ? true : false
                                     }
                                 } %}
                             </div>
@@ -92,7 +98,7 @@
                     </div>
                     <div class="card-action">
                         <button type="submit" class="btn btn-primary">{{ 'Search'|locale }}</button>
-                        <button type="reset" class="btn btn-danger">{{ 'Reset'|locale }}</button>
+                        <a href="/cup/user" class="btn btn-danger">{{ 'Reset'|locale }}</a>
                     </div>
                 </form>
             </div>
@@ -113,10 +119,10 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <div class="col-sm-2 d-none d-sm-block">{{ 'Login'|locale }}</div>
-                            <div class="col-12 col-sm">{{ 'Full name'|locale }}</div>
+                            <div class="col-sm-2 d-none d-sm-block" data-sort="text">{{ 'Login'|locale }}</div>
+                            <div class="col-12 col-sm" data-sort="text">{{ 'Full name'|locale }}</div>
                             <div class="col-6 col-sm">{{ 'Phone & E-Mail'|locale }}</div>
-                            <div class="col-sm-1 d-none d-sm-block">{{ 'Group'|locale }}</div>
+                            <div class="col-sm-1 d-none d-sm-block" data-sort="text">{{ 'Group'|locale }}</div>
                             <div class="col-6 col-sm-4 text-right"></div>
                         {% endblock %}
 

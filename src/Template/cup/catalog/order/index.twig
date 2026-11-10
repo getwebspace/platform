@@ -66,6 +66,13 @@
                         <div class="btn-group">
                             <button type="submit" class="btn btn-primary">{{ 'Search'|locale }}</button>
                         </div>
+                        <div class="btn-group ml-2">
+                            {% set today = 'now'|date('Y-m-d') %}
+                            <a href="?{{ {'status': status, 'payment': payment, 'date': {'from': today, 'to': today}}|url_encode }}" class="btn btn-secondary">{{ 'Today'|locale }}</a>
+                            <a href="?{{ {'status': status, 'payment': payment, 'date': {'from': '-6 days'|date('Y-m-d'), 'to': today}}|url_encode }}" class="btn btn-secondary">{{ 'Week'|locale }}</a>
+                            <a href="?{{ {'status': status, 'payment': payment, 'date': {'from': 'first day of this month'|date('Y-m-d'), 'to': today}}|url_encode }}" class="btn btn-secondary">{{ 'Month'|locale }}</a>
+                        </div>
+                        <a href="/cup/catalog/order" class="btn btn-link">{{ 'Reset'|locale }}</a>
                     </div>
                 </form>
             </div>
@@ -91,10 +98,10 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <div class="col-4 col-sm-1">#</div>
-                            <div class="col-5 col-sm">{{ 'Client'|locale }}</div>
+                            <div class="col-4 col-sm-1" data-sort="num">#</div>
+                            <div class="col-5 col-sm" data-sort="text">{{ 'Client'|locale }}</div>
                             <div class="col-3 col-sm-2"></div>
-                            <div class="col-6 col-sm-2">{{ 'Added date'|locale }}</div>
+                            <div class="col-6 col-sm-2" data-sort="date">{{ 'Added date'|locale }}</div>
                             <div class="col-6 col-sm-4 text-right"></div>
                         {% endblock %}
 

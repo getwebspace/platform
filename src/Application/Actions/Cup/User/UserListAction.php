@@ -16,7 +16,8 @@ class UserListAction extends UserAction
             ],
         ];
 
-        if ($this->isPost()) {
+        // filters come in the query string, so a filtered list can be bookmarked and survives a return from the edit form
+        if ($this->getParams() !== []) {
             $username = $this->getParam('username');
             $email = $this->getParam('email');
             $group_uuid = $this->getParam('group_uuid');
