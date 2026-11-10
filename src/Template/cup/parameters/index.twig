@@ -1420,8 +1420,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-action">
-                        <button type="submit" class="btn btn-primary">{{ 'Save'|locale }}</button>
+                    <div class="card-action settings-bar">
+                        <button type="submit" class="btn btn-primary" data-settings-save>{{ 'Save'|locale }}</button>
+                        <span class="text-muted ml-3" data-settings-state hidden>
+                            <i class="fas fa-pen text-warning"></i> {{ 'Changed'|locale }}: <b data-settings-count>0</b>
+                            <a href="#" class="ml-2" data-settings-discard>{{ 'Discard'|locale }}</a>
+                        </span>
                     </div>
                 </form>
             </div>
@@ -1430,6 +1434,11 @@
 
     <style>
         .settings-found { outline: 2px solid #f9a825; outline-offset: 4px; border-radius: 4px; }
+        /* the save bar stays at the bottom of the window while a long tab is scrolled */
+        .settings-bar { position: sticky; bottom: 0; z-index: 20; background: #fff; box-shadow: 0 -4px 12px rgba(0, 0, 0, .06); }
+        .settings-changed { box-shadow: inset 3px 0 0 #f9a825; background: rgba(249, 168, 37, .07); }
+        .tab-pane .nav.flex-column.nav-pills { position: sticky; top: 70px; }
+        .tab-pane .form-group:hover { background: rgba(0, 0, 0, .015); }
     </style>
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', () => {
@@ -1465,6 +1474,78 @@
                 el.classList.add('settings-found');
                 setTimeout(() => el.scrollIntoView({block: 'center', behavior: 'smooth'}), 150);
             };
+
+            // --- remember the open tabs (top and inner), so a save does not throw you back to "Main" ---
+            const KEY = 'settings-tabs';
+            const links = () => [...document.querySelectorAll('a[data-toggle="pill"]')];
+
+            $(document).on('shown.bs.tab', 'a[data-toggle="pill"]', () => {
+                try {
+                    localStorage.setItem(KEY, JSON.stringify(links().filter((l) => l.classList.contains('active')).map((l) => l.getAttribute('href'))));
+                } catch (e) { /* storage is optional */ }
+            });
+
+            try {
+                let saved = location.hash ? [location.hash] : JSON.parse(localStorage.getItem(KEY) || '[]');
+
+                // outer tabs come first in the document, so inner ones are opened after them
+                links().filter((l) => saved.includes(l.getAttribute('href'))).forEach((l) => $(l).tab('show'));
+            } catch (e) { /* ignore */ }
+
+            // --- changed fields: marker, counter, warning, Ctrl+S ---
+            const form = document.querySelector('.settings-bar').closest('form'),
+                fields = [...form.querySelectorAll('input[name], select[name], textarea[name]')].filter((el) => el.type !== 'hidden' && el.type !== 'submit'),
+                value = (el) => (el.type === 'checkbox' || el.type === 'radio' ? el.checked : el.value),
+                initial = new Map(fields.map((el) => [el, value(el)]));
+            let submitting = false;
+
+            const refresh = () => {
+                let changed = fields.filter((el) => value(el) !== initial.get(el));
+
+                fields.forEach((el) => (el.closest('.form-group, [data-input]') || el.parentElement).classList.toggle('settings-changed', changed.includes(el)));
+                document.querySelectorAll('.tab-changes').forEach((b) => b.remove());
+
+                let per = new Map();
+
+                changed.forEach((el) => {
+                    for (let pane = el.closest('.tab-pane'); pane; pane = pane.parentElement && pane.parentElement.closest('.tab-pane')) {
+                        per.set(pane.id, (per.get(pane.id) || 0) + 1);
+                    }
+                });
+                per.forEach((n, id) => {
+                    let link = document.querySelector('a[data-toggle="pill"][href="#' + id + '"]');
+
+                    if (link) {
+                        $(link).append(' <span class="badge badge-warning tab-changes">' + n + '</span>');
+                    }
+                });
+
+                document.querySelector('[data-settings-state]').hidden = !changed.length;
+                document.querySelector('[data-settings-count]').textContent = changed.length;
+
+                return changed.length;
+            };
+
+            form.addEventListener('input', refresh);
+            form.addEventListener('change', refresh);
+            form.addEventListener('submit', () => submitting = true);
+            window.addEventListener('beforeunload', (e) => {
+                if (!submitting && refresh()) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            });
+            document.querySelector('[data-settings-discard]').addEventListener('click', (e) => {
+                e.preventDefault();
+                submitting = true;
+                location.reload();
+            });
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+                    e.preventDefault();
+                    document.querySelector('[data-settings-save]').click();
+                }
+            });
 
             input.addEventListener('input', () => {
                 let q = input.value.trim().toLowerCase();
