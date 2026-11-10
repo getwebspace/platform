@@ -742,3 +742,22 @@ $(() => {
         setTimeout(() => print.close(), 10);
     };
 });
+
+// forms with tabs: mark the tabs that hold invalid fields and open the first of them
+$(() => {
+    let first = null;
+
+    document.querySelectorAll('.tab-pane[id]').forEach((pane) => {
+        let count = pane.querySelectorAll('.has-error').length,
+            link = count ? document.querySelector('a[data-toggle="pill"][href="#' + pane.id + '"]') : null;
+
+        if (link && !link.querySelector('.tab-error')) {
+            $(link).append(' <span class="badge badge-danger tab-error">' + count + '</span>');
+            first = first || link;
+        }
+    });
+
+    if (first && !first.classList.contains('active')) {
+        $(first).tab('show');
+    }
+});
