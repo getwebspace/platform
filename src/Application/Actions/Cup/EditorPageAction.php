@@ -4,55 +4,156 @@ namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
 
+/**
+ * File editor: the page itself (file tree + tabs, see cup/editor/index.twig) and the small JSON api it works through
+ *
+ *   GET  /cup/editor                       the page
+ *   GET  /cup/editor/{path}?json=1         {path, content, size, writable} of one file
+ *   POST /cup/editor/{path}  save=ajax     writes the file, {ok, size}
+ *   POST /cup/editor/{path}  save=create   creates an empty file (and its folders), {ok}
+ *   POST /cup/editor/{path}  save=delete   removes the file, {ok}
+ *
+ * {path} starts with a section name - "theme/..." or "resource/..." - and can never leave that section's folder
+ */
 class EditorPageAction extends AbstractAction
 {
+    /** a bigger file is not opened in the browser editor */
+    private const MAX_SIZE = 2 * 1024 * 1024;
+
     protected function action(): \Slim\Psr7\Response
     {
         $theme = $this->parameter('common_theme', 'default');
-        $file = null;
-        $absolute_path = null;
-        $content = null;
+        $path = !empty($this->args['file']) ? trim($this->resolveArg('file'), '/') : '';
 
-        if (!empty($this->args['file'])) {
-            $path = $this->resolveArg('file');
-            $absolute_path = str_replace(['theme', 'resource'], [THEME_DIR . '/' . $theme, RESOURCE_DIR], $path);
-            $absolute_path = realpath($absolute_path);
-
-            if ($absolute_path !== false) {
-                $file = \App\Domain\Models\File::info($absolute_path);
-                $file['path'] = $path;
-                $content = file_get_contents($absolute_path);
-            }
-        }
-
-        if ($this->isPost()) {
-            $content = $this->getParam('template');
-
-            if (file_exists($absolute_path) && is_file($absolute_path) && is_writable($absolute_path)) {
-                // delete file
-                if ($this->getParam('save', 'save') === 'delete' && file_exists($absolute_path)) {
-                    @unlink($absolute_path);
-                    $this->forgetCompiledTemplates($absolute_path);
-
-                    return $this->response->withAddedHeader('Location', '/cup/editor')->withStatus(301);
-                }
-
-                if (!file_exists($absolute_path)) {
-                    @mkdir(dirname($absolute_path), 0o777, true);
-                }
-
-                @file_put_contents($absolute_path, $content);
-                $this->forgetCompiledTemplates($absolute_path);
-
-                return $this->response->withAddedHeader('Location', '/cup/editor/' . $path)->withStatus(301);
-            }
+        if ($this->getParam('json') || $this->isPost()) {
+            return $this->api($path, $theme);
         }
 
         return $this->respondWithTemplate('cup/editor/index.twig', [
-            'list' => $this->getFiles($theme),
-            'file' => $file,
-            'content' => $content,
+            'tree' => $this->getFiles($theme),
+            'open' => $path,
         ]);
+    }
+
+    private function api(string $path, string $theme): \Slim\Psr7\Response
+    {
+        $absolute = $this->absolutePath($path, $theme);
+
+        if ($absolute === null) {
+            return $this->fail('Wrong path', 400);
+        }
+
+        if (!$this->isPost()) {
+            if (!is_file($absolute)) {
+                return $this->fail('File not found', 404);
+            }
+            if (($size = filesize($absolute)) > self::MAX_SIZE) {
+                return $this->fail('File is too big to edit here', 413);
+            }
+
+            $content = (string) file_get_contents($absolute);
+
+            // binary content (images, archives) is not editable as text
+            if (str_contains($content, "\0")) {
+                return $this->fail('Binary file', 415);
+            }
+
+            return $this->respondWithJson([
+                'ok' => true,
+                'path' => $path,
+                'content' => $content,
+                'size' => $size,
+                'writable' => is_writable($absolute),
+            ]);
+        }
+
+        switch ($this->getParam('save', 'ajax')) {
+            case 'create':
+                if (file_exists($absolute)) {
+                    return $this->fail('File already exists', 409);
+                }
+                if (!is_dir(dirname($absolute)) && !@mkdir(dirname($absolute), 0o777, true)) {
+                    return $this->fail('Cannot create the folder', 500);
+                }
+                if (@file_put_contents($absolute, '') === false) {
+                    return $this->fail('Cannot create the file', 500);
+                }
+
+                return $this->respondWithJson(['ok' => true, 'path' => $path]);
+
+            case 'delete':
+                if (!is_file($absolute) || !is_writable($absolute) || !@unlink($absolute)) {
+                    return $this->fail('Cannot delete the file', 400);
+                }
+                $this->forgetCompiledTemplates($absolute);
+
+                return $this->respondWithJson(['ok' => true]);
+
+            default:
+                if (!is_file($absolute) || !is_writable($absolute)) {
+                    return $this->fail('The file is not writable', 403);
+                }
+                if (@file_put_contents($absolute, (string) $this->getParam('content', '')) === false) {
+                    return $this->fail('Cannot write the file', 500);
+                }
+                clearstatcache(true, $absolute);
+                $this->forgetCompiledTemplates($absolute);
+
+                return $this->respondWithJson(['ok' => true, 'size' => filesize($absolute)]);
+        }
+    }
+
+    private function fail(string $message, int $status): \Slim\Psr7\Response
+    {
+        return $this->respondWithJson(['ok' => false, 'error' => $message])->withStatus($status);
+    }
+
+    /**
+     * "theme/x/y.twig" -> absolute path, only inside the theme or resource folder; null for anything else
+     * (the target may not exist yet, so its folder is the one that is resolved and checked)
+     */
+    private function absolutePath(string $path, string $theme): ?string
+    {
+        if ($path === '' || str_contains($path, "\0")) {
+            return null;
+        }
+
+        [$section, $rest] = array_pad(explode('/', $path, 2), 2, '');
+
+        $base = match ($section) {
+            'theme' => realpath(THEME_DIR . '/' . $theme),
+            'resource' => realpath(RESOURCE_DIR),
+            default => false,
+        };
+
+        if ($base === false || $rest === '') {
+            return null;
+        }
+
+        foreach (explode('/', $rest) as $part) {
+            if ($part === '' || $part === '.' || $part === '..') {
+                return null;
+            }
+        }
+
+        $target = $base . '/' . $rest;
+        $real = realpath($target) ?: realpath(dirname($target));
+
+        // an existing target, or the folder of a new one (it may not exist yet either, then its closest parent must be inside)
+        if ($real === false) {
+            $parent = dirname($target);
+
+            while ($parent !== $base && !is_dir($parent) && str_starts_with($parent, $base)) {
+                $parent = dirname($parent);
+            }
+            $real = realpath($parent);
+        }
+
+        if ($real === false || ($real !== $base && !str_starts_with($real, $base . '/'))) {
+            return null;
+        }
+
+        return $target;
     }
 
     /**
@@ -65,42 +166,40 @@ class EditorPageAction extends AbstractAction
         }
     }
 
-    private function getFiles(string $theme): \Illuminate\Support\Collection
+    private function getFiles(string $theme): array
     {
-        /** @var \Illuminate\Support\Collection<string, mixed> $list */
-        $list = collect();
-
-        $list['resource'] = [
-            'name' => 'Resource',
-            'type' => 'section',
-            'list' => $this->getFilesRecursion(RESOURCE_DIR)->sortBy('type'),
+        $tree = [
+            ['name' => 'resource', 'title' => 'Resource', 'type' => 'dir', 'list' => $this->getFilesRecursion(RESOURCE_DIR)],
         ];
 
         if (($path = realpath(THEME_DIR . '/' . $theme)) !== false) {
-            $list['theme'] = [
-                'name' => 'Theme',
-                'type' => 'section',
-                'list' => $this->getFilesRecursion($path)->sortBy('type'),
-            ];
+            array_unshift($tree, ['name' => 'theme', 'title' => 'Theme', 'type' => 'dir', 'list' => $this->getFilesRecursion($path)]);
         }
 
-        return $list;
+        return $tree;
     }
 
-    private function getFilesRecursion(string $path): \Illuminate\Support\Collection
+    private function getFilesRecursion(string $path): array
     {
-        $list = collect();
+        $dirs = [];
+        $files = [];
 
-        foreach ((new \DirectoryIterator($path)) as $file) {
-            if (!$file->isDot() && !str_starts_with($file->getFilename(), '.')) {
-                if ($file->isDir()) {
-                    $list = $list->merge([['name' => $file->getFilename(), 'type' => 'dir', 'list' => $this->getFilesRecursion($path . '/' . $file->getFilename())]]);
-                } else {
-                    $list = $list->merge([['name' => $file->getFilename(), 'type' => 'file']]);
-                }
+        foreach (new \DirectoryIterator($path) as $file) {
+            if ($file->isDot() || str_starts_with($file->getFilename(), '.')) {
+                continue;
+            }
+
+            if ($file->isDir()) {
+                $dirs[] = ['name' => $file->getFilename(), 'type' => 'dir', 'list' => $this->getFilesRecursion($path . '/' . $file->getFilename())];
+            } else {
+                $files[] = ['name' => $file->getFilename(), 'type' => 'file', 'size' => $file->getSize()];
             }
         }
 
-        return $list;
+        $by_name = fn ($a, $b) => strnatcasecmp($a['name'], $b['name']);
+        usort($dirs, $by_name);
+        usort($files, $by_name);
+
+        return array_merge($dirs, $files);
     }
 }

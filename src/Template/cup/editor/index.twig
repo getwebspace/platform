@@ -5,60 +5,86 @@
 {% endblock %}
 
 {% block panelinner %}
-    <div class="container container-full">
-        <div class="page-inner page-inner-fill">
-            <div class="page-with-aside mail-wrapper bg-white">
-                {% include 'cup/editor/index-aside.twig' %}
-
-                <form id="CodeMirror" class="page-content w-100" method="post">
-                    {% include 'cup/form.twig' with {
-                        'type': 'text',
-                        'name': 'path',
-                        'postfix': file ? convert_size(file.size) : '',
-                        'postfix_btn': [
-                                '<button type="submit" name="save" value="exit" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="left" title="' ~ ('Save')|locale ~ '"><i class="fas fa-save"></i></button>',
-                                '<button type="submit" name="save" value="delete" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="left" title="' ~ ('Delete')|locale ~ '"><i class="fas fa-trash-alt"></i></button>'
-                            ]|join(''),
-                        'args': {
-                            'value': file.path,
-                            'required': true,
-                            'placeholder': 'template.twig',
-                            'autocomplete':'off'
-                        }
-                    } %}
-
-                    {% include 'cup/editor.twig' with {
-                        'name': 'template',
-                        'args': {
-                            'id': 'code',
-                            'value': content,
-                            'text_mode': true,
-                        }
-                    } %}
-                </form>
+    <div class="container container-full p-0">
+        <div class="vsc" id="vsc">
+            <div class="vsc-activity">
+                <button type="button" class="active" title="{{ 'List of files'|locale }}" data-act="sidebar"><i class="far fa-copy"></i></button>
+                <button type="button" title="{{ 'Quick open'|locale }} (Ctrl+P)" data-act="quick"><i class="fas fa-search"></i></button>
+                <button type="button" title="{{ 'New file'|locale }}" data-act="new"><i class="far fa-plus-square"></i></button>
             </div>
+
+            <div class="vsc-side" id="vsc-side">
+                <div class="vsc-side-head">
+                    <span>{{ 'Explorer'|locale }}</span>
+                    <span>
+                        <button type="button" title="{{ 'New file'|locale }}" data-act="new"><i class="fas fa-file-medical"></i></button>
+                        <button type="button" title="{{ 'Collapse all'|locale }}" data-act="collapse"><i class="fas fa-compress-alt"></i></button>
+                    </span>
+                </div>
+                <div class="vsc-filter"><input type="search" placeholder="{{ 'Search'|locale }}" autocomplete="off" data-filter></div>
+                <div class="vsc-tree" data-tree></div>
+            </div>
+            <div class="vsc-resize" data-resize></div>
+
+            <div class="vsc-main">
+                <div class="vsc-tabs" data-tabs></div>
+                <div class="vsc-crumbs" data-crumbs></div>
+                <div class="vsc-editor">
+                    <div class="vsc-welcome" data-welcome>
+                        <div>
+                            <i class="fas fa-code fa-3x mb-3"></i>
+                            <h4>{{ 'File editor'|locale }}</h4>
+                            <table>
+                                <tr><td>{{ 'Quick open'|locale }}</td><td><kbd>Ctrl</kbd> <kbd>P</kbd></td></tr>
+                                <tr><td>{{ 'Save'|locale }}</td><td><kbd>Ctrl</kbd> <kbd>S</kbd></td></tr>
+                                <tr><td>{{ 'Search'|locale }}</td><td><kbd>Ctrl</kbd> <kbd>F</kbd></td></tr>
+                                <tr><td>{{ 'Toggle comment'|locale }}</td><td><kbd>Ctrl</kbd> <kbd>/</kbd></td></tr>
+                                <tr><td>{{ 'Close tab'|locale }}</td><td><kbd>Ctrl</kbd> <kbd>W</kbd></td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="vsc-cm" data-cm hidden></div>
+                </div>
+            </div>
+
+            <div class="vsc-status">
+                <span data-st="message"></span>
+                <span class="ml-auto"></span>
+                <span data-st="pos"></span>
+                <span>{{ 'Spaces'|locale }}: 4</span>
+                <span>UTF-8</span>
+                <span data-st="size"></span>
+                <span data-st="lang"></span>
+            </div>
+
+            <div class="vsc-palette" data-palette hidden>
+                <div class="vsc-palette-box">
+                    <input type="text" autocomplete="off" spellcheck="false" data-palette-input>
+                    <div class="vsc-palette-list" data-palette-list></div>
+                </div>
+            </div>
+            <div class="vsc-menu" data-menu hidden></div>
         </div>
     </div>
 
-    <style>
-        #CodeMirror {
-            overflow: hidden;
-        }
-        #CodeMirror .CodeMirror {
-            width: 100% !important;
-            height: calc(100vh - 62px - 42px) !important;
-        }
-        #CodeMirror style + .form-group {
-            padding: 0;
-        }
-        #CodeMirror [data-input] {
-            padding: 0;
-        }
-
-        @media screen and (max-width: 856px) {
-            #CodeMirror .CodeMirror {
-                height: 68vh !important;
+    <script type="text/javascript">
+        window.EDITOR = {
+            tree: {{ tree|json_encode|raw }},
+            open: {{ open|json_encode|raw }},
+            t: {
+                newFile: {{ 'Path of the new file'|locale|json_encode|raw }},
+                quick: {{ 'Search a file by name'|locale|json_encode|raw }},
+                del: {{ 'Delete'|locale|json_encode|raw }},
+                confirmDelete: {{ 'Are you sure you want to delete the file?'|locale|json_encode|raw }},
+                confirmClose: {{ 'Discard the unsaved changes?'|locale|json_encode|raw }},
+                saved: {{ 'Saved'|locale|json_encode|raw }},
+                readonly: {{ 'Read only'|locale|json_encode|raw }},
+                newHere: {{ 'New file'|locale|json_encode|raw }},
+                copyPath: {{ 'Copy path'|locale|json_encode|raw }},
+                none: {{ 'No data'|locale|json_encode|raw }}
             }
-        }
-    </style>
+        };
+    </script>
+    <script type="text/javascript" src="/assets/js/cup/editor.js?v={{ SHA }}"></script>
+    <link rel="stylesheet" href="/assets/css/cup-editor.css?v={{ SHA }}">
 {% endblock %}
