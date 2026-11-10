@@ -15,7 +15,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    {% embed 'mixin/datatable.twig' with {'bulk': true} %}
+                    {% embed 'mixin/datatable.twig' with {'bulk': true, 'filters': [{'name': 'status', 'label': 'Status'|locale}]} %}
                         {% block thead %}
                             <div class="col-4 col-md-2" data-sort="text">{{ 'Status'|locale }}</div>
                             <div class="col-8 col-md" data-sort="text">{{ 'Author'|locale }}</div>
@@ -25,7 +25,7 @@
 
                         {% block tbody %}
                             {% for item in list %}
-                                <div class="row">
+                                <div class="row" data-f-status="{{ item.status|locale }}">
                                     <div class="col-4 col-md-2">
                                         <span class="badge badge-default">{{ item.status|locale }}</span>
                                     </div>

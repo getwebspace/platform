@@ -31,7 +31,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    {% embed 'mixin/datatable.twig' %}
+                    {% embed 'mixin/datatable.twig' with {'filters': [{'name': 'type', 'label': 'Type'|locale}]} %}
                         {% block thead %}
                             <div class="col-6 col-sm" data-sort="text">{{ 'File name'|locale }}</div>
                             <div class="col-3 col-sm-2">{{ 'Size'|locale }}</div>
@@ -41,7 +41,7 @@
 
                         {% block tbody %}
                             {% for item in list %}
-                                <div class="row">
+                                <div class="row" data-f-type="{{ item.filename()|split('.')|last|upper }}">
                                     <div class="col-6 col-sm">
                                         <a href="{{ item.public_path() }}" target="_blank">
                                             {{ item.filename()|u.truncate(50, '...') }}

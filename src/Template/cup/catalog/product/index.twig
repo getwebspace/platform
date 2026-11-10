@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    {% embed 'mixin/datatable.twig' %}
+                    {% embed 'mixin/datatable.twig' with {'filters': [{'name': 'stock', 'label': 'Stock'|locale}, {'name': 'price', 'label': 'Price'|locale}]} %}
                         {% block thead %}
                             <div class="col-12 col-sm" data-sort="text">{{ 'Title'|locale }}</div>
                             <div class="col-4 col-sm-2" data-sort="text">{{ 'Vendor code'|locale }}</div>
@@ -51,7 +51,7 @@
 
                         {% block tbody %}
                             {% for item in products %}
-                                <div class="row">
+                                <div class="row" data-f-stock="{{ item.quantity > 0 ? 'In stock'|locale : 'Out of stock'|locale }}" data-f-price="{{ item.price() > 0 ? 'With price'|locale : 'No price'|locale }}">
                                     <div class="col-12 col-sm">
                                         <span class="d-none d-sm-inline">{{ item.title|u.truncate(35, '...') }}</span>
                                         <span class="d-inline d-sm-none">{{ item.title }}</span>

@@ -23,7 +23,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    {% embed 'mixin/datatable.twig' %}
+                    {% embed 'mixin/datatable.twig' with {'filters': [{'name': 'category', 'label': 'Category'|locale}]} %}
                         {% block thead %}
                             <div class="col-12 col-sm" data-sort="text">{{ 'Title'|locale }}</div>
                             <div class="col-4 col-sm-2" data-sort="text">{{ 'Author'|locale }}</div>
@@ -33,7 +33,7 @@
 
                         {% block tbody %}
                             {% for item in publications %}
-                                <div class="row">
+                                <div class="row" data-f-category="{{ item.category.title }}">
                                     <div class="col-12 col-sm">
                                         {{ item.title|u.truncate(35, '...') }}
 
