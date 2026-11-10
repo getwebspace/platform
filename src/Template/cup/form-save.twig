@@ -1,8 +1,42 @@
-<div class="btn-group">
-    <button type="submit" name="save" value="exit" class="btn btn-primary" style="height: 40px;">
+<div class="btn-group" data-form-save>
+    <button type="submit" name="save" value="exit" class="btn btn-primary" style="height: 40px;" title="{{ 'Save and close'|locale }} (Ctrl+Shift+S)">
         {{ 'Save'|locale }}
     </button>
-    <button type="submit" name="save" class="btn btn-info btn-icon">
+    <button type="submit" name="save" class="btn btn-info btn-icon" data-form-save-stay title="{{ 'Save and stay'|locale }} (Ctrl+S)">
         <i class="fas fa-save"></i>
     </button>
 </div>
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+        const box = document.querySelector('[data-form-save]'),
+            form = box ? box.closest('form') : null;
+
+        if (!form) {
+            return;
+        }
+
+        const state = () => new URLSearchParams(new FormData(form)).toString();
+        let initial = null, submitting = false;
+
+        // widgets (editors, tag inputs) fill their fields after the load
+        window.addEventListener('load', () => setTimeout(() => initial = state(), 700));
+        form.addEventListener('submit', () => submitting = true);
+
+        // warn about unsaved changes
+        window.addEventListener('beforeunload', (e) => {
+            if (!submitting && initial !== null && state() !== initial) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        // Ctrl/Cmd+S saves and stays, with Shift saves and closes
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+                e.preventDefault();
+                (e.shiftKey ? box.querySelector('button[value="exit"]') : box.querySelector('[data-form-save-stay]')).click();
+            }
+        });
+    });
+</script>
