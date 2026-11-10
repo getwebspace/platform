@@ -33,6 +33,14 @@
 {% endblock %}
 
 {% block content %}
+    <style>
+        /* KPI tiles: icon and text always side by side, same icon size, so tiles stay equal */
+        .card-stats .card-body > .row { flex-wrap: nowrap; }
+        .card-stats .col-icon { flex: 0 0 auto; width: auto; padding-right: 0; }
+        .card-stats .icon-big { width: 48px; height: 48px; line-height: 48px; font-size: 1.4rem; }
+        .card-stats .col-stats { flex: 1 1 0; min-width: 0; margin-left: 0 !important; }
+    </style>
+
     {% set show_chart = enabled.catalog and revenue and revenue.orders %}
     {% set attention_total = attention.users
         + attention.tasks_error
@@ -46,8 +54,8 @@
     {# ----------------------------------------------------------------- #}
     <div class="row">
         {% if enabled.catalog and revenue %}
-            <div class="col-6 col-lg">
-                <div class="card card-stats card-round">
+            <div class="col-6 col-lg d-flex">
+                <div class="card card-stats card-round w-100">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-icon">
@@ -66,8 +74,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-lg">
-                <div class="card card-stats card-round">
+            <div class="col-6 col-lg d-flex">
+                <div class="card card-stats card-round w-100">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-icon">
@@ -88,8 +96,8 @@
             </div>
         {% endif %}
 
-        <div class="col-6 col-lg">
-            <div class="card card-stats card-round">
+        <div class="col-6 col-lg d-flex">
+            <div class="card card-stats card-round w-100">
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-icon">
@@ -110,8 +118,8 @@
         </div>
 
         {% if enabled.form %}
-            <div class="col-6 col-lg">
-                <div class="card card-stats card-round">
+            <div class="col-6 col-lg d-flex">
+                <div class="card card-stats card-round w-100">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-icon">
@@ -133,8 +141,8 @@
         {% endif %}
 
         {% if enabled.guestbook %}
-            <div class="col-6 col-lg">
-                <div class="card card-stats card-round">
+            <div class="col-6 col-lg d-flex">
+                <div class="card card-stats card-round w-100">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-icon">
@@ -155,8 +163,8 @@
         {% endif %}
 
         {% if enabled.file and kpi.files_total %}
-            <div class="col-6 col-lg">
-                <div class="card card-stats card-round">
+            <div class="col-6 col-lg d-flex">
+                <div class="card card-stats card-round w-100">
                     <div class="card-body">
                         <div class="row align-items-center">
                             <div class="col-icon">
@@ -182,8 +190,8 @@
 
     <div class="row">
     {% if show_chart %}
-        <div class="col-lg-8">
-                <div class="card h-100">
+        <div class="col-lg-8 d-flex">
+                <div class="card w-100">
                     <script>window.orders_revenue = {{ json_encode(revenue.daily) }};</script>
                     <div class="card-header">
                         <div class="d-flex align-items-center">
@@ -197,8 +205,8 @@
                 </div>
         </div>
     {% endif %}
-        <div class="{{ show_chart ? 'col-lg-4' : 'col-12' }}">
-            <div class="card h-100">
+        <div class="{{ show_chart ? 'col-lg-4' : 'col-12' }} d-flex">
+            <div class="card w-100">
                 <div class="card-header">
                     <div class="card-title">
                         <i class="fas fa-bell mr-2"></i>{{ 'Needs attention'|locale }}
