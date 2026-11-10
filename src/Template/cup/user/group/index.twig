@@ -49,13 +49,11 @@
                                     <div class="col-6 col-sm-3 text-right">
                                         <form action="/cup/user/group/{{ group.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the group?'|locale }}');">
                                             <div class="btn-group">
-                                                <a href="/cup/user/group/{{ group.uuid }}/edit" class="btn btn-sm btn-info">
+                                                <a href="/cup/user/group/{{ group.uuid }}/edit" class="btn btn-sm btn-info" title="{{ 'Change'|locale }}">
                                                     <i class="fas fa-fw fa-edit"></i>
-                                                    <span class="d-none d-md-inline-block">{{ 'Change'|locale }}</span>
                                                 </a>
-                                                <button type="{{ users_in_group ? 'button' : 'submit' }}" class="btn btn-sm btn-danger" {{ users_in_group ? ('data-toggle="tooltip" data-placement="left" title="' ~ ('You can\'t delete a group while it has users'|locale) ~ '"')|raw : '' }}>
+                                                <button type="{{ users_in_group ? 'button' : 'submit' }}" class="btn btn-sm btn-danger" {{ users_in_group ? ('data-toggle="tooltip" data-placement="left" title="' ~ ('You can\'t delete a group while it has users'|locale) ~ '"')|raw : '' }} title="{{ 'Delete'|locale }}">
                                                     <i class="fas fa-fw fa-trash-alt"></i>
-                                                    <span class="d-none d-md-inline-block">{{ 'Delete'|locale }}</span>
                                                 </button>
                                             </div>
                                         </form>

@@ -49,13 +49,11 @@
                                     <div class="col-4 col-sm-3 text-right">
                                         <form action="/cup/catalog/attribute/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the attribute?'|locale }}');">
                                             <div class="btn-group">
-                                                <a href="/cup/catalog/attribute/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
+                                                <a href="/cup/catalog/attribute/{{ item.uuid }}/edit" class="btn btn-sm btn-info" title="{{ 'Change'|locale }}">
                                                     <i class="fas fa-fw fa-edit"></i>
-                                                    <span class="d-none d-md-inline-block">{{ 'Change'|locale }}</span>
                                                 </a>
-                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="{{ 'Delete'|locale }}">
                                                     <i class="fas fa-fw fa-trash-alt"></i>
-                                                    <span class="d-none d-md-inline-block">{{ 'Delete'|locale }}</span>
                                                 </button>
                                             </div>
                                         </form>

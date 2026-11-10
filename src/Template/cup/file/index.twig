@@ -53,9 +53,8 @@
                                     <div class="col-3 col-sm-2 text-right">
                                         <form action="/cup/file/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the file?'|locale }}');">
                                             <div class="btn-group">
-                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                <button type="submit" class="btn btn-sm btn-danger" title="{{ 'Delete'|locale }}">
                                                     <i class="fas fa-fw fa-trash-alt"></i>
-                                                    <span class="d-none d-md-inline-block">{{ 'Delete'|locale }}</span>
                                                 </button>
                                             </div>
                                         </form>

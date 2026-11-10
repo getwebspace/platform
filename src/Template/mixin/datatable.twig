@@ -46,6 +46,10 @@
     </div>
 </div>
 
+<style>
+    [data-table-content] .row:has(a.btn-info[href$="/edit"]) { cursor: pointer; }
+</style>
+
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', () => {
         let $rows = $('[data-table-content="{{ randomId }}"] div.row:not(.clusterize-no-data)').detach();
@@ -119,6 +123,19 @@
 
             $heads.css('cursor', 'pointer').attr('title', '{{ 'Sort'|locale }}').each((i, el) => {
                 $(el).append(' <i class="fas fa-sort text-black-50" data-sort-icon></i>');
+            });
+
+            // a click on the row itself opens the editor, links, buttons and selected text keep their own behaviour
+            $content.on('click', '.row', (e) => {
+                if ($(e.target).closest('a, button, input, label, form, select, textarea').length || window.getSelection().toString()) {
+                    return;
+                }
+
+                let edit = e.currentTarget.querySelector('a.btn-info[href$="/edit"]');
+
+                if (edit) {
+                    location.href = edit.getAttribute('href');
+                }
             });
 
             let visible = $rows.toArray();
