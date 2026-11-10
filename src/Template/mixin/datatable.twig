@@ -1,14 +1,18 @@
 {% set randomId = random() %}
 
-<div class="row">
-    <div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3" style="padding-top: 11px">
-        {% block tbutton '' %}
-        <small class="text-muted" data-table-count="{{ randomId }}"></small>
-    </div>
-    {% if filters|default([]) %}
-        <div class="col-12 col-md-auto d-flex flex-wrap" data-table-filters="{{ randomId }}" style="padding-top: 6px"></div>
+<div class="d-flex flex-wrap align-items-center mb-2" style="gap: 8px; min-height: 42px">
+    {% block tbutton '' %}
+    <div class="d-flex flex-wrap align-items-center" data-table-filters="{{ randomId }}"></div>
+    {% if bulk|default(false) %}
+        <div class="align-items-center" data-table-bulk="{{ randomId }}" style="display: none">
+            <span class="mr-2 text-nowrap">{{ 'Selected'|locale }}: <b data-bulk-count>0</b></span>
+            <button type="button" class="btn btn-sm btn-danger" data-bulk-delete>
+                <i class="fas fa-fw fa-trash-alt"></i> {{ 'Delete selected'|locale }}
+            </button>
+        </div>
     {% endif %}
-    <div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3 ml-sm-auto">
+    <small class="text-muted" data-table-count="{{ randomId }}"></small>
+    <div class="ml-auto" style="flex: 1 1 220px; max-width: 320px">
         {% include 'cup/form.twig' with {
             'type': 'search',
             'args': {
@@ -18,17 +22,6 @@
         } %}
     </div>
 </div>
-
-{% if bulk|default(false) %}
-    <div class="row" data-table-bulk="{{ randomId }}" style="display: none">
-        <div class="col-12 py-2">
-            <span class="mr-2">{{ 'Selected'|locale }}: <b data-bulk-count>0</b></span>
-            <button type="button" class="btn btn-sm btn-danger" data-bulk-delete>
-                <i class="fas fa-fw fa-trash-alt"></i> {{ 'Delete selected'|locale }}
-            </button>
-        </div>
-    </div>
-{% endif %}
 
 <div class="row clusterize-header text-nowrap" data-table-head="{{ randomId }}">
     {% block thead %}
@@ -63,9 +56,10 @@
             $rows.each((i, row) => {
                 let form = row.querySelector('form[action$="/delete"]');
 
-                if (form && row.lastElementChild) {
-                    row.lastElementChild.insertAdjacentHTML('afterbegin', '<input type="checkbox" data-bulk-row="' + form.getAttribute('action') + '" class="mr-2 align-middle" style="width: 16px; height: 16px">');
-                }
+                // a narrow first column for every row (also those without a delete form) keeps the table aligned
+                row.insertAdjacentHTML('afterbegin', '<div class="col-auto" style="flex: 0 0 36px; max-width: 36px; padding-right: 0">'
+                    + (form ? '<input type="checkbox" data-bulk-row="' + form.getAttribute('action') + '" style="width: 16px; height: 16px; vertical-align: middle">' : '')
+                    + '</div>');
             });
             {% endif %}
 
@@ -166,16 +160,16 @@
             let visible = $rows.toArray();
             {% if bulk|default(false) %}
             const $bar = $('[data-table-bulk="{{ randomId }}"]'),
-                $header_last = $('[data-table-head="{{ randomId }}"] > :last-child');
+                $header_first = $('[data-table-head="{{ randomId }}"]');
 
-            $header_last.prepend('<input type="checkbox" data-bulk-all class="mr-2 align-middle" style="width: 16px; height: 16px" title="{{ 'Select all'|locale }}">');
+            $header_first.prepend('<div class="col-auto" style="flex: 0 0 36px; max-width: 36px; padding-right: 0"><input type="checkbox" data-bulk-all style="width: 16px; height: 16px; vertical-align: middle" title="{{ 'Select all'|locale }}"></div>');
 
             const checked = () => $rows.toArray().filter((row) => row.querySelector('[data-bulk-row][checked]'));
             const refreshBar = () => {
                 let n = checked().length;
 
-                $bar.toggle(n > 0).find('[data-bulk-count]').text(n);
-                $header_last.find('[data-bulk-all]').prop('checked', visible.length > 0 && visible.every((row) => row.querySelector('[data-bulk-row][checked]')));
+                $bar.css('display', n > 0 ? 'flex' : 'none').find('[data-bulk-count]').text(n);
+                $header_first.find('[data-bulk-all]').prop('checked', visible.length > 0 && visible.every((row) => row.querySelector('[data-bulk-row][checked]')));
             };
             const mark = (row, on) => {
                 let box = row.querySelector('[data-bulk-row]');
@@ -196,7 +190,7 @@
                 });
                 refreshBar();
             });
-            $header_last.on('change', '[data-bulk-all]', (e) => {
+            $header_first.on('change', '[data-bulk-all]', (e) => {
                 visible.forEach((row) => mark(row, e.currentTarget.checked));
                 clusterize.update(visible.map((row) => row.outerHTML));
                 refreshBar();

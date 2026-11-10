@@ -45,6 +45,10 @@
         .kpi-grid .numbers { min-height: 6.6em; display: flex; flex-direction: column; justify-content: center; }
         .kpi-grid .numbers .card-category { line-height: 1.3; margin: 0; }
         .kpi-grid .numbers .card-title { margin: 2px 0; }
+        /* activity tables: tighter cells, so they fit a half-width card */
+        .table-responsive .table > tbody > tr > td { padding-left: 8px !important; padding-right: 8px !important; }
+        .table-responsive .table > tbody > tr > td:first-child { padding-left: 20px !important; }
+        .table-responsive .table > tbody > tr > td:last-child { padding-right: 20px !important; }
     </style>
 
     {% set show_chart = enabled.catalog and revenue and revenue.orders %}
@@ -283,13 +287,13 @@
                     </div>
                     <div class="card-body p-0">
                         {% if activity.orders|length %}
-                            <table class="table table-striped mb-0">
+                            <div class="table-responsive"><table class="table table-striped mb-0">
                                 {% for item in activity.orders %}
                                     <tr>
                                         <td class="text-nowrap">
                                             <a href="/cup/catalog/order/{{ item.uuid }}/edit"><b>{{ item.serial ?: '—' }}</b></a>
                                         </td>
-                                        <td>{{ (item.delivery.client ?? item.email ?: '—')|u.truncate(28, '…') }}</td>
+                                        <td class="text-truncate" style="max-width: 120px" title="{{ item.delivery.client ?? item.email }}">{{ item.delivery.client ?? item.email ?: '—' }}</td>
                                         <td class="text-nowrap">
                                             {% if item.status_uuid %}<span class="badge badge-secondary">{{ item.status.title }}</span>{% endif %}
                                         </td>
@@ -297,7 +301,7 @@
                                         <td class="text-right text-nowrap text-muted">{{ item.date|df('d.m.Y') }}</td>
                                     </tr>
                                 {% endfor %}
-                            </table>
+                            </table></div>
                         {% else %}
                             <div class="p-4 text-center text-muted">{{ 'No data'|locale }}</div>
                         {% endif %}
@@ -317,7 +321,7 @@
                     </div>
                     <div class="card-body p-0">
                         {% if activity.forms|length %}
-                            <table class="table table-striped mb-0">
+                            <div class="table-responsive"><table class="table table-striped mb-0">
                                 {% for item in activity.forms %}
                                     <tr>
                                         <td>
@@ -330,7 +334,7 @@
                                         <td class="text-right text-nowrap text-muted">{{ item.date|df('d.m.Y H:i') }}</td>
                                     </tr>
                                 {% endfor %}
-                            </table>
+                            </table></div>
                         {% else %}
                             <div class="p-4 text-center text-muted">{{ 'No data'|locale }}</div>
                         {% endif %}
@@ -350,7 +354,7 @@
                     </div>
                     <div class="card-body p-0">
                         {% if activity.guestbook|length %}
-                            <table class="table table-striped mb-0">
+                            <div class="table-responsive"><table class="table table-striped mb-0">
                                 {% for item in activity.guestbook %}
                                     <tr>
                                         <td class="text-nowrap">
@@ -363,7 +367,7 @@
                                         <td class="text-right text-nowrap text-muted">{{ item.date|df('d.m.Y') }}</td>
                                     </tr>
                                 {% endfor %}
-                            </table>
+                            </table></div>
                         {% else %}
                             <div class="p-4 text-center text-muted">{{ 'No data'|locale }}</div>
                         {% endif %}
@@ -383,14 +387,14 @@
                     </div>
                     <div class="card-body p-0">
                         {% if activity.publications|length %}
-                            <table class="table table-striped mb-0">
+                            <div class="table-responsive"><table class="table table-striped mb-0">
                                 {% for item in activity.publications %}
                                     <tr>
                                         <td><a href="/cup/publication/{{ item.uuid }}/edit">{{ item.title|u.truncate(48, '…') }}</a></td>
                                         <td class="text-right text-nowrap text-muted">{{ item.date|df('d.m.Y') }}</td>
                                     </tr>
                                 {% endfor %}
-                            </table>
+                            </table></div>
                         {% else %}
                             <div class="p-4 text-center text-muted">{{ 'No data'|locale }}</div>
                         {% endif %}
@@ -409,7 +413,7 @@
                 </div>
                 <div class="card-body p-0">
                     {% if activity.users|length %}
-                        <table class="table table-striped mb-0">
+                        <div class="table-responsive"><table class="table table-striped mb-0">
                             {% for item in activity.users %}
                                 <tr>
                                     <td>
@@ -420,7 +424,7 @@
                                     <td class="text-right text-nowrap text-muted">{{ item.register|df('d.m.Y') }}</td>
                                 </tr>
                             {% endfor %}
-                        </table>
+                        </table></div>
                     {% else %}
                         <div class="p-4 text-center text-muted">{{ 'No data'|locale }}</div>
                     {% endif %}
