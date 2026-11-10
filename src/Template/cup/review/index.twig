@@ -17,9 +17,9 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <div class="col-4 col-md-2">{{ 'Status'|locale }}</div>
-                            <div class="col-8 col-md">{{ 'Author'|locale }}</div>
-                            <div class="col-6 col-md-2">{{ 'Added date'|locale }}</div>
+                            <div class="col-4 col-md-2" data-sort="text">{{ 'Status'|locale }}</div>
+                            <div class="col-8 col-md" data-sort="text">{{ 'Author'|locale }}</div>
+                            <div class="col-6 col-md-2" data-sort="date">{{ 'Added date'|locale }}</div>
                             <div class="col-6 col-md-3 text-right"></div>
                         {% endblock %}
 

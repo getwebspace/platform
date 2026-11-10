@@ -33,9 +33,9 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <div class="col-6 col-sm">{{ 'File name'|locale }}</div>
+                            <div class="col-6 col-sm" data-sort="text">{{ 'File name'|locale }}</div>
                             <div class="col-3 col-sm-2">{{ 'Size'|locale }}</div>
-                            <div class="col-sm-2 d-none d-sm-block">{{ 'Creation date'|locale }}</div>
+                            <div class="col-sm-2 d-none d-sm-block" data-sort="date">{{ 'Creation date'|locale }}</div>
                             <div class="col-3 col-sm-2 text-right"></div>
                         {% endblock %}
 

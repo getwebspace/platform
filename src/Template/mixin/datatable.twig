@@ -3,6 +3,7 @@
 <div class="row">
     <div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3" style="padding-top: 11px">
         {% block tbutton '' %}
+        <small class="text-muted" data-table-count="{{ randomId }}"></small>
     </div>
     <div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3 ml-sm-auto">
         {% include 'cup/form.twig' with {
@@ -15,7 +16,7 @@
     </div>
 </div>
 
-<div class="row clusterize-header text-nowrap">
+<div class="row clusterize-header text-nowrap" data-table-head="{{ randomId }}">
     {% block thead %}
         <div class="col clusterize-no-data text-center">
             {{ 'No headers'|locale }}
@@ -66,26 +67,84 @@
                 return digits.length === 11 && /^[78]/.test(digits) ? digits.slice(1) : digits;
             };
 
-            $('[data-table-search="{{ randomId }}"]').on('keyup', (e) => {
-                let query = e.currentTarget.value.toLowerCase(),
-                    // only a query that looks like a phone is matched by digits
-                    digits = /^[\d\s()+\-]+$/.test(query) ? query.replace(/\D/g, '') : '',
-                    // the typed part of a number, with and without a leading 7/8
+            // sorting: a header with data-sort="text|num|date" sorts by the same-index cell of every row
+            const parseDate = (value) => {
+                let m = value.trim().match(/^(\d{1,2})\.(\d{1,2})\.(\d{2,4})(?:\s+(\d{1,2}):(\d{2}))?/);
+
+                if (!m) {
+                    return 0;
+                }
+
+                return Date.UTC(m[3].length === 2 ? 2000 + +m[3] : +m[3], m[2] - 1, m[1], m[4] || 0, m[5] || 0);
+            };
+            const sortKey = (row, col, type) => {
+                let cell = row.children[col],
+                    text = cell ? cell.innerText.trim() : '';
+
+                if (type === 'num') {
+                    return parseFloat(text.replace(/\s/g, '').replace(',', '.').replace(/[^\d.\-]/g, '')) || 0;
+                }
+                if (type === 'date') {
+                    return parseDate(text);
+                }
+
+                return text.toLowerCase();
+            };
+            const collator = new Intl.Collator(undefined, {numeric: true});
+            const $heads = $('[data-table-head="{{ randomId }}"] [data-sort]');
+            const $count = $('[data-table-count="{{ randomId }}"]');
+            let query = '', sort = null;
+
+            $heads.css('cursor', 'pointer').attr('title', '{{ 'Sort'|locale }}').each((i, el) => {
+                $(el).append(' <i class="fas fa-sort text-black-50" data-sort-icon></i>');
+            });
+
+            const render = () => {
+                let digits = /^[\d\s()+\-]+$/.test(query) ? query.replace(/\D/g, '') : '',
                     query_phone = digits.length >= 3 ? [...new Set([phone(digits), digits.replace(/^[78]/, '')])] : [],
-                    result = [];
+                    list = [];
 
                 for (let i = 0; i < $rows.length; i++) {
                     let text = $rows[i].innerText.toLowerCase();
 
                     if (
-                        text.includes(query)
+                        !query
+                        || text.includes(query)
                         || (query_phone.length && (text.match(/\+?\d[\d\s()\-]{5,}\d/g) || []).some((item) => query_phone.some((q) => q && phone(item).includes(q))))
                     ) {
-                        result.push($rows[i].outerHTML);
+                        list.push($rows[i]);
                     }
                 }
 
-                clusterize.update(result);
+                if (sort) {
+                    let keys = new Map(list.map((row) => [row, sortKey(row, sort.col, sort.type)]));
+
+                    list.sort((a, b) => {
+                        let x = keys.get(a), y = keys.get(b),
+                            r = typeof x === 'number' ? x - y : collator.compare(x, y);
+
+                        return sort.dir * r;
+                    });
+                }
+
+                clusterize.update(list.map((row) => row.outerHTML));
+                $count.text(query ? '{{ 'Found'|locale }}: ' + list.length + ' / ' + $rows.length : '');
+            };
+
+            $heads.on('click', (e) => {
+                let $el = $(e.currentTarget),
+                    col = $el.index(),
+                    dir = sort && sort.col === col ? -sort.dir : 1;
+
+                sort = {col: col, dir: dir, type: $el.data('sort')};
+                $heads.find('[data-sort-icon]').attr('class', 'fas fa-sort text-black-50');
+                $el.find('[data-sort-icon]').attr('class', 'fas text-primary ' + (dir > 0 ? 'fa-sort-up' : 'fa-sort-down'));
+                render();
+            });
+
+            $('[data-table-search="{{ randomId }}"]').on('keyup', (e) => {
+                query = e.currentTarget.value.toLowerCase();
+                render();
             });
         })();
     });
