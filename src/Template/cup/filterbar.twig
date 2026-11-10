@@ -27,6 +27,11 @@
     {% endif %}
 </form>
 
+<style>
+    /* the theme makes small form controls 42px tall, buttons and links in the bar follow */
+    [data-filterbar] .btn { height: 42px; display: inline-flex; align-items: center; padding-top: 0; padding-bottom: 0; }
+</style>
+
 <script type="text/javascript">
     document.querySelectorAll('[data-filterbar]').forEach((form) => {
         form.querySelectorAll('[data-autosubmit]').forEach((el) => el.addEventListener('change', () => {

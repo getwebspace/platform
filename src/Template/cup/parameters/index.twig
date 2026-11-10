@@ -1436,7 +1436,8 @@
         .settings-found { outline: 2px solid #f9a825; outline-offset: 4px; border-radius: 4px; }
         /* the save bar stays at the bottom of the window while a long tab is scrolled */
         .settings-bar { position: sticky; bottom: 0; z-index: 20; background: #fff; box-shadow: 0 -4px 12px rgba(0, 0, 0, .06); }
-        .settings-changed { box-shadow: inset 3px 0 0 #f9a825; background: rgba(249, 168, 37, .07); }
+        /* a changed field gets a yellow outline of its own, nothing around the row */
+        .settings-changed input, .settings-changed select, .settings-changed textarea { border-color: #f9a825 !important; }
         .tab-pane .nav.flex-column.nav-pills { position: sticky; top: 70px; }
         .tab-pane .form-group:hover { background: rgba(0, 0, 0, .015); }
     </style>
