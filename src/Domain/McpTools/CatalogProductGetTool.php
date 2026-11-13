@@ -10,7 +10,7 @@ class CatalogProductGetTool extends AbstractMcpTool
 {
     public const NAME = 'catalog_product_get';
     public const TITLE = 'Get product';
-    public const DESCRIPTION = 'Returns full product details (description, prices, attributes, files, related products) by uuid, address, vendor code or barcode.';
+    public const DESCRIPTION = 'Returns full product details (description, prices, attributes, files, related products) by uuid, address, vendor code or barcode. With an API key hidden products are found too (their "status" is "delete").';
     public const SCOPE = 'catalog/product';
 
     private const KEYS = ['uuid', 'address', 'vendorcode', 'barcode'];
@@ -40,6 +40,11 @@ class CatalogProductGetTool extends AbstractMcpTool
         /** @var ProductService $productService */
         $productService = $this->container->get(ProductService::class);
 
-        return $productService->read(array_merge($criteria, ['status' => CatalogStatus::WORK]));
+        /** @var \App\Domain\Models\CatalogProduct $product */
+        // a caller with a key sees hidden products too (the operator checks what was created and shows it), the public one only visible
+        $product = $productService->read(array_merge($criteria, ['status' => $this->apiKey === null ? CatalogStatus::WORK : CatalogStatus::LIST]));
+
+        // the first price is hidden in the model (it is not for the site), the operator sees it
+        return $product->makeVisible('priceFirst');
     }
 }

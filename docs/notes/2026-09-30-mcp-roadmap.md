@@ -158,6 +158,25 @@ Found by an external review of the 6.4.0 server; all valid:
   indexes stayed empty. So the search of the site (and `site_search`) did not find pages and publications on any site that has products. Now an own engine per index.
   After deploying, rebuild the index once (`site_reindex` or the task in the admin panel).
 
+## All fields of products and categories - DONE
+
+Found by a review: external id, product type, "tax included" and filters could not be set. Now every field of the models can be read and written.
+
+- **Product** (`Concerns/ReadsProductFields`, one place for `catalog_product_create` and `catalog_product_update`): `type` (product / service), `tax_included`, `priceFirst`,
+  `priceWholesaleFrom`, `tags` (the whole list, or a comma separated text), `order`, `date`, `external_id`, `export`, `dimension` (length, width, height, weight, length_class,
+  weight_class; the units are checked against the reference books `length_class` / `weight_class` when the site has them; only the passed keys change),
+  `attributes` ({"address or uuid": value}: boolean is kept as "yes"/"no", integer / float are checked, `null` or "" removes a value, the others stay) and
+  `relations` ({"product uuid": count}: 0 removes one; the relations with HIDDEN products are kept - the model's own relation hides them and a naive sync would lose them).
+  `catalog_product_get` shows `priceFirst` (hidden in the model) to the operator.
+- **Category** (`Concerns/ReadsCategoryFields`, create / update): `pagination`, `is_allow_nested`, `sort` {by, direction}, `template` {category, product} (must be a file of the
+  active theme), `order`, `specifics` (own data, merged, `null` removes a key, up to 5000 characters), `external_id`, `export`, `system`, SEO, `attributes_add` / `attributes_remove`
+  (characteristics; the ones with `is_filter` are the filters of the category), `parent_uuid` on update (move; into itself or its own nested category is refused).
+- **`catalog_category_get`** (new, `PRIVATE`): everything about one category incl. attributes, `filters`, number of products and nested categories.
+- **`catalog_attribute_create` / `catalog_attribute_update`** (new): title, type, group, `is_filter`, address. The type cannot change while products have values of the attribute.
+- **Hidden products are reachable now:** a product is created hidden, so `catalog_product_get` and `catalog_product_search` (`status`: work / delete / all) show hidden products
+  to a caller WITH a key; without a key they stay public-only (a test checks it). Cards have `status`.
+- Rule that bit again: a new tool that reads hidden / internal data must be `PRIVATE` (`catalog_category_get` was public by default and a test caught it).
+
 ## Deliberately NOT covered
 
 - Deleting anything

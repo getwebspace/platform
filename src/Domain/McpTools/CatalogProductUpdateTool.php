@@ -48,7 +48,7 @@ class CatalogProductUpdateTool extends AbstractMcpTool
         /** @var CatalogProduct $product */
         $product = $productService->read(['uuid' => $args['uuid'], 'status' => CatalogStatus::LIST]);
 
-        $data = $this->productData($args, (array) $product->meta);
+        $data = $this->productData($args, $product);
 
         if (array_key_exists('status', $args)) {
             if (!in_array($args['status'], CatalogStatus::LIST, true)) {

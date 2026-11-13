@@ -55,7 +55,7 @@ class CatalogProductCreateTool extends AbstractMcpTool
         $data['category_uuid'] = (string) $category->uuid;
         $data['address'] = $this->buildAddress((string) $category->address, $data['title'], $args['address'] ?? null);
         $data['status'] = empty($args['visible']) ? CatalogStatus::DELETE : CatalogStatus::WORK;
-        $data['export'] = 'manual';
+        $data['export'] ??= 'manual';
 
         $product = $this->container->get(ProductService::class)->create($data);
 

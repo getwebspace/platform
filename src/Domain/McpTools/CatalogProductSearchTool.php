@@ -39,6 +39,12 @@ class CatalogProductSearchTool extends AbstractMcpTool
                     'type' => 'boolean',
                     'description' => 'Only special offers',
                 ],
+                'status' => [
+                    'type' => 'string',
+                    'enum' => ['work', 'delete', 'all'],
+                    'default' => 'work',
+                    'description' => 'work - visible on the site, delete - hidden, all - both. Hidden ones are for callers with an API key only',
+                ],
             ] + $this->paginationSchema(),
         ];
     }
@@ -48,7 +54,16 @@ class CatalogProductSearchTool extends AbstractMcpTool
         /** @var ProductService $productService */
         $productService = $this->container->get(ProductService::class);
 
-        $filter = ['status' => CatalogStatus::WORK];
+        $status = $args['status'] ?? CatalogStatus::WORK;
+
+        if (!in_array($status, [...CatalogStatus::LIST, 'all'], true)) {
+            throw new \InvalidArgumentException('Field status must be one of: ' . implode(', ', [...CatalogStatus::LIST, 'all']));
+        }
+        if ($status !== CatalogStatus::WORK && $this->apiKey === null) {
+            throw new \InvalidArgumentException('Hidden products are shown only to a caller with an API key');
+        }
+
+        $filter = ['status' => $status === 'all' ? CatalogStatus::LIST : $status];
 
         if (!blank($query = trim((string) ($args['query'] ?? '')))) {
             $filter['search'] = $query;
@@ -82,6 +97,7 @@ class CatalogProductSearchTool extends AbstractMcpTool
                 'quantity' => $product->quantity,
                 'stock' => $product->stock,
                 'special' => $product->special,
+                'status' => $product->status,
             ]
         );
     }

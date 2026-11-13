@@ -239,6 +239,9 @@ return function (ContainerBuilder $containerBuilder): void {
                     $this->register(\App\Domain\McpTools\SubscriberListTool::class);
                     $this->register(\App\Domain\McpTools\CatalogProductCreateTool::class);
                     $this->register(\App\Domain\McpTools\CatalogCategoryCreateTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogCategoryGetTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogAttributeCreateTool::class);
+                    $this->register(\App\Domain\McpTools\CatalogAttributeUpdateTool::class);
                     $this->register(\App\Domain\McpTools\CatalogOrderUpdateTool::class);
                     $this->register(\App\Domain\McpTools\PublicationCategoryListTool::class);
                     $this->register(\App\Domain\McpTools\CatalogSalesReportTool::class);

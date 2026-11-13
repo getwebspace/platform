@@ -5,18 +5,19 @@ namespace App\Domain\McpTools;
 use App\Application\PubSub;
 use App\Domain\AbstractMcpTool;
 use App\Domain\Casts\Catalog\Status as CatalogStatus;
-use App\Domain\McpTools\Concerns\SanitizesHtml;
+use App\Domain\McpTools\Concerns\ReadsCategoryFields;
 use App\Domain\Models\CatalogCategory;
 use App\Domain\Service\Catalog\CategoryService;
 
 class CatalogCategoryUpdateTool extends AbstractMcpTool
 {
-    use SanitizesHtml;
+    use ReadsCategoryFields;
 
     public const NAME = 'catalog_category_update';
     public const TITLE = 'Update category';
-    public const DESCRIPTION = 'Changes a catalog category (uuid from catalog_category_list): title, description (HTML), SEO, visibility. Pass only the fields to change. '
-        . 'The page address is kept unless "address" is passed explicitly. is_hidden hides the category from menus, status=delete hides it from the site (nothing is deleted).';
+    public const DESCRIPTION = 'Changes a catalog category (uuid from catalog_category_list): any of its fields - title, description, SEO, visibility, products per page, sorting, templates, order, own data, ids of outside systems - '
+        . 'and its attributes (characteristics and filters: attributes_add / attributes_remove), and moves it into another category (parent_uuid, "" - to the top level). Pass only the fields to change. '
+        . 'The page address is kept unless "address" is passed. is_hidden hides the category from menus, status=delete hides it from the site (nothing is deleted).';
     public const READ_ONLY = false;
     public const SCOPE = 'catalog/category';
 
@@ -28,15 +29,11 @@ class CatalogCategoryUpdateTool extends AbstractMcpTool
             'type' => 'object',
             'properties' => [
                 'uuid' => $string,
-                'title' => $string,
-                'description' => ['type' => 'string', 'description' => 'HTML (scripts and event handlers are removed)'],
                 'is_hidden' => ['type' => 'boolean', 'description' => 'Hide from menus, the page stays reachable by the link'],
                 'status' => ['type' => 'string', 'enum' => CatalogStatus::LIST, 'description' => 'work - visible, delete - hidden'],
-                'meta_title' => $string,
-                'meta_description' => $string,
-                'meta_keywords' => $string,
+                'parent_uuid' => $string + ['description' => 'Move into this category; "" - to the top level'],
                 'address' => $string + ['description' => 'Change the page address (breaks existing links!)'],
-            ],
+            ] + $this->categoryFieldsSchema(),
             'required' => ['uuid'],
         ];
     }
@@ -52,18 +49,8 @@ class CatalogCategoryUpdateTool extends AbstractMcpTool
         /** @var CatalogCategory $category */
         $category = $categoryService->read(['uuid' => $args['uuid'], 'status' => CatalogStatus::LIST]);
 
-        $data = [];
+        $data = $this->categoryData($args, $category);
 
-        if (array_key_exists('title', $args)) {
-            if (blank(trim((string) $args['title']))) {
-                throw new \InvalidArgumentException('Field title cannot be empty');
-            }
-
-            $data['title'] = trim((string) $args['title']);
-        }
-        if (array_key_exists('description', $args)) {
-            $data['description'] = $this->sanitizeHtml((string) $args['description']);
-        }
         if (array_key_exists('is_hidden', $args)) {
             $data['is_hidden'] = (bool) $args['is_hidden'];
         }
@@ -74,15 +61,9 @@ class CatalogCategoryUpdateTool extends AbstractMcpTool
 
             $data['status'] = $args['status'];
         }
-
-        $meta = array_filter([
-            'title' => $args['meta_title'] ?? null,
-            'description' => $args['meta_description'] ?? null,
-            'keywords' => $args['meta_keywords'] ?? null,
-        ], fn ($value) => $value !== null);
-
-        if ($meta) {
-            $data['meta'] = array_merge((array) $category->meta, array_map('trim', $meta));
+        if (array_key_exists('parent_uuid', $args)) {
+            $parent = $this->checkParent($args['parent_uuid'], $category);
+            $data['parent_uuid'] = $parent ? (string) $parent->uuid : null;
         }
         if (!blank($args['address'] ?? null)) {
             $data['address'] = trim((string) $args['address']);

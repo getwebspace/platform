@@ -1080,6 +1080,17 @@ class McpTest extends TestCase
         $this->assertEquals(-32602, $this->call(null, 'tools/call', ['name' => 'review_list'])['error']['code']);
         $this->assertCount(6, $anonymous);
 
+        // hidden products: not found, not read, not asked for by a caller without a key
+        $this->makeProduct('Hidden thing', (string) \App\Domain\Models\CatalogCategory::query()->where('address', 'open')->value('uuid'), ['status' => 'delete', 'vendorcode' => 'HID-1']);
+        [, $found] = $this->tool(null, 'catalog_product_search', ['query' => 'Hidden thing']);
+        $this->assertEquals(0, $found['total']);
+        [$error] = $this->tool(null, 'catalog_product_search', ['query' => 'Hidden thing', 'status' => 'all']);
+        $this->assertTrue($error);
+        [$error] = $this->tool(null, 'catalog_product_get', ['vendorcode' => 'HID-1']);
+        $this->assertTrue($error);
+        [$error] = $this->tool($this->createApiKeyToken(), 'catalog_product_get', ['vendorcode' => 'HID-1']);
+        $this->assertFalse($error);
+
         // a hidden category is not shown without a key, with a key it is
         [, $result] = $this->tool(null, 'catalog_category_list');
         $this->assertEquals(['Открытая'], array_column($result, 'title'));
@@ -2235,6 +2246,325 @@ class McpTest extends TestCase
         $this->assertStringContainsString('"dry_run":true', $mine[0]);
         $this->assertStringContainsString('"dry_run":false', $mine[1]);
         $this->assertNotEmpty(array_filter(explode("\n", $log), fn ($line) => str_contains($line, 'Theme file written via MCP') && str_contains($line, $name)));
+    }
+
+    // every field of a product and of a category
+
+    private function db(): \Illuminate\Database\Connection
+    {
+        return $this->getService(\Illuminate\Database\Connection::class);
+    }
+
+    private function makeAttribute(string $title, string $address, string $type = 'string', bool $filter = true): object
+    {
+        return $this->getService(AttributeService::class)->create(['title' => $title, 'address' => $address, 'type' => $type, 'is_filter' => $filter]);
+    }
+
+    public function testProductHasAllItsFields(): void
+    {
+        $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Goods', 'address' => 'goods']);
+        $color = $this->makeAttribute('Color', 'color');
+        $weight = $this->makeAttribute('Weight', 'weight', 'float');
+        $pieces = $this->makeAttribute('Pieces', 'pieces', 'integer');
+        $waterproof = $this->makeAttribute('Waterproof', 'waterproof', 'boolean');
+        $other = $this->makeProduct('Related one', (string) $category->uuid);
+        $hidden = $this->makeProduct('Related hidden', (string) $category->uuid, ['status' => 'delete']);
+
+        $references = $this->getService(ReferenceService::class);
+        $references->create(['type' => ReferenceType::LENGTH_CLASS, 'title' => 'Centimeter', 'value' => ['unit' => 'cm']]);
+        $references->create(['type' => ReferenceType::WEIGHT_CLASS, 'title' => 'Kilogram', 'value' => ['unit' => 'kg']]);
+
+        $token = $this->createApiKeyToken(['read' => ['catalog/product', 'catalog/attributes'], 'write' => ['catalog/product']], false);
+        $products = $this->getService(CatalogProductService::class);
+        $row = fn (string $uuid) => $products->read(['uuid' => $uuid, 'status' => ['work', 'delete']]);
+
+        [$error, $created] = $this->tool($token, 'catalog_product_create', [
+            'category_uuid' => (string) $category->uuid,
+            'title' => 'Jacket Full',
+            'type' => 'service',
+            'price' => 100, 'priceFirst' => 60.5, 'priceWholesale' => 80, 'priceWholesaleFrom' => 10,
+            'discount' => 5, 'tax' => 20, 'tax_included' => true,
+            'quantity' => 2, 'quantityMin' => 3, 'stock' => 7, 'special' => true,
+            'vendorcode' => 'VC-1', 'barcode' => '4600000000001', 'country' => 'Russia', 'manufacturer' => 'Factory',
+            'tags' => ['Warm', 'winter', 'warm', ' '],
+            'order' => 5, 'date' => '2026-02-03 10:20', 'external_id' => 'ERP-77', 'export' => 'import',
+            'dimension' => ['length' => 30, 'width' => 20.5, 'height' => 4, 'weight' => 0.8, 'length_class' => 'CM', 'weight_class' => 'kg'],
+            'attributes' => ['color' => 'red', 'weight' => '2.5', 'pieces' => 4, 'waterproof' => true],
+            'relations' => [(string) $other->uuid => 2, (string) $hidden->uuid => 1],
+            'meta_title' => 'SEO',
+        ]);
+        $this->assertFalse($error, json_encode($created));
+
+        $product = $row($created['uuid']);
+        $this->assertEquals('service', $product->type);
+        $this->assertEquals([100.0, 60.5, 80.0, 10.0, 5.0, 20.0], [$product->price, (float) $product->getRawOriginal('priceFirst'), $product->priceWholesale, $product->priceWholesaleFrom, $product->discount, $product->tax]);
+        $this->assertTrue($product->tax_included);
+        $this->assertEquals([2.0, 3.0, 7.0], [$product->quantity, $product->quantityMin, $product->stock]);
+        $this->assertEquals(['warm', 'winter'], array_map('mb_strtolower', $product->tags), 'tags are unique, empty ones go');
+        $this->assertEquals([5, 'ERP-77', 'import', '2026-02-03 10:20'], [$product->order, $product->external_id, $product->export, $product->date->format('Y-m-d H:i')]);
+        $this->assertEquals(['length' => 30.0, 'width' => 20.5, 'height' => 4.0, 'weight' => 0.8, 'length_class' => 'cm', 'weight_class' => 'kg'], $product->dimension, 'the unit is the one of the reference book');
+        $this->assertEquals('SEO', $product->meta['title']);
+
+        $values = $this->db()->table('catalog_attribute_product')->where('product_uuid', $created['uuid'])->pluck('value', 'attribute_uuid')->all();
+        $this->assertEquals(['red', '2.5', '4', 'yes'], [$values[(string) $color->uuid], $values[(string) $weight->uuid], $values[(string) $pieces->uuid], $values[(string) $waterproof->uuid]]);
+        $related = $this->db()->table('catalog_product_related')->where('product_uuid', $created['uuid'])->pluck('count', 'related_uuid')->all();
+        $this->assertEquals([2.0, 1.0], [(float) $related[(string) $other->uuid], (float) $related[(string) $hidden->uuid]]);
+
+        // created hidden: a caller with a key finds and reads it, the public one does not
+        [, $found] = $this->tool($token, 'catalog_product_search', ['query' => 'Jacket Full']);
+        $this->assertEquals(0, $found['total']);
+        [, $found] = $this->tool($token, 'catalog_product_search', ['query' => 'Jacket Full', 'status' => 'delete']);
+        $this->assertEquals([1, 'delete'], [$found['total'], $found['items'][0]['status']]);
+        [, $found] = $this->tool($token, 'catalog_product_search', ['query' => 'related', 'status' => 'all']);
+        $this->assertEquals(2, $found['total']);
+        [$error] = $this->tool($token, 'catalog_product_search', ['status' => 'maybe']);
+        $this->assertTrue($error);
+
+        // the operator sees all of it, the first price too
+        [, $card] = $this->tool($token, 'catalog_product_get', ['uuid' => $created['uuid']]);
+        $this->assertEquals('delete', $card['status']);
+        $this->assertEquals(60.5, (float) $card['priceFirst']);
+        $this->assertEquals('service', $card['type']);
+
+        // update: only what is passed changes, the lists are merged
+        [$error, $result] = $this->tool($token, 'catalog_product_update', [
+            'uuid' => $created['uuid'],
+            'tags' => ['summer'],
+            'dimension' => ['weight' => 1.2],
+            'attributes' => ['color' => 'blue', 'waterproof' => 'no', 'weight' => null],
+            'relations' => [(string) $other->uuid => 0],
+            'tax_included' => false,
+            'external_id' => '',
+        ]);
+        $this->assertFalse($error, json_encode($result));
+        $product = $row($created['uuid']);
+        $this->assertEquals(['summer'], $product->tags);
+        $this->assertEquals([30.0, 1.2, 'cm'], [$product->dimension['length'], $product->dimension['weight'], $product->dimension['length_class']], 'the other keys of the dimension stay');
+        $this->assertFalse($product->tax_included);
+        $this->assertEquals('', $product->external_id);
+        $values = $this->db()->table('catalog_attribute_product')->where('product_uuid', $created['uuid'])->pluck('value', 'attribute_uuid')->all();
+        $this->assertEquals(['blue', 'no', '4'], [$values[(string) $color->uuid], $values[(string) $waterproof->uuid], $values[(string) $pieces->uuid]], 'the attribute that was not passed stays');
+        $this->assertArrayNotHasKey((string) $weight->uuid, $values, 'null removes a value');
+        $related = $this->db()->table('catalog_product_related')->where('product_uuid', $created['uuid'])->pluck('count', 'related_uuid')->all();
+        $this->assertSame([(string) $hidden->uuid], array_keys($related), 'a relation with a hidden product is not lost, 0 removes one');
+
+        [, $result] = $this->tool($token, 'catalog_product_update', ['uuid' => $created['uuid'], 'tags' => 'a, b ,a']);
+        $this->assertEquals(['a', 'b'], $row($created['uuid'])->tags, 'tags as a comma separated text');
+        [, $result] = $this->tool($token, 'catalog_product_update', ['uuid' => $created['uuid'], 'tags' => []]);
+        $this->assertSame([], $row($created['uuid'])->tags);
+
+        foreach ([
+            ['type' => 'gadget'],
+            ['tax_included' => 'maybe-not-checked-as-bool', 'priceFirst' => -1],
+            ['priceWholesaleFrom' => 'many'],
+            ['order' => -1], ['order' => 'x'],
+            ['date' => '03.02.2026'],
+            ['external_id' => str_repeat('a', 256)],
+            ['export' => str_repeat('a', 51)],
+            ['tags' => 'x', 'dimension' => 'big'],
+            ['dimension' => ['length' => -1]],
+            ['dimension' => ['depth' => 1]],
+            ['dimension' => ['length_class' => 'miles']],
+            ['dimension' => ['weight_class' => 'cm']],
+            ['attributes' => ['no_such_attribute' => 'x']],
+            ['attributes' => ['pieces' => 'four']], ['attributes' => ['pieces' => 4.5]], ['attributes' => ['weight' => 'heavy']],
+            ['attributes' => ['waterproof' => 'perhaps']], ['attributes' => ['color' => ['a']]], ['attributes' => ['color' => str_repeat('я', 1001)]],
+            ['attributes' => ['a', 'b']],
+            ['relations' => [(string) $created['uuid'] => 1]],
+            ['relations' => [\Ramsey\Uuid\Uuid::uuid4()->toString() => 1]],
+            ['relations' => ['nope' => 1]],
+            ['relations' => [(string) $other->uuid => -1]],
+        ] as $args) {
+            // the last check wants an arithmetic error: the first of each pair is the one that must fail
+            [$error] = $this->tool($token, 'catalog_product_update', ['uuid' => $created['uuid']] + $args);
+            $this->assertTrue($error, json_encode($args));
+        }
+
+        // nothing of the refused calls is saved
+        $this->assertEquals(['blue', 'no', '4'], array_values(array_filter($this->db()->table('catalog_attribute_product')->where('product_uuid', $created['uuid'])->pluck('value', 'attribute_uuid')->all(), fn ($v) => $v !== '')) === [] ? [] : [$values[(string) $color->uuid], $values[(string) $waterproof->uuid], $values[(string) $pieces->uuid]]);
+
+        // dry run shows the lists and saves nothing
+        [, $dry] = $this->tool($token, 'catalog_product_update', ['uuid' => $created['uuid'], 'attributes' => ['color' => 'green'], 'dry_run' => true]);
+        $this->assertTrue($dry['dry_run']);
+        $this->assertEquals('blue', $this->db()->table('catalog_attribute_product')->where('product_uuid', $created['uuid'])->where('attribute_uuid', (string) $color->uuid)->value('value'));
+    }
+
+    public function testProductWithoutUnitBooksTakesAnyUnit(): void
+    {
+        $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Goods', 'address' => 'goods']);
+        $token = $this->createApiKeyToken(['write' => ['catalog/product']], false);
+
+        [$error, $result] = $this->tool($token, 'catalog_product_create', ['category_uuid' => (string) $category->uuid, 'title' => 'Box', 'dimension' => ['length_class' => 'mm', 'length' => 1]]);
+        $this->assertFalse($error, json_encode($result));
+        $this->assertEquals('mm', $this->getService(CatalogProductService::class)->read(['uuid' => $result['uuid'], 'status' => ['work', 'delete']])->dimension['length_class']);
+    }
+
+    public function testCategoryHasAllItsFields(): void
+    {
+        $categories = $this->getService(CatalogCategoryService::class);
+        $filter = $this->makeAttribute('Color', 'color');
+        $plain = $this->makeAttribute('Note', 'note', 'string', false);
+        $size = $this->makeAttribute('Size', 'size', 'integer');
+
+        $token = $this->createApiKeyToken(['read' => ['catalog/category', 'catalog/attributes'], 'write' => ['catalog/category']], false);
+
+        [$error, $created] = $this->tool($token, 'catalog_category_create', [
+            'title' => 'Wear', 'description' => '<p>x</p><script>1</script>', 'pagination' => 24, 'is_allow_nested' => true,
+            'sort' => ['by' => 'price', 'direction' => 'desc'], 'template' => ['category' => 'main.twig'],
+            'order' => 3, 'specifics' => ['banner' => 'sale', 'columns' => 4], 'external_id' => 'ERP-1', 'export' => 'import', 'system' => 'sys',
+            'meta_title' => 'SEO', 'attributes_add' => ['color', (string) $plain->uuid],
+        ]);
+        $this->assertFalse($error, json_encode($created));
+        $this->assertEqualsCanonicalizing(['color', 'note'], $created['attributes']);
+
+        [, $card] = $this->tool($token, 'catalog_category_get', ['uuid' => $created['uuid']]);
+        $this->assertEquals('<p>x</p>', $card['description']);
+        $this->assertEquals([24, true, 3], [$card['pagination'], $card['is_allow_nested'], $card['order']]);
+        $this->assertEquals(['by' => 'price', 'direction' => 'DESC'], $card['sort']);
+        $this->assertEquals('main.twig', $card['template']['category']);
+        $this->assertEquals(['banner' => 'sale', 'columns' => 4], $card['specifics']);
+        $this->assertEquals(['ERP-1', 'import', 'sys', 'SEO'], [$card['external_id'], $card['export'], $card['system'], $card['meta']['title']]);
+        $this->assertEquals(['color'], $card['filters'], 'a filter is an attribute of the category with the flag');
+        $this->assertCount(2, $card['attributes']);
+        $this->assertEquals([0, 0], [$card['products'], $card['nested']]);
+        $this->assertNull($card['parent']);
+
+        [, $byAddress] = $this->tool($token, 'catalog_category_get', ['address' => $created['address']]);
+        $this->assertEquals($created['uuid'], $byAddress['uuid']);
+
+        // update: the json fields are merged, the attributes are added and taken away
+        [$error, $result] = $this->tool($token, 'catalog_category_update', [
+            'uuid' => $created['uuid'], 'sort' => ['direction' => 'asc'], 'template' => ['product' => 'main.twig'],
+            'specifics' => ['columns' => null, 'theme' => 'dark'], 'pagination' => 50,
+            'attributes_add' => ['size'], 'attributes_remove' => ['note'], 'is_allow_nested' => false, 'order' => 0, 'external_id' => '',
+        ]);
+        $this->assertFalse($error, json_encode($result));
+        [, $card] = $this->tool($token, 'catalog_category_get', ['uuid' => $created['uuid']]);
+        $this->assertEquals(['by' => 'price', 'direction' => 'ASC'], $card['sort'], 'only the direction changed');
+        $this->assertEquals('main.twig', $card['template']['category']);
+        $this->assertEquals('main.twig', $card['template']['product']);
+        $this->assertEquals(['banner' => 'sale', 'theme' => 'dark'], $card['specifics']);
+        $this->assertEquals([50, false, 0, ''], [$card['pagination'], $card['is_allow_nested'], $card['order'], $card['external_id']]);
+        $this->assertEqualsCanonicalizing(['color', 'size'], array_column($card['attributes'], 'address'));
+
+        // a nested category gets the attributes of the parent
+        [, $child] = $this->tool($token, 'catalog_category_create', ['title' => 'Jackets', 'parent_uuid' => $created['uuid'], 'attributes_add' => ['note']]);
+        $this->assertEqualsCanonicalizing(['color', 'size', 'note'], $child['attributes']);
+
+        // move: into another category, to the top, never into itself or its own nested one
+        [, $other] = $this->tool($token, 'catalog_category_create', ['title' => 'Shoes']);
+        [$error, $moved] = $this->tool($token, 'catalog_category_update', ['uuid' => $child['uuid'], 'parent_uuid' => $other['uuid']]);
+        $this->assertFalse($error, json_encode($moved));
+        $this->assertEquals($other['uuid'], $this->tool($token, 'catalog_category_get', ['uuid' => $child['uuid']])[1]['parent']['uuid']);
+        $this->assertEquals(1, $this->tool($token, 'catalog_category_get', ['uuid' => $other['uuid']])[1]['nested']);
+        [, $moved] = $this->tool($token, 'catalog_category_update', ['uuid' => $child['uuid'], 'parent_uuid' => '']);
+        $this->assertNull($this->tool($token, 'catalog_category_get', ['uuid' => $child['uuid']])[1]['parent']);
+        $this->tool($token, 'catalog_category_update', ['uuid' => $child['uuid'], 'parent_uuid' => $created['uuid']]);
+        foreach ([$created['uuid'] => $created['uuid'], 'descendant' => $created['uuid']] as $which => $uuid) {
+            $target = $which === 'descendant' ? $child['uuid'] : $uuid;
+            [$error, $text] = $this->tool($token, 'catalog_category_update', ['uuid' => $uuid, 'parent_uuid' => $target]);
+            $this->assertTrue($error, "into {$which}");
+            $this->assertStringContainsString('into itself', $text);
+        }
+
+        foreach ([
+            ['pagination' => 0], ['pagination' => 501], ['pagination' => 'x'],
+            ['sort' => ['by' => 'luck']], ['sort' => ['direction' => 'sideways']], ['sort' => ['how' => 'x']], ['sort' => 'price'],
+            ['template' => ['category' => 'no-such.twig']], ['template' => ['category' => '../src/x.twig']], ['template' => ['page' => 'main.twig']], ['template' => 'main.twig'],
+            ['specifics' => ['a', 'b']], ['specifics' => ['big' => str_repeat('я', 5000)]],
+            ['order' => -1], ['external_id' => str_repeat('a', 256)], ['export' => str_repeat('a', 51)], ['system' => str_repeat('a', 256)],
+            ['attributes_add' => ['no_such']], ['attributes_add' => 'color'], ['attributes_remove' => [123456]],
+            ['attributes_add' => ['color'], 'attributes_remove' => ['color']],
+            ['parent_uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString()], ['parent_uuid' => 'nope'],
+        ] as $args) {
+            [$error] = $this->tool($token, 'catalog_category_update', ['uuid' => $created['uuid']] + $args);
+            $this->assertTrue($error, json_encode($args));
+        }
+
+        // dry run
+        [, $dry] = $this->tool($token, 'catalog_category_update', ['uuid' => $created['uuid'], 'pagination' => 99, 'dry_run' => true]);
+        $this->assertTrue($dry['dry_run']);
+        $this->assertEquals(50, $this->tool($token, 'catalog_category_get', ['uuid' => $created['uuid']])[1]['pagination']);
+
+        [$error] = $this->tool($token, 'catalog_category_get', []);
+        $this->assertTrue($error);
+        [$error] = $this->tool($token, 'catalog_category_get', ['uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString()]);
+        $this->assertTrue($error);
+    }
+
+    public function testAttributeTools(): void
+    {
+        $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Goods', 'address' => 'goods']);
+        $token = $this->createApiKeyToken(['read' => ['catalog/attributes', 'catalog/category', 'catalog/product'], 'write' => ['catalog/attributes', 'catalog/category', 'catalog/product']], false);
+
+        [$error, $color] = $this->tool($token, 'catalog_attribute_create', ['title' => 'Color', 'group' => 'Look']);
+        $this->assertFalse($error, json_encode($color));
+        $this->assertEquals(['color', 'string', 'Look', true], [$color['address'], $color['type'], $color['group'], $color['is_filter']]);
+
+        [, $weight] = $this->tool($token, 'catalog_attribute_create', ['title' => 'Item weight', 'type' => 'float', 'is_filter' => false, 'address' => 'wt']);
+        $this->assertEquals(['wt', 'float', false], [$weight['address'], $weight['type'], $weight['is_filter']]);
+
+        foreach ([[], ['title' => ' '], ['title' => 'X', 'type' => 'text'], ['title' => 'Color'], ['title' => 'Other', 'address' => 'color'], ['title' => 'Цвет']] as $args) {
+            [$error] = $this->tool($token, 'catalog_attribute_create', $args);
+            $this->assertTrue($error, json_encode($args));
+        }
+
+        [, $list] = $this->tool($token, 'catalog_attribute_list', ['is_filter' => true]);
+        $this->assertEquals(['color'], array_column($list['items'], 'address'));
+
+        // a filter of a category: an attribute of the category that has the flag
+        [, $cat] = $this->tool($token, 'catalog_category_update', ['uuid' => (string) $category->uuid, 'attributes_add' => ['color', 'wt']]);
+        $this->assertEquals(['color'], $this->tool($token, 'catalog_category_get', ['uuid' => (string) $category->uuid])[1]['filters']);
+        [, $updated] = $this->tool($token, 'catalog_attribute_update', ['attribute' => 'wt', 'is_filter' => true, 'group' => 'Size', 'title' => 'Weight of an item']);
+        $this->assertEquals([true, 'Size', 'Weight of an item', 'wt'], [$updated['is_filter'], $updated['group'], $updated['title'], $updated['address']]);
+        $this->assertEqualsCanonicalizing(['color', 'wt'], $this->tool($token, 'catalog_category_get', ['uuid' => (string) $category->uuid])[1]['filters']);
+
+        // the type can be changed while nobody has a value
+        [$error, $changed] = $this->tool($token, 'catalog_attribute_update', ['attribute' => (string) $weight['uuid'], 'type' => 'integer']);
+        $this->assertFalse($error, json_encode($changed));
+        $this->tool($token, 'catalog_product_create', ['category_uuid' => (string) $category->uuid, 'title' => 'Thing', 'attributes' => ['wt' => 3]]);
+        [$error, $text] = $this->tool($token, 'catalog_attribute_update', ['attribute' => 'wt', 'type' => 'string']);
+        $this->assertTrue($error);
+        $this->assertStringContainsString('1 products', $text);
+
+        // the same type is not a change
+        [$error] = $this->tool($token, 'catalog_attribute_update', ['attribute' => 'wt', 'type' => 'integer', 'group' => 'Size2']);
+        $this->assertFalse($error);
+
+        [, $renamed] = $this->tool($token, 'catalog_attribute_update', ['attribute' => 'wt', 'new_address' => 'weight-kg']);
+        $this->assertEquals('weight-kg', $renamed['address']);
+
+        foreach ([['title' => 'x'], ['attribute' => 'no-such', 'title' => 'x'], ['attribute' => 'color'], ['attribute' => 'color', 'title' => ' '], ['attribute' => 'color', 'type' => 'text'], ['attribute' => 'color', 'title' => 'Look']] as $i => $args) {
+            [$error] = $this->tool($token, 'catalog_attribute_update', $args);
+            // the last one renames "color" to a name that is not taken: it is allowed, the others are errors
+            $i === 5 ? $this->assertFalse($error) : $this->assertTrue($error, json_encode($args));
+        }
+
+        [, $dry] = $this->tool($token, 'catalog_attribute_update', ['attribute' => 'color', 'title' => 'Dry', 'dry_run' => true]);
+        $this->assertTrue($dry['dry_run']);
+        $this->assertEquals('Look', $this->getService(AttributeService::class)->read(['address' => 'color'])->title);
+    }
+
+    public function testFieldToolsFollowKeyScopes(): void
+    {
+        $reader = $this->tools($this->createApiKeyToken(['read' => ['catalog/category', 'catalog/attributes']], false));
+        $this->assertContains('catalog_category_get', $reader);
+        $this->assertNotContains('catalog_attribute_create', $reader);
+        $this->assertNotContains('catalog_attribute_update', $reader);
+
+        $writer = $this->tools($this->createApiKeyToken(['write' => ['catalog/attributes']], false));
+        $this->assertContains('catalog_attribute_create', $writer);
+        $this->assertContains('catalog_attribute_update', $writer);
+        $this->assertNotContains('catalog_category_get', $writer);
+
+        $definitions = array_column($this->call($this->createApiKeyToken(), 'tools/list')['result']['tools'], null, 'name');
+        foreach (['type', 'tax_included', 'priceFirst', 'tags', 'dimension', 'attributes', 'relations', 'external_id', 'export', 'order', 'date'] as $field) {
+            $this->assertArrayHasKey($field, $definitions['catalog_product_update']['inputSchema']['properties'], "product update: {$field}");
+            $this->assertArrayHasKey($field, $definitions['catalog_product_create']['inputSchema']['properties'], "product create: {$field}");
+        }
+        foreach (['pagination', 'is_allow_nested', 'sort', 'template', 'order', 'specifics', 'external_id', 'export', 'system', 'attributes_add', 'attributes_remove', 'parent_uuid'] as $field) {
+            $this->assertArrayHasKey($field, $definitions['catalog_category_update']['inputSchema']['properties'], "category update: {$field}");
+        }
     }
 
     public function testSiteOverviewFollowsKeyScopes(): void
