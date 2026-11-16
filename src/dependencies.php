@@ -236,6 +236,10 @@ return function (ContainerBuilder $containerBuilder): void {
                     $this->register(\App\Domain\McpTools\UserGroupListTool::class);
                     $this->register(\App\Domain\McpTools\CatalogAttributeListTool::class);
                     $this->register(\App\Domain\McpTools\FileListTool::class);
+                    $this->register(\App\Domain\McpTools\EntityFileListTool::class);
+                    $this->register(\App\Domain\McpTools\EntityFileAttachTool::class);
+                    $this->register(\App\Domain\McpTools\EntityFileArrangeTool::class);
+                    $this->register(\App\Domain\McpTools\EntityFileDetachTool::class);
                     $this->register(\App\Domain\McpTools\SubscriberListTool::class);
                     $this->register(\App\Domain\McpTools\CatalogProductCreateTool::class);
                     $this->register(\App\Domain\McpTools\CatalogCategoryCreateTool::class);

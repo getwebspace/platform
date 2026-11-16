@@ -17,7 +17,10 @@ class FileService extends AbstractService
 
     private const REMOTE_REDIRECT_LIMIT = 5;
 
-    public function createFromPath(string $path, ?string $name_with_ext = null): ?File
+    /**
+     * @param null|int $maxBytes the biggest file that is taken from an url (null - no limit); a bigger one is not saved, null is returned
+     */
+    public function createFromPath(string $path, ?string $name_with_ext = null, ?int $maxBytes = null): ?File
     {
         $saved = false;
 
@@ -25,7 +28,7 @@ class FileService extends AbstractService
         switch (true) {
             case str_starts_with($path, 'http://'):
             case str_starts_with($path, 'https://'):
-                if (($path = static::getFileFromRemote($path)) !== false) {
+                if (($path = static::getFileFromRemote($path, 0, $maxBytes)) !== false) {
                     $saved = true;
                 }
 
@@ -138,7 +141,7 @@ class FileService extends AbstractService
     /**
      * Get file from url, recursion when redirect
      */
-    protected static function getFileFromRemote(string $path, int $depth = 0): false|string
+    public static function getFileFromRemote(string $path, int $depth = 0, ?int $maxBytes = null): false|string
     {
         if ($depth > self::REMOTE_REDIRECT_LIMIT) {
             return false;
@@ -180,11 +183,23 @@ class FileService extends AbstractService
                     : $scheme . '://' . ($url['host'] ?? '') . '/' . ltrim($location, '/');
             }
 
-            return static::getFileFromRemote($location, $depth + 1);
+            return static::getFileFromRemote($location, $depth + 1, $maxBytes);
         }
         if ($code === 200) {
-            $file = @file_get_contents($path, false, stream_context_create(['http' => ['follow_location' => 0, 'timeout' => 15]]));
+            // the size is known before the download: a file that is too big is not even started
+            $length = $headers['Content-Length'] ?? null;
+            $length = is_array($length) ? end($length) : $length;
 
+            if ($maxBytes !== null && is_numeric($length) && (int) $length > $maxBytes) {
+                return false;
+            }
+
+            // one byte more than allowed is read: to know that the file is bigger (the header can be missing or lie)
+            $file = @file_get_contents($path, false, stream_context_create(['http' => ['follow_location' => 0, 'timeout' => 15]]), 0, $maxBytes !== null ? $maxBytes + 1 : null);
+
+            if ($file && $maxBytes !== null && strlen($file) > $maxBytes) {
+                return false;
+            }
             if ($file) {
                 $basename = File::prepareName(($t = basename($path)) && mb_strpos($t, '.') ? $t : '/tmp_' . uniqid());
                 $path = CACHE_DIR . '/' . $basename;

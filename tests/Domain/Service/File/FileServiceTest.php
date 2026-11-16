@@ -95,6 +95,39 @@ class FileServiceTest extends TestCase
         $this->assertTrue(file_exists($file->internal_path()));
     }
 
+    public function testRemoteDownloadHasASizeLimit(): void
+    {
+        $url = $this->getTestFileUrl();
+
+        // the file is a few kilobytes: a limit under it is refused and nothing is saved, a limit over it is not in the way
+        $this->assertNull($this->service->createFromPath($url, null, 10));
+        $this->assertFalse(FileService::getFileFromRemote($url, 0, 10));
+
+        $path = FileService::getFileFromRemote($url, 0, 5 * 1024 * 1024);
+        $this->assertIsString($path);
+        @unlink($path);
+        $this->assertInstanceOf(File::class, $this->service->createFromPath($this->getTestFileUrl(), null, 5 * 1024 * 1024));
+    }
+
+    public function testDownloadSizeIsLimitedAlsoWithoutTheLengthHeader(): void
+    {
+        // an answer of the application itself has no Content-Length: only what was really read tells the size
+        $url = 'http://127.0.0.1:80/api/v1/signature';
+
+        if (!is_file(VAR_DIR . '/public.secret.key')) {
+            $this->markTestSkipped('There is no public key to be given by the application');
+        }
+
+        $headers = (array) @get_headers($url, true, stream_context_create(['http' => ['follow_location' => 0]]));
+        $this->assertArrayNotHasKey('Content-Length', $headers, 'the test needs an answer without the length');
+
+        $this->assertFalse(FileService::getFileFromRemote($url, 0, 10));
+
+        $path = FileService::getFileFromRemote($url, 0, 1024 * 1024);
+        $this->assertIsString($path);
+        @unlink($path);
+    }
+
     public function testRemoteUrlMustBePublic(): void
     {
         foreach ([

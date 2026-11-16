@@ -177,9 +177,24 @@ Found by a review: external id, product type, "tax included" and filters could n
   to a caller WITH a key; without a key they stay public-only (a test checks it). Cards have `status`.
 - Rule that bit again: a new tool that reads hidden / internal data must be `PRIVATE` (`catalog_category_get` was public by default and a test caught it).
 
+## Files of the records - DONE
+
+- `App\Application\EntityFiles` + tools `entity_file_list`, `entity_file_attach`, `entity_file_arrange`, `entity_file_detach` for EVERY model that has files (`HasFiles`):
+  `catalog_product`, `catalog_category`, `publication`, `publication_category`, `page`, `user`, `user_group`, `review`, `form_data` (the last one: full access keys only,
+  it is not an API entity). A key needs read / write for the entity of the record (`EntityFiles::allows`); the tools are shown to a key that has it for at least one kind.
+- Two ways to give a file: `url` (https / http, public only - `FileService::isPublicUrl` and every redirect checked, up to 20 MB) or `content_base64` + `name` (up to 5 MB).
+  `FileService::createFromPath()` / `getFileFromRemote()` got `$maxBytes`: the size is checked by `Content-Length` AND by what was really read (the header may be missing).
+- Allowed kinds (allow-list, no html / svg / js / php / archives / programs): jpg jpeg png gif webp avif pdf doc docx xls xlsx ppt pptx odt ods odp txt csv rtf mp3 mp4 webm.
+  The name tells the kind, the CONTENT must be that kind: a picture is checked by `getimagesize` (a page named .jpg is refused), the others by `mime_content_type`.
+- The same file (by hash) is stored once; giving it again to the same record only changes the caption / order. A record has up to 100 files. Pictures get their small sizes
+  from `ConvertImageTask` (in the background, like for the files uploaded in the admin panel). Staff users (admin panel access) are not changed. Writes publish the usual `api:<entity>:edit` event.
+- `entity_file_attach` does its own `dry_run` (`DRY_RUN_SELF`): the file is downloaded to a temporary place and fully checked, nothing is stored. Arrange / detach use the transaction dry run.
+- `entity_file_detach` takes the file off the record only; the file stays in the store (the answer says whether another record uses it). There is no tool that deletes a file.
+- The type of a file in the store is what the detector said (`image/png; charset=binary`); the tools show the plain type.
+
 ## Deliberately NOT covered
 
-- Deleting anything
+- Deleting anything (also no deletion of files from the store: `entity_file_detach` only takes a file off a record)
 - Changing site parameters (`parameter`, secrets; `CUP_ONLY_MAP` in the REST API too). Reading them is `settings_get`, secrets hidden
 - API keys management, password changes
 - Plugins (they are code in `plugin/` registered in `plugin/installed.php`: enabling, installing and removing is a deployment, not data). A plugin can only ADD tools,
