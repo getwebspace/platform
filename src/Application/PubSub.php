@@ -58,6 +58,12 @@ class PubSub
                 'cup:catalog:product:create',
                 'cup:catalog:product:edit',
                 'cup:catalog:product:delete',
+                'cup:catalog:category:create',
+                'cup:catalog:category:edit',
+                'cup:catalog:category:delete',
+                'cup:publication:category:create',
+                'cup:publication:category:edit',
+                'cup:publication:category:delete',
                 'task:catalog:import',
             ],
             function ($data, $container): void {

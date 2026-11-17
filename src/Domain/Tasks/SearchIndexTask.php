@@ -2,11 +2,8 @@
 
 namespace App\Domain\Tasks;
 
-use App\Domain\AbstractService;
 use App\Domain\AbstractTask;
-use App\Domain\Service\Catalog\ProductService as CatalogProductService;
-use App\Domain\Service\Page\PageService;
-use App\Domain\Service\Publication\PublicationService;
+use App\Domain\Service\Search\SearchService;
 
 class SearchIndexTask extends AbstractTask
 {
@@ -19,66 +16,9 @@ class SearchIndexTask extends AbstractTask
 
     protected function action(array $args = []): void
     {
-        $services = [
-            'catalog_product' => $this->container->get(CatalogProductService::class),
-            'publication' => $this->container->get(PublicationService::class),
-            'page' => $this->container->get(PageService::class),
-        ];
+        $total = $this->container->get(SearchService::class)->reindex();
 
-        /**
-         * @var string $name
-         * @var AbstractService $service
-         */
-        foreach ($services as $name => $service) {
-            // an own engine for every index: the prepared statements of an engine stay with the first index it has made,
-            // the words of the next ones would be written to it (the pages were not found when the catalog had products)
-            /** @var \TeamTNT\TNTSearch\TNTSearch $tnt */
-            $tnt = $this->container instanceof \DI\FactoryInterface
-                ? $this->container->make(\TeamTNT\TNTSearch\TNTSearch::class)
-                : $this->container->get(\TeamTNT\TNTSearch\TNTSearch::class);
-
-            $indexer = $tnt->createIndex("{$name}.index", true);
-            $indexer->setPrimaryKey('uuid');
-            $indexer->setInMemory(false);
-            $indexer->setTokenizer(new \TeamTNT\TNTSearch\Support\Tokenizer());
-            $indexer->setStemmer(new \TeamTNT\TNTSearch\Stemmer\NoStemmer());
-            $indexer->setStopWords([]); // todo
-
-            $offset = 0;
-            $limit = 1000;
-
-            do {
-                $rows = $service->read([
-                    'status' => \App\Domain\Casts\Catalog\Status::WORK,
-                    'limit' => $limit,
-                    'offset' => $limit * $offset,
-                ]);
-
-                foreach ($rows as $row) {
-                    $fields = ['uuid', 'title', 'meta', 'description', 'extra', 'vendorcode', 'barcode', 'country', 'manufacturer', 'content'];
-                    $columns = array_intersect_key($row->toArray(), array_flip($fields));
-
-                    foreach ($columns as &$column) {
-                        if (is_array($column)) {
-                            $column = implode(' ', $column);
-                        }
-
-                        $column = strip_tags($column);
-                        $column = trim($column);
-                    }
-
-                    $indexer->insert($columns);
-                }
-
-                ++$offset;
-                $go = $rows->count() === $limit;
-            } while ($go === true);
-
-            $this->logger->info('SearchIndex: result', [
-                'name' => $name,
-                'total' => $indexer->totalDocumentsInCollection(),
-            ]);
-        }
+        $this->logger->info('SearchIndex: result', ['total' => $total]);
 
         $this->container->get(\App\Application\PubSub::class)->publish('task:search:indexed');
 

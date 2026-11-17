@@ -1708,6 +1708,8 @@ class McpTest extends TestCase
         $this->withSearchIndexAside(function (): void {
             $container = $this->getService(\Psr\Container\ContainerInterface::class);
             $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Goods', 'address' => 'goods']);
+            $this->getService(CatalogCategoryService::class)->create(['title' => 'Jackets and coats', 'address' => 'jackets']);
+            $this->getService(CatalogCategoryService::class)->create(['title' => 'Hidden jackets', 'address' => 'hidden-jackets', 'is_hidden' => true]);
             $this->makeProduct('Waterproof jacket', (string) $category->uuid, ['description' => 'Warm']);
             $this->makeProduct('Hidden jacket', (string) $category->uuid, ['status' => 'delete']);
             $this->getService(PageService::class)->create(['title' => 'About jackets', 'address' => 'about-jackets', 'content' => 'We sell jackets']);
@@ -1723,7 +1725,7 @@ class McpTest extends TestCase
             [$error, $result] = $this->tool($token, 'site_search', ['query' => 'jacket']);
             $this->assertFalse($error, json_encode($result));
             $this->assertSame(0, $result['count']);
-            $this->assertEqualsCanonicalizing(['catalog_product', 'publication', 'page'], $result['no_index_for']);
+            $this->assertEqualsCanonicalizing(['catalog_category', 'catalog_product', 'publication_category', 'publication', 'page'], $result['no_index_for']);
 
             // the index is built the way the worker does it
             $model = (new \App\Domain\Tasks\SearchIndexTask($container))->execute();
@@ -1738,6 +1740,8 @@ class McpTest extends TestCase
             $this->assertEquals('Waterproof jacket', $titles['catalog_product']);
             $this->assertEquals('About jackets', $titles['page']);
             $this->assertEquals('Jacket sale', $titles['publication']);
+            $this->assertEquals('Jackets and coats', $titles['catalog_category']);
+            $this->assertStringNotContainsString('Hidden jackets', json_encode($result), 'a hidden category is not found');
             $this->assertStringNotContainsString('secret draft', json_encode($result), 'a draft is not on the site yet');
             $this->assertStringNotContainsString('Hidden jacket', json_encode($result), 'a hidden product is not found');
             $this->assertStringContainsString('/catalog/', array_column($result['items'], 'url', 'kind')['catalog_product']);

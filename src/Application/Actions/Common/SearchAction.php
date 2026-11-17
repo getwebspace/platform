@@ -3,69 +3,42 @@
 namespace App\Application\Actions\Common;
 
 use App\Domain\AbstractAction;
-use App\Domain\Models\CatalogProduct;
-use App\Domain\Service\Catalog\ProductService as CatalogProductService;
-use App\Domain\Service\Page\PageService;
-use App\Domain\Service\Publication\PublicationService;
+use App\Domain\Service\Search\SearchService;
 
 class SearchAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $query = trim(str_escape(strip_tags($this->getParam('query', $this->getParam('q', '')))));
-        $index_type = $this->getParam('type', $this->getParam('t', ''));
-        $limit = (int) $this->getParam('limit', $this->parameter('search_limit', 10));
-        $result = collect();
+        $query = mb_trim(str_escape(strip_tags((string) $this->getParam('query', $this->getParam('q', '')))));
+        [$types] = SearchService::parseTypes($this->getParam('type', $this->getParam('t', '')));
+        $limit = max(1, min(100, (int) $this->getParam('limit', $this->parameter('search_limit', 10))));
+        $page = max(1, (int) $this->getParam('page', 1));
 
-        if ($query) {
-            /** @var \TeamTNT\TNTSearch\TNTSearch $tnt */
-            $tnt = $this->container->get(\TeamTNT\TNTSearch\TNTSearch::class);
-            $indexes = [
-                'page' => $this->container->get(PageService::class),
-                'publication' => $this->container->get(PublicationService::class),
-                'catalog_product' => $this->container->get(CatalogProductService::class),
-            ];
+        $found = $this->container->get(SearchService::class)->search($query, $types, $limit, ($page - 1) * $limit);
+        $items = collect($found['items']);
 
-            foreach ($indexes as $type => $service) {
-                if (!$index_type || $index_type === $type) {
-                    $tnt->selectIndex("{$type}.index");
-
-                    $found = $tnt->search($query, $limit);
-
-                    if ($found['ids']) {
-                        $scores = $found['docScores'];
-                        $models = $service
-                            ->read([
-                                'uuid' => $found['ids'],
-                                'status' => 'work',
-                                'limit' => $limit,
-                            ])
-                            ->sortByDesc(function ($model) use ($scores) {
-                                return $scores[$model->uuid] ?? -1;
-                            });
-
-                        $result = $result->merge($models);
-                    }
-                }
+        // links of the catalog start with its prefix, the themes build them from the address
+        $result = $items->map(function (array $item) {
+            if (str_starts_with($item['type'], 'catalog_')) {
+                $item['model']->address = 'catalog/' . $item['model']->address;
             }
 
-            // fix product address ..
-            $result = $result->each(function ($model) {
-                if ($model instanceof CatalogProduct) {
-                    $model->address = 'catalog/' . $model->address;
-                }
-
-                return $model;
-            });
-        }
+            return $item['model'];
+        });
 
         return $this
             ->respond($this->parameter('search_template', 'search.twig'), [
                 'query' => $query,
-                'index_type' => $index_type,
+                'index_type' => implode(',', $types),
+                'types' => $types,
+                'available_types' => SearchService::types(),
                 'result' => $result,
-                'count' => $result->count(),
+                'items' => $items,
+                'count' => $found['total'],
+                'counts' => $found['counts'],
                 'limit' => $limit,
+                'page' => $page,
+                'pages' => (int) ceil($found['total'] / $limit),
             ])
             ->withAddedHeader('X-Robots-Tag', 'noindex, nofollow');
     }

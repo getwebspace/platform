@@ -14,6 +14,7 @@ use App\Domain\Service\Publication\CategoryService as PublicationCategoryService
 use App\Domain\Service\Publication\PublicationService;
 use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\Review\ReviewService;
+use App\Domain\Service\Search\SearchService;
 use App\Domain\Service\Task\TaskService;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\SubscriberService as UserSubscriberService;
@@ -28,6 +29,9 @@ return function (ContainerBuilder $containerBuilder): void {
         CatalogCategoryService::class => \DI\autowire(CatalogCategoryService::class),
         CatalogOrderService::class => \DI\autowire(CatalogOrderService::class),
         CatalogProductService::class => \DI\autowire(CatalogProductService::class),
+
+        // search
+        SearchService::class => \DI\autowire(SearchService::class),
 
         // file
         FileService::class => \DI\autowire(FileService::class),
