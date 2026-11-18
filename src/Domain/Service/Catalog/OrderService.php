@@ -33,6 +33,7 @@ class OrderService extends AbstractService
 
             $this->failIfDropped($order, $data, 'email', new Exception\WrongEmailValueException());
             $this->failIfDropped($order, $data, 'phone', new Exception\WrongPhoneValueException());
+            $this->assertUserExists($order);
             $order->save();
 
             return $order;
@@ -117,6 +118,18 @@ class OrderService extends AbstractService
      *
      * @throws OrderNotFoundException
      */
+    /**
+     * An order of a customer who is not there is a row nobody can open from the customer's side
+     *
+     * @throws \App\Domain\Service\User\Exception\UserNotFoundException
+     */
+    private function assertUserExists(CatalogOrder $order): void
+    {
+        if (!blank($order->user_uuid) && !\App\Domain\Models\User::query()->whereKey($order->user_uuid)->exists()) {
+            throw new \App\Domain\Service\User\Exception\UserNotFoundException();
+        }
+    }
+
     public function update($entity, array $data = []): CatalogOrder
     {
         switch (true) {
@@ -132,6 +145,7 @@ class OrderService extends AbstractService
 
             $this->failIfDropped($entity, $data, 'email', new Exception\WrongEmailValueException());
             $this->failIfDropped($entity, $data, 'phone', new Exception\WrongPhoneValueException());
+            $this->assertUserExists($entity);
 
             $entity->save();
 

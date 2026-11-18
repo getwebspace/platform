@@ -8,7 +8,6 @@ use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
-use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Service\User\Exception\WrongPhoneValueException;
 use App\Domain\Service\User\Exception\WrongUsernameValueException;
 
@@ -59,8 +58,6 @@ class UserCreateAction extends UserAction
                 $this->addError('username', $e->getMessage());
                 $this->addError('email', $e->getMessage());
                 $this->addError('phone', $e->getMessage());
-            } catch (WrongPasswordException $e) {
-                $this->addError('password', $e->getMessage());
             } catch (UsernameAlreadyExistsException|WrongUsernameValueException $e) {
                 $this->addError('username', $e->getMessage());
             } catch (EmailAlreadyExistsException|EmailBannedException|WrongEmailValueException $e) {
