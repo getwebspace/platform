@@ -137,6 +137,40 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         self::$templateReady = true;
     }
 
+    /**
+     * Every route of the application as [name, pattern, methods]
+     *
+     * The routes are registered by public/index.php, the test container does not have them,
+     * so they are collected into an application of their own. The publication routes depend
+     * on the categories in the database, call this inside a test
+     *
+     * @return array<int, array{name: string, pattern: string, methods: string[]}>
+     */
+    protected function allRoutes(): array
+    {
+        static $routes;
+
+        if ($routes === null) {
+            $factory = new \Slim\Psr7\Factory\ResponseFactory();
+            $resolver = new \Slim\CallableResolver(static::$container);
+            $collector = new \Slim\Routing\RouteCollector($factory, $resolver, static::$container);
+            $app = new \Slim\App($factory, static::$container, $resolver, $collector);
+
+            (require SRC_DIR . '/routes.php')($app, static::$container);
+
+            $routes = [];
+            foreach ($collector->getRoutes() as $route) {
+                $routes[] = [
+                    'name' => (string) $route->getName(),
+                    'pattern' => $route->getPattern(),
+                    'methods' => $route->getMethods(),
+                ];
+            }
+        }
+
+        return $routes;
+    }
+
     protected function getService($class): mixed
     {
         return static::$container->get($class);

@@ -136,3 +136,20 @@ and the Excel export columns). Total coverage 64% -> ~72%.
 - The installer test is the only one that must not run in parallel with anything else.
 - Excel responses: write the body to a temp file and load it with PhpSpreadsheet.
 - Run the Cup suite alone with `phpunit tests/Cup`; the coverage script already merges php-fpm runs.
+
+## Done: batches 0 and 1 (2026-11-18)
+
+`tests/Concerns/UsesCup.php`, `tests/Cup/CupTestCase.php`, `tests/Cup/CupRoutesTest.php`, `TestCase::allRoutes()` (the route table
+collected into an application of its own, because `public/index.php` is the only place that registers routes).
+
+Every `cup:*` route opens as the administrator (the smoke test calls 58 of the 91 with real records in place of the placeholders),
+sends a stranger to `/cup/login?redirect=...` and a user without a group to `/cup/forbidden`, and none of those calls changes a record.
+A route that is neither opened by the smoke test nor listed in `NOT_BY_SMOKE` fails `testEveryRouteIsAccountedFor`.
+
+Found on the way, to be tested in their batches:
+- `cup:user:subscriber:add` catches only two exceptions: an empty address is a 500, and the error added by `addError()` is lost
+  by the redirect that follows (batch 4).
+- The menu (`navigation.twig`) only checks `cup:main`; every link is shown to everybody who may open the dashboard. Pinned (batch 1).
+- `cup:catalog:order:export` without `from` and `to` answers a 301 to nowhere in particular (batch 5).
+- `cup:reference:*` builds the template name from the address (`cup/reference/{entity}/index.twig`); an unknown kind is a 400 with the
+  template search path in the page when `DEBUG=1` (batch 3).
