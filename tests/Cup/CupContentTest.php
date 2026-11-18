@@ -233,6 +233,45 @@ class CupContentTest extends CupTestCase
     }
 
     #[DataProvider('entities')]
+    public function testSaveAndContinueOnTheEditFormStaysOnTheEditPage(string $name): void
+    {
+        $spec = $this->spec($name);
+        $uuid = $this->add($spec);
+
+        $response = $this->cup('POST', $this->path($spec, 'edit', $uuid), ['form_params' => ['save' => 'continue'] + $spec['changed'] + $spec['valid']]);
+
+        $this->assertRedirectsTo($response, $this->path($spec, 'edit', $uuid));
+        $this->assertSame($spec['changed'][$spec['column']], $spec['model']::find($uuid)->{$spec['column']});
+    }
+
+    #[DataProvider('entities')]
+    public function testAValueThatIsTakenByAnotherRecordIsRefusedOnTheEditFormToo(string $name): void
+    {
+        $spec = $this->spec($name);
+        if ($spec['unique'] === []) {
+            $this->addToAssertionCount(1);
+
+            return;
+        }
+        $first = $this->add($spec);
+
+        foreach ($spec['unique'] as $field) {
+            $other = array_map(fn ($value) => is_string($value) && !in_array($value, [$spec['valid']['category'] ?? null], true) ? $value . ' ' . uniqid() : $value, $spec['valid']);
+            $second = $this->add($spec, $other);
+
+            // the second one asks for what the first one has
+            $response = $this->cup('POST', $this->path($spec, 'edit', $second), ['form_params' => [$field => $spec['valid'][$field]] + $other]);
+
+            $this->assertSame(200, $response->getStatusCode(), $field . ' ' . $this->why($response));
+            $this->assertStringContainsString('has-error', (string) $response->getBody(), $field);
+            $this->assertNotSame($spec['valid'][$field], $spec['model']::find($second)->{$field}, $field);
+            $spec['model']::where('uuid', $second)->forceDelete();
+        }
+
+        $this->assertNotNull($spec['model']::find($first));
+    }
+
+    #[DataProvider('entities')]
     public function testTheEditFormKeepsTheRecordWhenARequiredValueIsMissing(string $name): void
     {
         $spec = $this->spec($name);

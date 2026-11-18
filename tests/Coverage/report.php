@@ -95,6 +95,31 @@ function literalSpans(string $file): array
         }
     }
 
+    // a call chain written on several lines is one statement as well
+    $statement = null;
+    $line = null;
+    foreach ($tokens as $i => $token) {
+        if ($token->line !== $line) {
+            $line = $token->line;
+
+            if ($token->is([T_OBJECT_OPERATOR, T_NULLSAFE_OBJECT_OPERATOR])) {
+                $statement ??= [$tokens[$i - 1]->line ?? $line, false];
+            } elseif ($statement !== null) {
+                if (!$statement[1]) {
+                    $spans[] = [$statement[0], $statement[2] ?? $line];
+                }
+                $statement = null;
+            }
+        }
+
+        if ($statement !== null) {
+            $statement[2] = $token->line;
+            if ($token->is([T_FUNCTION, T_FN, T_MATCH]) || $token->text === '{') {
+                $statement[1] = true;
+            }
+        }
+    }
+
     return $spans;
 }
 
