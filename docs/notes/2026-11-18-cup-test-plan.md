@@ -214,3 +214,14 @@ Found and fixed:
 - reviews: an edit could empty the text, set a rating of 99 or -3, or an unknown status (now: text required, rating 0..5, status kept)
 
 Pinned as it is: deleting a product category is a soft delete of its whole branch and products; an attribute delete also detaches it from products.
+
+## Done: batch 6 (2026-11-18)
+
+`tests/Cup/CupEditorTest.php` (27), `tests/Cup/CupToolsTest.php` (29: settings, task list and runner, log viewer, dashboard numbers computed by `App\Application\Dashboard` and checked exactly).
+
+Found and fixed:
+- the file editor could make and change any kind of file in the theme and in `public/resource` (served by the web server); it now writes only the kinds a theme has (`ThemeFiles::EDITABLE`, the same list as the MCP tools) and refuses names with hidden parts, odd characters or more than 120 letters. A ".php" address is answered by php-fpm itself and never reaches the editor, so this is defence in depth
+- the settings page followed `?return=` to any address, and choked on the security token field (a string where a group of settings was expected)
+- the task runner failed on a `params` that was not a list
+
+Observed, not changed: `ThemeFiles::clearTemplateCache()` removes every two-hex-digit folder of `var/cache`, which is also where the file cache keeps its entries (login throttle counters, form guard counters). Saving a template in the editor therefore resets them. Separate the template cache folder or limit the removal to compiled templates if that matters.
