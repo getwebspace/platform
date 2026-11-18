@@ -49,6 +49,8 @@ class CategoryUpdateAction extends CatalogAction
                             default:
                                 return $this->respondWithRedirect('/cup/catalog/category/' . $category->uuid . '/edit');
                         }
+                    } catch (\App\Domain\Service\Catalog\Exception\WrongParentValueException $e) {
+                        $this->addError('parent', $e->getMessage());
                     } catch (MissingTitleValueException|WrongTitleValueException $e) {
                         $this->addError('title', $e->getMessage());
                     } catch (AddressAlreadyExistsException $e) {

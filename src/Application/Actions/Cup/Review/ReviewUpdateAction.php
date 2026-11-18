@@ -25,24 +25,28 @@ class ReviewUpdateAction extends ReviewAction
                 $reply = $entry->getRelationValue('children')->first();
 
                 if ($this->isPost()) {
-                    $entry = $this->reviewService->update($entry, [
-                        'message' => $this->getParam('message', $entry->message),
-                        'rating' => (int) $this->getParam('rating', $entry->rating),
-                        'status' => $this->getParam('status', $entry->status),
-                    ]);
-                    /** @var \App\Domain\Models\Review $entry */
-                    $entry = $this->processEntityFiles($entry);
+                    try {
+                        $entry = $this->reviewService->update($entry, [
+                            'message' => $this->getParam('message', $entry->message),
+                            'rating' => (int) $this->getParam('rating', $entry->rating),
+                            'status' => $this->getParam('status', $entry->status),
+                        ]);
+                        /** @var \App\Domain\Models\Review $entry */
+                        $entry = $this->processEntityFiles($entry);
 
-                    $this->syncReply($entry, $reply, trim((string) $this->getParam('response', '')));
+                        $this->syncReply($entry, $reply, trim((string) $this->getParam('response', '')));
 
-                    $this->container->get(\App\Application\PubSub::class)->publish('cup:review:edit', $entry);
+                        $this->container->get(\App\Application\PubSub::class)->publish('cup:review:edit', $entry);
 
-                    switch (true) {
-                        case $this->getParam('save', 'exit') === 'exit':
-                            return $this->respondWithRedirect($context['path']);
+                        switch (true) {
+                            case $this->getParam('save', 'exit') === 'exit':
+                                return $this->respondWithRedirect($context['path']);
 
-                        default:
-                            return $this->respondWithRedirect($context['path'] . '/' . $entry->uuid . '/edit');
+                            default:
+                                return $this->respondWithRedirect($context['path'] . '/' . $entry->uuid . '/edit');
+                        }
+                    } catch (\App\Domain\Service\Review\Exception\MissingMessageValueException $e) {
+                        $this->addError('message', $e->getMessage());
                     }
                 }
 

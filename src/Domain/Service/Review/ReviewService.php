@@ -44,6 +44,7 @@ class ReviewService extends AbstractService
 
         $review = new Review();
         $review->fill($data);
+        $review->rating = max(0, min(5, (int) $review->rating));
 
         if (!$review->message) {
             throw new MissingMessageValueException();
@@ -140,6 +141,16 @@ class ReviewService extends AbstractService
 
         if (is_object($entity) && is_a($entity, Review::class)) {
             $entity->fill($data);
+
+            // the rules of a new entry: a text, a rating from nought to five, a status the site knows
+            if (!$entity->message) {
+                throw new MissingMessageValueException();
+            }
+            $entity->rating = max(0, min(5, (int) $entity->rating));
+            if (array_key_exists('status', $data) && blank($entity->status)) {
+                $entity->status = $entity->getOriginal('status');
+            }
+
             $entity->save();
 
             return $entity;

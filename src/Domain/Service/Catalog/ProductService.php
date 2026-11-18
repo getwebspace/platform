@@ -27,7 +27,8 @@ class ProductService extends AbstractService
             'attributes' => [],
             'relations' => [],
         ];
-        $data = array_merge($default, $data);
+        // a field the form did not send is null, which would replace the default of the record
+        $data = array_merge($default, array_filter($data, static fn (mixed $value): bool => $value !== null));
 
         $product = new CatalogProduct();
         $product->fill($data);
@@ -200,6 +201,14 @@ class ProductService extends AbstractService
 
         if (is_object($entity) && is_a($entity, CatalogProduct::class)) {
             $entity->fill($data);
+
+            // as when it was made: a title, and a category that exists
+            if (!$entity->title) {
+                throw new MissingTitleValueException();
+            }
+            if (!$entity->category_uuid || !\App\Domain\Models\CatalogCategory::query()->whereKey($entity->category_uuid)->exists()) {
+                throw new MissingCategoryValueException();
+            }
 
             // if address generation is enabled
             if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {

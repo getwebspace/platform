@@ -12,11 +12,15 @@ class ProductListAction extends CatalogAction
 
         if (!empty($this->args['category'])) {
             if (\Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
-                /** @var \App\Domain\Models\CatalogCategory $category */
-                $category = $this->catalogCategoryService->read([
-                    'uuid' => $this->resolveArg('category'),
-                    'status' => \App\Domain\Casts\Catalog\Status::WORK,
-                ]);
+                try {
+                    /** @var \App\Domain\Models\CatalogCategory $category */
+                    $category = $this->catalogCategoryService->read([
+                        'uuid' => $this->resolveArg('category'),
+                        'status' => \App\Domain\Casts\Catalog\Status::WORK,
+                    ]);
+                } catch (\App\Domain\Service\Catalog\Exception\CategoryNotFoundException $e) {
+                    return $this->respondWithRedirect('/cup/catalog/product');
+                }
             } else {
                 return $this->respondWithRedirect('/cup/catalog/product');
             }

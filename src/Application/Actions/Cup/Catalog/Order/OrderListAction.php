@@ -23,7 +23,8 @@ class OrderListAction extends CatalogAction
             'week' => [date(\App\Domain\References\Date::DATE, strtotime('-6 days')), $today],
             'month' => [date(\App\Domain\References\Date::DATE, strtotime('first day of this month')), $today],
             'all' => [null, null],
-            'custom' => [$custom['from'] ?? null ?: null, $custom['to'] ?? null ?: null],
+            // only a day is a day: anything else would reach the query as text to be parsed
+            'custom' => [$this->day($custom['from'] ?? null), $this->day($custom['to'] ?? null)],
             default => [date(\App\Domain\References\Date::DATE, strtotime('-30 days')), $today],
         };
         $period = $period ?: '30days';
@@ -57,5 +58,10 @@ class OrderListAction extends CatalogAction
             'payment' => $payment,
             'payment_list' => $this->referenceService->read(['type' => ReferenceType::PAYMENT, 'status' => true, 'order' => ['order' => 'asc']]),
         ]);
+    }
+
+    private function day(mixed $value): ?string
+    {
+        return is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) === 1 ? $value : null;
     }
 }

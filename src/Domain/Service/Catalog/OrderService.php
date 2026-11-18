@@ -194,11 +194,14 @@ class OrderService extends AbstractService
         $currentDate = datetime();
         $dayOfYear = mb_str_pad(strval((+$currentDate->format('z')) + 1), 3, '0', STR_PAD_LEFT);
         $year = $currentDate->format('y');
+        $prefix = "{$year}{$dayOfYear}";
 
-        $ordersCount = $this->getDayCount();
-        $dailyOrderNumberFormatted = mb_str_pad(strval($ordersCount), 3, '0', STR_PAD_LEFT);
+        // the next number after the last one of the day: counting the orders of the day gives a number
+        // that is already taken as soon as one of them is deleted or its date is changed
+        $last = CatalogOrder::query()->where('serial', 'like', $prefix . '%')->max('serial');
+        $next = $last === null ? 1 : ((int) substr((string) $last, mb_strlen($prefix))) + 1;
 
-        return "{$year}{$dayOfYear}{$dailyOrderNumberFormatted}";
+        return $prefix . mb_str_pad(strval($next), 3, '0', STR_PAD_LEFT);
     }
 
     private function products(array $products = []): array

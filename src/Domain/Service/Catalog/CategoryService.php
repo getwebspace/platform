@@ -25,7 +25,8 @@ class CategoryService extends AbstractService
         $default = [
             'attributes' => [],
         ];
-        $data = array_merge($default, $data);
+        // a field the form did not send is null, which would replace the default of the record
+        $data = array_merge($default, array_filter($data, static fn (mixed $value): bool => $value !== null));
 
         $category = new CatalogCategory();
         $category->fill($data);
@@ -53,7 +54,7 @@ class CategoryService extends AbstractService
 
         // get attributes from parent
         if (($attributes = $category->parent?->attributes)) {
-            $data['attributes'] = $attributes->pluck('uuid')->merge($data['attributes'] ?? [])->unique();
+            $data['attributes'] = $attributes->pluck('uuid')->merge($data['attributes'])->unique();
         }
 
         // sync attributes
@@ -147,6 +148,18 @@ class CategoryService extends AbstractService
 
         if (is_object($entity) && is_a($entity, CatalogCategory::class)) {
             $entity->fill($data);
+
+            // as when it was made: a category cannot be left without a title
+            if (!$entity->title) {
+                throw new MissingTitleValueException();
+            }
+
+            // the tree has no loops: a category is not under itself, nor under what is under it
+            if ($entity->isDirty('parent_uuid') && $entity->parent_uuid) {
+                if ($entity->parent_uuid === $entity->uuid || $entity->nested(true)->contains('uuid', $entity->parent_uuid)) {
+                    throw new \App\Domain\Service\Catalog\Exception\WrongParentValueException();
+                }
+            }
 
             // if address generation is enabled
             if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {

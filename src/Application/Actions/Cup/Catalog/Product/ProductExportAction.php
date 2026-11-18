@@ -52,6 +52,10 @@ class ProductExportAction extends CatalogAction
                     }
 
                     $category = $categories->firstWhere('uuid', $category);
+                    if ($category === null) {
+                        // a category that is not there: nothing to export
+                        return $this->respondWithRedirect($this->backTo('/cup/catalog/product'));
+                    }
                     $products = $this->catalogProductService->read([
                         'category_uuid' => $category->nested()->pluck('uuid')->all(),
                         'status' => \App\Domain\Casts\Catalog\Status::WORK,

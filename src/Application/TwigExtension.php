@@ -255,7 +255,30 @@ class TwigExtension extends AbstractExtension
 
     public function form($type, $name, $args = [])
     {
+        // the form helper writes the labels of a list as they are: a title that holds markup would run in the page
+        if (is_array($args) && isset($args['option']) && is_array($args['option'])) {
+            $args['option'] = $this->escapeOptions($args['option']);
+        }
+
         return form($type, $name, $args);
+    }
+
+    /**
+     * @param array<array-key, mixed> $options label by value, or groups of them
+     *
+     * @return array<array-key, mixed>
+     */
+    private function escapeOptions(array $options): array
+    {
+        return array_map(
+            fn (mixed $label): mixed => match (true) {
+                is_array($label) => $this->escapeOptions($label),
+                // an entity that is already written is not written twice
+                is_string($label) => htmlspecialchars($label, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', false),
+                default => $label,
+            },
+            $options
+        );
     }
 
     public function constant($reference, $value = null)

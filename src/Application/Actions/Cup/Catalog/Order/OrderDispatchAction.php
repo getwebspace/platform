@@ -9,13 +9,13 @@ class OrderDispatchAction extends CatalogAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('order') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('order'))) {
-            $order = $this->catalogOrderService->read(['uuid' => $this->resolveArg('order')]);
-
-            if ($order) {
+            try {
                 return $this->respondWithTemplate('cup/catalog/order/dispatch.twig', [
-                    'order' => $order,
+                    'order' => $this->catalogOrderService->read(['uuid' => $this->resolveArg('order')]),
                     'template' => $this->parameter('catalog_dispatch', ''),
                 ]);
+            } catch (\App\Domain\Service\Catalog\Exception\OrderNotFoundException $e) {
+                // nothing
             }
         }
 

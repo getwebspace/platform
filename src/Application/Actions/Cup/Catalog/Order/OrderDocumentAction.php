@@ -12,9 +12,8 @@ class OrderDocumentAction extends CatalogAction
             $this->resolveArg('order') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('order'))
             && $this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))
         ) {
-            $order = $this->catalogOrderService->read(['uuid' => $this->resolveArg('order')]);
-
-            if ($order) {
+            try {
+                $order = $this->catalogOrderService->read(['uuid' => $this->resolveArg('order')]);
                 $document = $this->referenceService->read(['uuid' => $this->resolveArg('uuid')]);
 
                 return $this->respondWithTemplate('cup/catalog/order/document-view.twig', [
@@ -22,6 +21,8 @@ class OrderDocumentAction extends CatalogAction
                     'document' => $document,
                     'template' => $document->value['template'] ?? '',
                 ]);
+            } catch (\App\Domain\Service\Catalog\Exception\OrderNotFoundException|\App\Domain\Service\Reference\Exception\ReferenceNotFoundException $e) {
+                // nothing
             }
         }
 

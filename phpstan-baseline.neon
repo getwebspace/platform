@@ -76,18 +76,6 @@ parameters:
 			message: '#^If condition is always true\.$#'
 			identifier: if.alwaysTrue
 			count: 1
-			path: src/Application/Actions/Cup/Catalog/Order/OrderDispatchAction.php
-
-		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
-			count: 1
-			path: src/Application/Actions/Cup/Catalog/Order/OrderDocumentAction.php
-
-		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
-			count: 1
 			path: src/Application/Actions/Cup/Catalog/Product/ProductDeleteAction.php
 
 		-
