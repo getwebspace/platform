@@ -452,7 +452,7 @@ class McpContentTest extends McpTestCase
         $about = array_column($result['items'], null, 'address')['about'] ?? null;
         $this->assertNotNull($about);
         $this->assertEquals(['title' => 'О нас', 'description' => 'Описание', 'keywords' => 'a, b'], $about['meta']);
-        $this->assertNotNull($about['date']);
+        $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}/', $about['date']);
 
         // a page without SEO fields shows empty ones - this is what an audit looks for
         [, $result] = $this->tool($token, 'page_list', ['search' => 'контакты']);
@@ -612,12 +612,12 @@ class McpContentTest extends McpTestCase
         [, $result] = $this->tool($token, 'form_list');
         $this->assertEquals('feedback', $result[0]['address']);
         $this->assertEquals(1, $result[0]['submissions']);
-        $this->assertNotNull($result[0]['last_submission']);
+        $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}/', $result[0]['last_submission']);
         $this->assertContains('boss@example.com', $result[0]['recipients']);
 
         // the index is rebuilt by a background task: here it is only started (no worker in the tests)
         [, $result] = $this->tool($token, 'site_reindex');
-        $this->assertNotEmpty($result['task']);
+        $this->assertTrue(\Ramsey\Uuid\Uuid::isValid($result['task']), 'the id of the queued task');
         $this->assertEquals('queue', $result['status']);
         $this->assertEquals(\App\Domain\Tasks\SearchIndexTask::class, $this->getService(\App\Domain\Service\Task\TaskService::class)->read(['uuid' => $result['task']])->action);
         [$error] = $this->tool($token, 'site_search', ['query' => ' ']);
@@ -627,7 +627,7 @@ class McpContentTest extends McpTestCase
 
         // health
         [, $result] = $this->tool($token, 'site_health');
-        $this->assertNotEmpty($result['php']);
+        $this->assertSame(PHP_VERSION, $result['php']);
         $this->assertEquals('sqlite', $result['database']['driver']);
         $this->assertArrayHasKey('queued', $result['tasks']);
         $this->assertArrayHasKey('errors_in_the_last_file', $result['logs']);
