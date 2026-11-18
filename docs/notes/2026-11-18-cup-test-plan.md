@@ -171,3 +171,14 @@ Found and fixed on the way:
 - publication, category, guest book and user actions answered a form post with a permanent 301
 
 Still open from the list of decisions: CSRF, `TaskRunAction`, Referer redirects of import/export, form data preview.
+
+## Done: batch 4 (2026-11-18)
+
+`tests/Cup/CupUsersTest.php` (34): list states, search (non-Latin, phone, case), group filter; add, edit, view, delete of accounts; subscribers; newsletter; group deletion.
+
+Found and fixed: the view page of an unknown account was a 500; an account could be edited into one with no username, e-mail or phone
+(nobody can sign in to it); an empty or malformed subscriber address was a 500 or an error lost by the redirect; a newsletter without a subject, a text
+or a known audience was queued anyway.
+
+Pinned, to be decided (nothing stops them today): an administrator can delete or block himself and the panel closes at the next request;
+deleting a group leaves its members in a group that does not exist (no access at all).
