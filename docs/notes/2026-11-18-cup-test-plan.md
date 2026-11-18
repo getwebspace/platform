@@ -153,3 +153,21 @@ Found on the way, to be tested in their batches:
 - `cup:catalog:order:export` without `from` and `to` answers a 301 to nowhere in particular (batch 5).
 - `cup:reference:*` builds the template name from the address (`cup/reference/{entity}/index.twig`); an unknown kind is a 400 with the
   template search path in the page when `DEBUG=1` (batch 3).
+
+## Done: batches 2 and 3 (2026-11-18)
+
+`tests/Cup/CupLoginTest.php` (16), `tests/Cup/CupInstallerTest.php` (11; moves `var/.lock` aside and puts it back, heals a killed run),
+`tests/Cup/CupContentTest.php` (104: seven entities through one table of questions, plus API keys, groups, forms, guest book, references, files).
+
+Found and fixed on the way:
+- a failed login printed the submitted password back into the page (`value="..."`); `cup/form.twig` now writes password inputs by hand
+- the editing forms did not check the title (page, publication, category, form, group, reference could be saved without one) - `update()` now does what `create()` does
+- a publication or a product could be created with a category that does not exist (SQLite does not enforce the key)
+- taking the last file off a page, publication or review was ignored (`processEntityFiles` only saved a non-empty list)
+- the status of an API key was taken from the request as is; an unknown value emptied it
+- a guest book entry could be saved without name, e-mail or message, and a bad address was dropped silently: the service validates on update, the action reports it
+- `Meta`, `Sort`, `Json`, `Dimension`, `Company`, `Legal`, `Messenger` casts and the form `origin`/`mailto` accessors failed on null, so a record saved from a partial form could not be opened again (500)
+- reference delete redirected to the `Referer` as is, and was a 500 without one
+- publication, category, guest book and user actions answered a form post with a permanent 301
+
+Still open from the list of decisions: CSRF, `TaskRunAction`, Referer redirects of import/export, form data preview.

@@ -37,6 +37,21 @@ trait MakesAuthRequests
         return $response->getStatusCode() . ': ' . mb_substr($text, 0, 500);
     }
 
+    /**
+     * @return array<string, string> the cookies a response sets, by name
+     */
+    protected function cookiesOf(ResponseInterface $response): array
+    {
+        $cookies = [];
+        foreach ($response->getHeader('Set-Cookie') as $line) {
+            [$pair] = explode(';', $line, 2);
+            [$name, $value] = array_pad(explode('=', $pair, 2), 2, '');
+            $cookies[$name] = $value;
+        }
+
+        return $cookies;
+    }
+
     protected function json(ResponseInterface $response): array
     {
         $decoded = json_decode((string) $response->getBody(), true);
@@ -47,11 +62,17 @@ trait MakesAuthRequests
     protected function makeUser(array $data = []): User
     {
         static $counter = 0;
+        static $run = null;
         ++$counter;
 
+        // login attempts are counted in a file cache that outlives the test run: another run
+        // must not meet the failures of this one under the same name
+        $run ??= bin2hex(random_bytes(3));
+        $name = 'user' . $run . $counter;
+
         return $this->getService(UserService::class)->create($data + [
-            'username' => 'user' . $counter,
-            'email' => 'user' . $counter . '@example.com',
+            'username' => $name,
+            'email' => $name . '@example.com',
             'password' => self::PASSWORD,
             'status' => UserStatus::WORK,
         ]);

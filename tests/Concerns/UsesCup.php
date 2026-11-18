@@ -34,10 +34,10 @@ trait UsesCup
 
     private ?array $cupCookie = null;
 
-    private ?array $cupFixtures = null;
+    protected ?array $cupFixtures = null;
 
     /** @var string[] files to remove after the test */
-    private array $cupFiles = [];
+    protected array $cupFiles = [];
 
     protected function cupTearDown(): void
     {
