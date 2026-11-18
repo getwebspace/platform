@@ -20,7 +20,7 @@ class NewOrdersPrompt extends AbstractMcpPrompt
 
     public function render(array $args = []): string
     {
-        $status = trim((string) ($args['status'] ?? ''));
+        $status = $this->text($args, 'status');
 
         return "Help me handle the new orders of the shop.\n\n"
             . "1. Call reference_list with type=order_status to learn the statuses of this shop.\n"

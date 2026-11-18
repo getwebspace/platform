@@ -199,7 +199,8 @@ abstract class AbstractAction
 
             $flags = ($_ENV['DEBUG'] ?? false) ? JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT : JSON_UNESCAPED_UNICODE;
 
-            $result = new Response($error['code']);
+            // an exception without a status of its own (code 0) is a server error, not an invalid response
+            $result = new Response($error['code'] >= 100 && $error['code'] <= 599 ? $error['code'] : 500);
             $result->getBody()->write(json_encode($error, $flags));
             $result = $result->withHeader('Content-Type', 'application/json');
         }

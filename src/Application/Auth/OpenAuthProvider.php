@@ -82,12 +82,27 @@ class OpenAuthProvider extends AbstractAuthProvider
                 $provider = class_basename($this->plugin);
                 $info = $this->plugin->getInfo(['access_token' => $token]);
 
+                // without the identity at the provider nobody can be told from anybody (and a lookup without it lists everyone)
+                if (!is_array($info) || blank($info['unique'] ?? null)) {
+                    throw new \Exception('The provider did not say who the user is.');
+                }
+
                 try {
                     $user = $this->userService->read([
                         'provider' => $provider,
                         'unique' => $info['unique'],
                     ]);
+
+                    // an account that was blocked or removed stays out, the same as for a password
+                    if ($user->status !== \App\Domain\Casts\User\Status::WORK) {
+                        throw new UserNotFoundException();
+                    }
                 } catch (UserNotFoundException $e) {
+                    // a known account that is no longer allowed in is not a new account to be made
+                    if (isset($user) && $user instanceof User) {
+                        throw $e;
+                    }
+
                     $data = [
                         'username' => $info['username'] ?? '',
                         'email' => $info['email'] ?? '',

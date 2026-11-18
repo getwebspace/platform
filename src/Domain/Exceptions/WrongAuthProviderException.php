@@ -11,4 +11,7 @@ class WrongAuthProviderException extends AbstractHttpException
     protected string $description = 'Not found';
 
     protected $message = 'EXCEPTION_WRONG_AUTH_PROVIDER';
+
+    // the name of a provider comes from the request
+    protected $code = 400;
 }

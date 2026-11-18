@@ -21,8 +21,8 @@ class WritePublicationPrompt extends AbstractMcpPrompt
 
     public function render(array $args = []): string
     {
-        $topic = trim((string) ($args['topic'] ?? ''));
-        $category = trim((string) ($args['category'] ?? ''));
+        $topic = $this->text($args, 'topic');
+        $category = $this->text($args, 'category');
 
         if ($topic === '') {
             throw new \InvalidArgumentException('Argument topic is required');

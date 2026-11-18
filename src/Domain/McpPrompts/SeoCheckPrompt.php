@@ -20,7 +20,7 @@ class SeoCheckPrompt extends AbstractMcpPrompt
 
     public function render(array $args = []): string
     {
-        $entity = trim((string) ($args['entity'] ?? ''));
+        $entity = $this->text($args, 'entity');
 
         return 'Check the SEO fields of the site' . ($entity !== '' ? " (only: {$entity})" : '') . " and help me fix them.\n\n"
             . '1. Call seo_audit' . ($entity !== '' ? " with entity={$entity}" : '') . ". Give me a short summary: how many records of every kind have each problem.\n"

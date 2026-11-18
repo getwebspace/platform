@@ -21,8 +21,8 @@ class EditTemplatePrompt extends AbstractMcpPrompt
 
     public function render(array $args = []): string
     {
-        $task = trim((string) ($args['task'] ?? ''));
-        $file = trim((string) ($args['file'] ?? ''));
+        $task = $this->text($args, 'task');
+        $file = $this->text($args, 'file');
 
         if ($task === '') {
             throw new \InvalidArgumentException('Argument task is required');

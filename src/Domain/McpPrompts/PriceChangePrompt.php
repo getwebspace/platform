@@ -21,8 +21,8 @@ class PriceChangePrompt extends AbstractMcpPrompt
 
     public function render(array $args = []): string
     {
-        $category = trim((string) ($args['category'] ?? ''));
-        $change = trim((string) ($args['change'] ?? ''));
+        $category = $this->text($args, 'category');
+        $change = $this->text($args, 'change');
 
         if ($category === '' || $change === '') {
             throw new \InvalidArgumentException('Arguments category and change are required');

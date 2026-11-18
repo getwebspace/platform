@@ -77,6 +77,16 @@ abstract class AbstractMcpPrompt
     abstract public function render(array $args = []): string;
 
     /**
+     * One argument as trimmed text: a client may send a list or an object where text is expected, that is no text
+     */
+    protected function text(array $args, string $name): string
+    {
+        $value = $args[$name] ?? '';
+
+        return is_scalar($value) ? trim((string) $value) : '';
+    }
+
+    /**
      * Rules every scenario ends with: the model must not act on its own
      */
     protected function rules(): string
