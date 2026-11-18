@@ -363,4 +363,57 @@ class ServiceEdgeCasesTest extends TestCase
         $this->expectException(\App\Domain\Service\Publication\Exception\TitleAlreadyExistsException::class);
         $categories->create(['title' => 'Blog', 'address' => 'other']);
     }
+
+    public function testAnOrderGetsAFreshSerialAfterAnotherOfTheDayWasDeleted(): void
+    {
+        $orders = $this->getService(\App\Domain\Service\Catalog\OrderService::class);
+        $make = fn () => $orders->create(['email' => 'buyer@example.com', 'phone' => '+380501234567', 'delivery' => ['address' => 'x']]);
+
+        $first = $make();
+        $second = $make();
+        $third = $make();
+        $orders->delete($first);
+
+        $fourth = $make();
+
+        $serials = [$second->serial, $third->serial, $fourth->serial];
+        $this->assertSame($serials, array_unique($serials), 'a serial is never given twice');
+        $this->assertGreaterThan((int) substr($third->serial, -3), (int) substr($fourth->serial, -3), 'the number only goes forward');
+    }
+
+    public function testAProductAndACategoryAreHeldToTheirRulesOnUpdate(): void
+    {
+        $categories = $this->getService(CatalogCategoryService::class);
+        $products = $this->getService(ProductService::class);
+        $top = $categories->create(['title' => 'Top', 'address' => 'top', 'is_allow_nested' => true]);
+        $child = $categories->create(['title' => 'Child', 'address' => 'child', 'parent_uuid' => $top->uuid]);
+        $product = $products->create(['title' => 'Item', 'address' => 'top/item', 'category_uuid' => $top->uuid, 'type' => 'product']);
+
+        foreach ([['title' => ''], ['category_uuid' => null], ['category_uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString()]] as $change) {
+            try {
+                $products->update($products->read(['uuid' => $product->uuid]), $change);
+                $this->fail('refused: ' . json_encode($change));
+            } catch (\App\Domain\Service\Catalog\Exception\MissingTitleValueException|\App\Domain\Service\Catalog\Exception\MissingCategoryValueException) {
+                $this->addToAssertionCount(1);
+            }
+        }
+
+        $this->expectException(\App\Domain\Service\Catalog\Exception\WrongParentValueException::class);
+        $categories->update($categories->read(['uuid' => $top->uuid]), ['parent_uuid' => $child->uuid]);
+    }
+
+    public function testAReviewKeepsItsTextRatingAndStatusRules(): void
+    {
+        $pages = $this->getService(PageService::class)->create(['title' => 'Subject', 'address' => 'subject', 'content' => 'x']);
+        $reviews = $this->getService(\App\Domain\Service\Review\ReviewService::class);
+        $review = $reviews->create(['type' => 'review', 'entity_type' => 'publication', 'entity_uuid' => $pages->uuid, 'message' => 'Fine', 'rating' => 9]);
+
+        $this->assertSame(5, $review->rating, 'five is the most');
+        $this->assertSame(0, $reviews->update($review, ['rating' => -4])->rating);
+        $this->assertSame('work', $reviews->update($review, ['status' => 'work'])->status);
+        $this->assertSame('work', $reviews->update($review, ['status' => 'no-such-status'])->status, 'an unknown status changes nothing');
+
+        $this->expectException(\App\Domain\Service\Review\Exception\MissingMessageValueException::class);
+        $reviews->update($review, ['message' => '']);
+    }
 }

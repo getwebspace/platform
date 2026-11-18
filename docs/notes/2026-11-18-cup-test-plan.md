@@ -196,3 +196,21 @@ deleting a group leaves its members in a group that does not exist (no access at
 5. **An administrator cannot delete the account he is signed in with**, and **a group with members (working, blocked or waiting) cannot be deleted**; the group list counts the same members.
 
 Tests: `tests/Cup/CupSecurityTest.php` (24). Other Cup tests send the token like the page's script does (`UsesCup::cup()`), `testNothingIsDeletedByAGetRequest` covers 19 delete routes.
+
+## Done: batch 5 (2026-11-18)
+
+`tests/Cup/CupCatalogTest.php` (27: categories, attributes, products), `tests/Cup/CupOrdersTest.php` (29: list, form, documents, dispatch, statistics, Excel in and out),
+`tests/Cup/CupReviewsTest.php` (30: the three kinds through one set of questions), three more in `ServiceEdgeCasesTest`.
+
+Found and fixed:
+- an order serial was "orders today + 1": after one of the day's orders was deleted the next order got a taken serial and failed with a unique-key error (500); it is now the last serial of the day + 1
+- the order export filtered by a column that does not exist (`status`, it is `status_uuid`: a 500 with any status), and dropped the orders of the last day of the period when only a date was given
+- the product export of a category that is not there was a fatal error; the list of products of an unknown category was a 500
+- a category could be put under itself or under its own descendant: the tree became a loop (`nested()` never ended)
+- category and product `update()` accepted an empty title; a product could be moved to a category that does not exist
+- nulls from a form replaced the defaults of a new category or product (`external_id` NULL instead of ''), so the "address is taken" check never matched: two categories with the same address
+- select lists wrote their labels as they are (a category title with markup ran in the product form): `TwigExtension::form()` escapes the options
+- a document or the dispatch page of an unknown order was a 500; a custom period of the order list with a bad date was a 500
+- reviews: an edit could empty the text, set a rating of 99 or -3, or an unknown status (now: text required, rating 0..5, status kept)
+
+Pinned as it is: deleting a product category is a soft delete of its whole branch and products; an attribute delete also detaches it from products.
