@@ -236,3 +236,15 @@ Found and fixed:
 - form submissions were read by their own id under any form's address (a submission shown, deleted or restored through the wrong form); an unknown form or submission was a 500
 
 The tests that cover the first two were run without the fixes to make sure they fail: they do, and the run removed the upload folder of the test instance - that is the bug.
+
+## Done: McpPrompts and OAuth (2026-11-18)
+
+`tests/Domain/McpPromptsTest.php` (one set of questions for each of the ten scenarios plus the periods, the price parser and the options), `tests/API/Mcp/McpPromptsTest.php` (through the endpoint, for a key), `tests/Application/OpenAuthProviderTest.php` (a fake plugin drives the provider).
+
+Found and fixed:
+- an account that was blocked, removed or waiting for confirmation could sign in through an OAuth provider (the lookup by provider and identity does not look at the status); it is refused now, and no second account is made for it
+- a provider that answered without an identity made the lookup list every user and return a collection instead of a user; refused now
+- a prompt argument sent as a list or an object turned into "Array" in the text and a PHP warning (`AbstractMcpPrompt::text()`)
+- an unknown `provider` in the request ended in "Invalid HTTP status code" (a 500): `WrongAuthProviderException` has the code 400, and any exception without a status of its own is answered with a 500 instead of an invalid response
+
+Pinned as it is: an e-mail that belongs to an existing account is not linked to the provider's identity (the sign in fails, nobody is taken over).
