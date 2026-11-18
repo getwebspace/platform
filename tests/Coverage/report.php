@@ -5,7 +5,9 @@
  * lines php-fpm executed while serving the API tests, and prints the coverage
  * by directory
  *
- * php report.php <clover.xml> <fpm-dir> [--min=<percent>]
+ * php report.php <clover.xml> <fpm-dir> [--min=<percent>] [--list=<regex>]
+ *
+ * --list prints, for the files whose path under src/ matches the expression, the lines nobody executed
  */
 [, $cloverFile, $fpmDir] = $argv + [null, null, null];
 
@@ -15,9 +17,13 @@ if (!$cloverFile || !$fpmDir || !is_file($cloverFile)) {
 }
 
 $min = null;
+$list = null;
 foreach ($argv as $arg) {
     if (str_starts_with($arg, '--min=')) {
         $min = (float) substr($arg, 6);
+    }
+    if (str_starts_with($arg, '--list=')) {
+        $list = substr($arg, 7);
     }
 }
 
@@ -49,6 +55,32 @@ foreach (glob(rtrim($fpmDir, '/') . '/*.json') ?: [] as $json) {
             $byFpm[$name][$number] = true;
         }
     }
+}
+
+if ($list !== null) {
+    foreach ($executable as $name => $lines) {
+        $relative = str_replace('/var/container/src/', '', $name);
+        if (preg_match('#' . $list . '#', $relative) !== 1) {
+            continue;
+        }
+
+        $missing = array_keys(array_filter($lines, static fn ($_, int $number): bool => !isset($byTests[$name][$number]) && !isset($byFpm[$name][$number]), ARRAY_FILTER_USE_BOTH));
+        sort($missing);
+
+        // 3,4,5,9 => 3-5,9
+        $ranges = [];
+        foreach ($missing as $number) {
+            if ($ranges && $number === end($ranges)[1] + 1) {
+                $ranges[array_key_last($ranges)][1] = $number;
+            } else {
+                $ranges[] = [$number, $number];
+            }
+        }
+
+        printf("%-45s %3d of %-3d  %s\n", $relative, count($missing), count($lines), implode(',', array_map(static fn (array $r): string => $r[0] === $r[1] ? (string) $r[0] : $r[0] . '-' . $r[1], $ranges)));
+    }
+
+    echo "\n";
 }
 
 $groups = [];
