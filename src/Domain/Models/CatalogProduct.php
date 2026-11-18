@@ -261,11 +261,11 @@ class CatalogProduct extends Model
     {
         $price = $this::query()
             ->from('catalog_order_product as cop')
+            // the price of one piece as the order counts it: the discount (kept negative in the line) comes off first, never below nothing,
+            // then the tax that is not included in the price goes on top, the same as App\Application\Dashboard::lineSql() for the sum
             ->selectRaw('MIN(
-                    CASE
-                        WHEN cop.tax_included = false THEN (cop.price * (1 + cop.tax / 100) - cop.discount)
-                        ELSE (cop.price - cop.discount)
-                    END
+                    (CASE WHEN cop.price - ABS(cop.discount) > 0 THEN cop.price - ABS(cop.discount) ELSE 0 END)
+                    * (CASE WHEN cop.tax_included = false AND cop.tax > 0 THEN 1 + cop.tax / 100 ELSE 1 END)
                 ) as lowest')
             ->leftJoin('catalog_order as co', 'cop.order_uuid', '=', 'co.uuid')
             ->where('cop.product_uuid', $this->uuid)

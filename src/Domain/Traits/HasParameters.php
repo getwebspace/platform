@@ -52,6 +52,9 @@ trait HasParameters
             $parameterService->create(['name' => $name, 'value' => $value]);
         }
 
+        // the cached list is stale now: a second call for a new name would try to create it again
+        $this->arrayCache->forget('params');
+
         return [$name => $value];
     }
 

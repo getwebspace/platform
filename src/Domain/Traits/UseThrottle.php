@@ -15,7 +15,8 @@ trait UseThrottle
 {
     protected function isThrottled(string $scope, string $identifier, string $ip): bool
     {
-        return $this->throttleCount($scope, $identifier, $ip) >= $this->throttleLimit();
+        // a limit of 0 switches the protection off (throttleHit counts nothing then), it must not block everybody
+        return ($limit = $this->throttleLimit()) > 0 && $this->throttleCount($scope, $identifier, $ip) >= $limit;
     }
 
     protected function throttleHit(string $scope, string $identifier, string $ip): void

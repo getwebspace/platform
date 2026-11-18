@@ -9,9 +9,9 @@ trait HasStorage
      */
     protected static array $storage = [];
 
-    protected static function hasStorage(string $key, bool $strict = false): bool
+    protected static function hasStorage(string $key, ?string $namespace = null): bool
     {
-        return in_array($key, static::$storage, true);
+        return isset(self::$storage[$namespace]) && array_key_exists($key, self::$storage[$namespace]);
     }
 
     protected static function setStorage(string $key, mixed $value, ?string $namespace = null): mixed

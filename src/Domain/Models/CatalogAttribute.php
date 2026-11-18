@@ -101,7 +101,8 @@ class CatalogAttribute extends Model
 
     public function value(): mixed
     {
-        if ($this->pivot && $this->pivot->value) {
+        // "0" is a value too (no warranty, zero items), only a missing or empty one is not
+        if ($this->pivot && $this->pivot->value !== null && $this->pivot->value !== '') {
             switch ($this->type) {
                 case \App\Domain\Casts\Catalog\Attribute\Type::BOOLEAN:
                     return $this->pivot->value === 'yes';

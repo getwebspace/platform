@@ -31,10 +31,10 @@ trait HasFiles
 
     public function documents(): MorphToMany
     {
+        // grouped: a bare orWhere would drop the condition that the file is this record's own
         return $this
             ->files()
-            ->where('type', 'like', 'application/%')
-            ->orWhere('type', 'like', 'text/%');
+            ->where(fn ($query) => $query->where('type', 'like', 'application/%')->orWhere('type', 'like', 'text/%'));
     }
 
     public function images(): MorphToMany
