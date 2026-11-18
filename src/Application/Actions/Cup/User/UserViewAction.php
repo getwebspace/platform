@@ -6,13 +6,13 @@ class UserViewAction extends UserAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        if ($this->resolveArg('uuid')) {
-            $user = $this->userService->read(['uuid' => $this->resolveArg('uuid')]);
-
-            if ($user) {
+        if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
+            try {
                 return $this->respondWithTemplate('cup/user/view.twig', [
-                    'item' => $user,
+                    'item' => $this->userService->read(['uuid' => $this->resolveArg('uuid')]),
                 ]);
+            } catch (\App\Domain\Service\User\Exception\UserNotFoundException $e) {
+                // nothing
             }
         }
 

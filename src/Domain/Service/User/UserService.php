@@ -243,6 +243,11 @@ class UserService extends AbstractService
             $this->failIfDropped($entity, $data, 'email', new WrongEmailValueException());
             $this->failIfDropped($entity, $data, 'phone', new WrongPhoneValueException());
 
+            // as when it was made: without a username, an e-mail or a phone nobody can sign in to the account
+            if (!$entity->username && !$entity->email && !$entity->phone) {
+                throw new MissingUniqueValueException();
+            }
+
             if ($entity->isDirty('username')) {
                 $found = User::firstWhere(['username' => $entity->username]);
 

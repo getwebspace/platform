@@ -9,17 +9,34 @@ class CreateAction extends UserAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->isPost()) {
-            $task = new \App\Domain\Tasks\SendNewsLetterMailTask($this->container);
-            $task->execute([
-                'subject' => $this->getParam('subject'),
-                'body' => $this->getParam('body'),
-                'type' => $this->getParam('type'),
-            ]);
+            $subject = trim((string) $this->getParam('subject', ''));
+            $body = trim((string) $this->getParam('body', ''));
+            $type = (string) $this->getParam('type', '');
 
-            // run worker
-            \App\Domain\AbstractTask::worker($task);
+            // a letter without a subject, a text or a known audience would be "sent" to nobody, or to everybody empty
+            if ($subject === '') {
+                $this->addError('subject', 'EXCEPTION_TITLE_MISSING');
+            }
+            if ($body === '') {
+                $this->addError('body', 'EXCEPTION_MESSAGE_MISSING');
+            }
+            if (!in_array($type, \App\Domain\References\User::NEWSLETTER_TYPE, true)) {
+                $this->addError('type', 'EXCEPTION_WRONG_TYPE');
+            }
 
-            return $this->respondWithRedirect('/cup/user/newsletter');
+            if (!$this->hasError()) {
+                $task = new \App\Domain\Tasks\SendNewsLetterMailTask($this->container);
+                $task->execute([
+                    'subject' => $subject,
+                    'body' => $body,
+                    'type' => $type,
+                ]);
+
+                // run worker
+                \App\Domain\AbstractTask::worker($task);
+
+                return $this->respondWithRedirect('/cup/user/newsletter');
+            }
         }
 
         return $this->respondWithTemplate('cup/user/newsletter/form.twig');
