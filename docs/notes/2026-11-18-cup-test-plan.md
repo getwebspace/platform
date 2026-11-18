@@ -286,3 +286,14 @@ Found and fixed:
 The repository theme `theme/default` has no pages of the visitor's account (they live in the separate default theme project), so `CommonRemainsTest` makes a small theme of its own for the tests of form errors and removes it after.
 
 Left alone: the payment through a plugin in the cart (the plugin's business), and the "cannot write" branches of the file editor (the web server of the dev container is root, so a folder cannot be made unwritable for it).
+
+## Done: base classes of Domain and the small services (2026-11-18)
+
+`tests/Domain/AbstractClassesTest.php` (exceptions, extension, middleware, cron matching, a plugin over a container of its own, the events of `PubSub` and the letters they queue), `tests/Domain/AbstractActionTest.php` (the request, the answer by format, errors of an action as answers, the files of a record), `tests/Application/SmallPiecesTest.php` (Csrf, FormGuard tokens, Auth with an unknown provider, the dashboard), more in `TwigExtensionTest`.
+
+Found and fixed:
+- `PubSub` called `$order->getEmail()`, which the model does not have: with the letter to the customer switched on every new order ended in an error
+- `plugin/TinkoffPayment` was written for the old entities (`getSerial()`, `getTotalPrice()`, `getProducts()`, classes of `App\Domain\Entities` that are gone); it uses the model now (the plugin is outside this repository)
+- `current_path()` of Twig returned the whole address with the host, not the path its description promises
+
+Left alone: the branches that need a worker started from the shell (`AbstractTask::worker` without `TEST`), the non-sqlite branches of `AbstractService::lowerFunction`, the OAuth plugin registration in `Auth` (it would put a plugin into the container the tests share), and the "cannot write" branches of `ThemeFiles` and `EntityFiles` (the dev container runs as root).

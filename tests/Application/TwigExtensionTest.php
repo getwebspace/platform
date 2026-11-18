@@ -374,4 +374,57 @@ class TwigExtensionTest extends TestCase
         $this->assertSame('2', $this->render('{{ catalog_order()|length }}'));
         $this->assertSame('1', $this->render('{{ catalog_order({}, {date: "desc"}, 1)|length }}'));
     }
+
+    public function testTheHostFallsBackToLocalhostWithoutARequest(): void
+    {
+        unset($_SERVER['HTTP_HOST'], $_SERVER['REQUEST_SCHEME']);
+
+        $_SERVER['REQUEST_URI'] = '/page';
+
+        $this->assertSame('http://localhost/page', $this->render('{{ current_url() }}'));
+    }
+
+    public function testTheExtensionHasAName(): void
+    {
+        $this->assertSame('wse', (new \App\Application\TwigExtension($this->getService(\Psr\Container\ContainerInterface::class)))->getName());
+    }
+
+    public function testTheCurrentPathIsComparedAndCutWithoutItsQuery(): void
+    {
+        $_SERVER['REQUEST_URI'] = '/blog/news?sort=date';
+
+        $this->assertSame('blog/news', $this->render('{{ current_path() }}'));
+        $this->assertSame('blog/news?sort=date', $this->render('{{ current_path(true) }}'));
+    }
+
+    public function testAValueOfAConstantIsReadByItsKeyOrWhole(): void
+    {
+        $this->assertSame('fallback', $this->render("{{ constant('No/Such/Thing', 'fallback') }}"));
+    }
+
+    public function testFilesAndAttributesCanBeListedFromATemplate(): void
+    {
+        $this->getService(\App\Domain\Service\Catalog\AttributeService::class)->create(['title' => 'Color', 'address' => 'color', 'type' => 'string']);
+        $path = CACHE_DIR . '/' . md5(uniqid('', true)) . '.txt';
+        file_put_contents($path, 'words');
+        $file = $this->getService(\App\Domain\Service\File\FileService::class)->createFromPath($path, 'notes.txt');
+
+        try {
+            $this->assertSame('1', $this->render('{{ file()|length }}'));
+            $this->assertSame('notes', $this->render('{{ file({}, {date: "asc"}, 1).first().name }}'));
+            $this->assertSame('1', $this->render('{{ catalog_attribute()|length }}'));
+            $this->assertSame('Color', $this->render('{{ catalog_attribute({}, {title: "asc"}).first().title }}'));
+        } finally {
+            @unlink($file->internal_path());
+            @unlink($path);
+        }
+    }
+
+    public function testTheWeightOfAProductInTheContextNeedsNoArgument(): void
+    {
+        $product = new \App\Domain\Models\CatalogProduct();
+        $product->dimension = ['length' => 50, 'width' => 40, 'height' => 25, 'length_class' => 'cm', 'weight' => 0, 'weight_class' => 'kg'];
+
+        $this->assertEqualsWithDelta(10.0, (float) $this->render('{{ catalog_product_dimensional_weight() }}', ['product' => $product]), 0.0001);
+    }
 }
