@@ -94,7 +94,7 @@ class CartAction extends CatalogAction
                     if (
                         (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
                     ) {
-                        $this->response = $this->response->withHeader('Location', $url)->withStatus(301);
+                        $this->response = $this->response->withHeader('Location', $url)->withStatus(302);
                     }
 
                     return $this->respondWithJson(['redirect' => $url]);

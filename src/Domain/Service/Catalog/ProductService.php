@@ -5,6 +5,7 @@ namespace App\Domain\Service\Catalog;
 use App\Domain\AbstractService;
 use App\Domain\Models\CatalogProduct;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
+use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingCategoryValueException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
@@ -16,6 +17,20 @@ class ProductService extends AbstractService
     protected static array $eager = ['category', 'attributes', 'files', 'relations', 'relations.category', 'relations.attributes', 'relations.files'];
 
     protected static array $search_columns = ['title'];
+
+    /**
+     * A value of an attribute that does not exist would be written to the table as it is: a row nobody can read or delete
+     *
+     * @throws AttributeNotFoundException
+     */
+    private function assertAttributesExist(mixed $attributes): void
+    {
+        $used = array_keys(array_filter((array) $attributes, static fn (mixed $value): bool => !blank($value)));
+
+        if ($used && \App\Domain\Models\CatalogAttribute::query()->whereIn('uuid', $used)->count() !== count(array_unique($used))) {
+            throw new AttributeNotFoundException();
+        }
+    }
 
     /**
      * @throws MissingTitleValueException
@@ -55,6 +70,8 @@ class ProductService extends AbstractService
         if ($found) {
             throw new AddressAlreadyExistsException();
         }
+
+        $this->assertAttributesExist($data['attributes']);
 
         $product->save();
 
@@ -227,6 +244,8 @@ class ProductService extends AbstractService
                     throw new AddressAlreadyExistsException();
                 }
             }
+
+            $this->assertAttributesExist($data['attributes'] ?? []);
 
             $entity->save();
 

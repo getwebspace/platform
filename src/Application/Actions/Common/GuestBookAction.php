@@ -33,7 +33,7 @@ class GuestBookAction extends AbstractAction
                             empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest'
                         ) && !empty($_SERVER['HTTP_REFERER'])
                     ) {
-                        $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER'])->withStatus(301);
+                        $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER'])->withStatus(302);
                     }
 
                     $this->container->get(\App\Application\PubSub::class)->publish('common:guestbook:create', $entry);

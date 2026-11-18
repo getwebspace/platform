@@ -134,7 +134,7 @@ class FormService extends AbstractService
             }
 
             if ($entity->isDirty('address')) {
-                $found = Form::firstWhere(['address' => $entity->title]);
+                $found = Form::firstWhere(['address' => $entity->address]);
 
                 if ($found && $found->uuid !== $entity->uuid) {
                     throw new AddressAlreadyExistsException();
