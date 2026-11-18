@@ -9,7 +9,11 @@ class DataListAction extends FormAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $form = $this->formService->read(['uuid' => $this->resolveArg('uuid')]);
+            try {
+                $form = $this->formService->read(['uuid' => $this->resolveArg('uuid')]);
+            } catch (\App\Domain\Service\Form\Exception\FormNotFoundException $e) {
+                return $this->respondWithRedirect('/cup/form');
+            }
 
             if ($form) {
                 $spam = (bool) $this->getQueryParam('spam');

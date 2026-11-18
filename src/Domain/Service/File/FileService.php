@@ -287,10 +287,12 @@ class FileService extends AbstractService
 
             case !is_array($data['name']) && $data['name'] !== null && !is_array($data['ext']) && $data['ext'] !== null:
                 /** @var null|File $file */
-                $file = File::firstWhere([
+                // two files may share a name and a kind: the folder tells them apart
+                $file = File::firstWhere(array_filter([
                     'name' => $data['name'],
                     'ext' => $data['ext'],
-                ]);
+                    'salt' => $data['salt'] ?? null,
+                ], static fn (mixed $value): bool => $value !== null));
 
                 if (empty($file)) {
                     throw new FileNotFoundException();
@@ -345,12 +347,34 @@ class FileService extends AbstractService
 
         if (is_object($entity) && is_a($entity, File::class)) {
             $this->db->table('file_related')->where('file_uuid', $entity->uuid)->delete();
-            @exec('rm -rf ' . $entity->dir());
+            // the folder is named by the salt, which is a plain token when the platform made it; a row made by hand
+            // (the api takes any salt) must not become a shell command, nor "" which is the folder of every upload
+            if (preg_match('/^[A-Za-z0-9]+$/', (string) $entity->salt) === 1) {
+                $this->removeTree(UPLOAD_DIR . '/' . $entity->salt);
+            }
             $entity->delete();
 
             return true;
         }
 
         throw new FileNotFoundException();
+    }
+
+    /**
+     * A folder and everything in it; links are removed, never followed
+     */
+    private function removeTree(string $path): void
+    {
+        if (!is_dir($path) || is_link($path)) {
+            @unlink($path);
+
+            return;
+        }
+
+        foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST) as $item) {
+            $item->isDir() && !$item->isLink() ? @rmdir($item->getPathname()) : @unlink($item->getPathname());
+        }
+
+        @rmdir($path);
     }
 }

@@ -12,14 +12,15 @@ class DataViewAction extends FormAction
             $this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))
             && $this->resolveArg('data') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('data'))
         ) {
-            $data = $this->formDataService->read([
-                'uuid' => $this->resolveArg('data'),
-            ]);
-
-            if ($data) {
+            try {
                 return $this->respondWithTemplate('cup/form/view/detail.twig', [
-                    'item' => $data,
+                    'item' => $this->formDataService->read([
+                        'form_uuid' => $this->resolveArg('uuid'),
+                        'uuid' => $this->resolveArg('data'),
+                    ]),
                 ]);
+            } catch (\App\Domain\Service\Form\Exception\FormDataNotFoundException $e) {
+                // nothing
             }
         }
 

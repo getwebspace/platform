@@ -93,7 +93,7 @@ class File extends Model
             'dir' => $info['dirname'],
             'name' => isset($info['filename']) ? static::prepareName($info['filename']) : '',
             'ext' => isset($info['extension']) ? mb_strtolower($info['extension']) : '',
-            'type' => addslashes(@exec('file -bi "' . $path . '"')),
+            'type' => addslashes((string) @exec('file -bi ' . escapeshellarg($path))),
             'size' => filesize($path),
             'hash' => sha1_file($path),
         ];

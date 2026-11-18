@@ -112,12 +112,6 @@ parameters:
 			message: '#^If condition is always true\.$#'
 			identifier: if.alwaysTrue
 			count: 1
-			path: src/Application/Actions/Cup/File/Image/DeleteAction.php
-
-		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
-			count: 1
 			path: src/Application/Actions/Cup/Form/Data/DataDeleteAction.php
 
 		-
@@ -125,12 +119,6 @@ parameters:
 			identifier: if.alwaysTrue
 			count: 1
 			path: src/Application/Actions/Cup/Form/Data/DataListAction.php
-
-		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
-			count: 1
-			path: src/Application/Actions/Cup/Form/Data/DataViewAction.php
 
 		-
 			message: '#^If condition is always true\.$#'

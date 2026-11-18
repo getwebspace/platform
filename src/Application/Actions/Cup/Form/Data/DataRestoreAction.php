@@ -18,7 +18,7 @@ class DataRestoreAction extends FormAction
             && $this->resolveArg('data') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('data'))
         ) {
             try {
-                $this->formDataService->update($this->formDataService->read(['uuid' => $this->resolveArg('data')]), [
+                $this->formDataService->update($this->formDataService->read(['form_uuid' => $this->resolveArg('uuid'), 'uuid' => $this->resolveArg('data')]), [
                     'is_spam' => false,
                     'spam_reason' => '',
                 ]);

@@ -15,6 +15,7 @@ class DataDeleteAction extends FormAction
         ) {
             try {
                 $data = $this->formDataService->read([
+                    'form_uuid' => $this->resolveArg('uuid'),
                     'uuid' => $this->resolveArg('data'),
                 ]);
 
