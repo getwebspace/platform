@@ -182,3 +182,17 @@ or a known audience was queued anyway.
 
 Pinned, to be decided (nothing stops them today): an administrator can delete or block himself and the panel closes at the next request;
 deleting a group leaves its members in a group that does not exist (no access at all).
+
+## Decisions taken (2026-11-18) and done
+
+1. **Deletes are POST-only and every change in the panel needs a security token.** The UI already deleted through `method="post"` forms, only the routes
+   also allowed GET. Now: `cup:*:delete` routes are `post`, `App\Application\Csrf` derives the token from the account and the key of the instance
+   (no storage; stops working with a password change), `CsrfMiddleware` checks `_csrf` or `X-CSRF-Token` on every non-read request of the protected
+   `/cup` group, `cup/layout.twig` puts it in `<meta name="csrf-token">`, `public/assets/js/cup/csrf.js` adds it to forms, `fetch` and jQuery ajax.
+   The login page and the installer are outside the group and need none.
+2. **Referer redirects** of the import, exports, task runner and reference delete go through `AbstractAction::backTo()`: same host, a local path, otherwise a fixed page.
+3. **`TaskRunAction`** builds only subclasses of `AbstractTask`.
+4. **Form data preview** escapes the visitor's message and fields (Twig does it for the form's own template, the JSON fallback is escaped by hand); an unknown record is a 404, not a 500.
+5. **An administrator cannot delete the account he is signed in with**, and **a group with members (working, blocked or waiting) cannot be deleted**; the group list counts the same members.
+
+Tests: `tests/Cup/CupSecurityTest.php` (24). Other Cup tests send the token like the page's script does (`UsesCup::cup()`), `testNothingIsDeletedByAGetRequest` covers 19 delete routes.

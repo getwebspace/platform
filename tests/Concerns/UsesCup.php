@@ -34,6 +34,8 @@ trait UsesCup
 
     private ?array $cupCookie = null;
 
+    private string $cupToken = '';
+
     protected ?array $cupFixtures = null;
 
     /** @var string[] files to remove after the test */
@@ -78,9 +80,20 @@ trait UsesCup
             $user = $this->makeUser(['username' => 'admin', 'email' => 'admin@example.com', 'group_uuid' => $group->uuid]);
 
             $this->cupCookie = $this->cookie($this->loginAs($user)['access_token']);
+
+            // the token is read where a browser reads it: from the page of the panel
+            preg_match('/<meta name="csrf-token" content="([0-9a-f]{64})"/', (string) $this->http('GET', '/cup', ['headers' => $this->cupCookie])->getBody(), $m);
+            $this->cupToken = $m[1] ?? '';
         }
 
         return $this->cupCookie;
+    }
+
+    protected function cupToken(): string
+    {
+        $this->admin();
+
+        return $this->cupToken;
     }
 
     /**
@@ -89,6 +102,13 @@ trait UsesCup
     protected function cup(string $method, string $path, array $options = []): ResponseInterface
     {
         $options['headers'] = ($options['headers'] ?? []) + $this->admin();
+
+        // what the scripts of the panel do: every change carries the token, unless a test wants to see it refused
+        $withToken = $options['csrf'] ?? true;
+        unset($options['csrf']);
+        if ($withToken && !in_array($method, ['GET', 'HEAD', 'OPTIONS'], true)) {
+            $options['headers'] += ['X-CSRF-Token' => $this->cupToken];
+        }
 
         return $this->http($method, $path, $options);
     }

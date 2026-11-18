@@ -367,7 +367,7 @@ class CupUsersTest extends CupTestCase
         $user = $this->add();
         $session = $this->loginAs($user, 'first password');
 
-        $response = $this->cup('GET', "/cup/user/{$user->uuid}/delete");
+        $response = $this->cup('POST', "/cup/user/{$user->uuid}/delete");
 
         $this->assertRedirectsTo($response, '/cup/user');
         $this->assertSame(UserStatus::DELETE, User::find($user->uuid)->status);
@@ -384,24 +384,22 @@ class CupUsersTest extends CupTestCase
         $before = User::where('status', UserStatus::WORK)->count();
 
         foreach ([\Ramsey\Uuid\Uuid::uuid4()->toString(), 'not-a-uuid'] as $uuid) {
-            $this->assertRedirectsTo($this->cup('GET', "/cup/user/{$uuid}/delete"), '/cup/user', $uuid);
+            $this->assertRedirectsTo($this->cup('POST', "/cup/user/{$uuid}/delete"), '/cup/user', $uuid);
         }
 
         $this->assertSame($before, User::where('status', UserStatus::WORK)->count());
     }
 
-    /**
-     * Pins what happens today: nothing stops an administrator from deleting or blocking the account
-     * he is signed in with, and the panel is closed to him from the next request. A product decision
-     */
-    public function testAnAdministratorCanLockHimselfOut(): void
+    public function testAnAdministratorCannotDeleteTheAccountHeIsSignedInWith(): void
     {
         $this->admin();
         $me = User::where('username', 'admin')->firstOrFail();
 
-        $this->cup('GET', "/cup/user/{$me->uuid}/delete");
+        $response = $this->cup('POST', "/cup/user/{$me->uuid}/delete");
 
-        $this->assertSame(307, $this->cup('GET', '/cup/user')->getStatusCode());
+        $this->assertRedirectsTo($response, '/cup/user');
+        $this->assertSame(UserStatus::WORK, User::find($me->uuid)->status);
+        $this->assertSame(200, $this->cup('GET', '/cup/user')->getStatusCode(), 'the panel stays open to him');
     }
 
     // ------------------------------------------------------------- subscribers
@@ -510,18 +508,51 @@ class CupUsersTest extends CupTestCase
 
     // ------------------------------------------------------------------ groups
 
-    public function testAGroupCannotBeDeletedWhileAccountsAreInIt(): void
+    public function testAGroupWithMembersIsNotDeleted(): void
     {
         $this->admin();
         $group = $this->getService(GroupService::class)->create(['title' => 'Staff', 'access' => ['cup:main']]);
         $this->add(['group_uuid' => $group->uuid]);
 
-        $this->cup('GET', "/cup/user/group/{$group->uuid}/delete");
+        $response = $this->cup('POST', "/cup/user/group/{$group->uuid}/delete");
 
-        // pinned: nothing protects the members, they are left with a group that does not exist (no access at all)
+        $this->assertRedirectsTo($response, '/cup/user/group');
+        $this->assertNotNull(UserGroup::find($group->uuid));
+        $this->assertSame($group->uuid, User::where('username', 'newbie')->value('group_uuid'));
+    }
+
+    public function testAGroupWithBlockedOrWaitingMembersIsNotDeletedEither(): void
+    {
+        $this->admin();
+        $group = $this->getService(GroupService::class)->create(['title' => 'Staff', 'access' => []]);
+        $this->makeUser(['username' => 'banned', 'email' => 'banned@example.com', 'group_uuid' => $group->uuid, 'status' => UserStatus::BLOCK]);
+
+        $this->cup('POST', "/cup/user/group/{$group->uuid}/delete");
+
+        $this->assertNotNull(UserGroup::find($group->uuid));
+    }
+
+    public function testAGroupCanBeDeletedOnceItsMembersAreGone(): void
+    {
+        $this->admin();
+        $group = $this->getService(GroupService::class)->create(['title' => 'Staff', 'access' => []]);
+        $member = $this->makeUser(['username' => 'leaver', 'email' => 'leaver@example.com', 'group_uuid' => $group->uuid]);
+
+        // removed accounts do not hold a group
+        $this->cup('POST', "/cup/user/{$member->uuid}/delete");
+        $this->cup('POST', "/cup/user/group/{$group->uuid}/delete");
+
         $this->assertNull(UserGroup::find($group->uuid));
-        $member = User::where('username', 'newbie')->first();
-        $cookie = $this->cookie($this->loginAs($member, 'first password')['access_token']);
-        $this->assertSame(307, $this->http('GET', '/cup', ['headers' => $cookie])->getStatusCode());
+    }
+
+    public function testTheGroupListCountsEveryoneWhoHoldsTheGroup(): void
+    {
+        $this->admin();
+        $group = $this->getService(GroupService::class)->create(['title' => 'Staff', 'access' => []]);
+        $this->makeUser(['username' => 'banned', 'email' => 'banned@example.com', 'group_uuid' => $group->uuid, 'status' => UserStatus::BLOCK]);
+
+        $body = (string) $this->cup('GET', '/cup/user/group')->getBody();
+
+        $this->assertStringContainsString("You can't delete a group while it has users", html_entity_decode($body), 'the button says what the server will do');
     }
 }

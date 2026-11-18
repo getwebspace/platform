@@ -283,7 +283,7 @@ class CupContentTest extends CupTestCase
         $uuid = $this->add($spec);
         $before = $spec['count']();
 
-        $response = $this->cup($spec['post_delete'] ? 'POST' : 'GET', $this->path($spec, 'delete', $uuid), ['headers' => ['Referer' => 'http://127.0.0.1' . $spec['list']]]);
+        $response = $this->cup('POST', $this->path($spec, 'delete', $uuid), ['headers' => ['Referer' => 'http://127.0.0.1' . $spec['list']]]);
 
         $this->assertSame(302, $response->getStatusCode(), $this->why($response));
         $this->assertSame($before - 1, $spec['count']());
@@ -298,7 +298,7 @@ class CupContentTest extends CupTestCase
         $before = $spec['count']();
 
         foreach ([\Ramsey\Uuid\Uuid::uuid4()->toString(), 'not-a-uuid'] as $uuid) {
-            $response = $this->cup($spec['post_delete'] ? 'POST' : 'GET', $this->path($spec, 'delete', $uuid), ['headers' => ['Referer' => 'http://127.0.0.1' . $spec['list']]]);
+            $response = $this->cup('POST', $this->path($spec, 'delete', $uuid), ['headers' => ['Referer' => 'http://127.0.0.1' . $spec['list']]]);
 
             $this->assertSame(302, $response->getStatusCode(), $uuid . ' ' . $this->why($response));
         }
@@ -389,7 +389,7 @@ class CupContentTest extends CupTestCase
         $uuid = $this->add($this->spec('api-key'));
         preg_match('/eyJ[\w-]+\.[\w-]+\.[\w-]+/', (string) $this->cup('GET', "/cup/api-key/{$uuid}/edit")->getBody(), $token);
 
-        $this->cup('GET', "/cup/api-key/{$uuid}/delete");
+        $this->cup('POST', "/cup/api-key/{$uuid}/delete");
 
         $this->assertSame(401, $this->http('GET', '/api/v1/page', ['headers' => ['key' => $token[0]]])->getStatusCode());
     }
@@ -476,7 +476,7 @@ class CupContentTest extends CupTestCase
         FormData::create(['form_uuid' => $uuid, 'data' => ['a' => 'b'], 'message' => 'spam', 'is_spam' => true, 'spam_reason' => 'test']);
         $this->assertSame(2, FormData::count());
 
-        $this->cup('GET', "/cup/form/{$uuid}/delete");
+        $this->cup('POST', "/cup/form/{$uuid}/delete");
 
         $this->assertSame(0, FormData::count());
         $this->assertNull(Form::find($uuid));
@@ -529,10 +529,10 @@ class CupContentTest extends CupTestCase
     {
         $uuid = $this->fixtures()['guestbook'];
 
-        $this->assertRedirectsTo($this->cup('GET', "/cup/guestbook/{$uuid}/delete"), '/cup/guestbook');
+        $this->assertRedirectsTo($this->cup('POST', "/cup/guestbook/{$uuid}/delete"), '/cup/guestbook');
         $this->assertNull(GuestBook::find($uuid));
 
-        $this->assertRedirectsTo($this->cup('GET', '/cup/guestbook/not-a-uuid/delete'), '/cup/guestbook');
+        $this->assertRedirectsTo($this->cup('POST', '/cup/guestbook/not-a-uuid/delete'), '/cup/guestbook');
     }
 
     public function testTheGuestBookListShowsTheEntries(): void
@@ -574,14 +574,33 @@ class CupContentTest extends CupTestCase
         $this->assertNull(Reference::find($uuid));
     }
 
-    public function testAReferenceCannotBeDeletedByAGetRequest(): void
+    public function testNothingIsDeletedByAGetRequest(): void
     {
-        $uuid = $this->fixtures()['reference'];
+        $this->admin();
+        $f = $this->fixtures();
+        $paths = [
+            "/cup/reference/{$f['reference']}/delete", "/cup/page/{$f['page']}/delete", "/cup/publication/{$f['publication']}/delete",
+            "/cup/publication/category/{$f['publication_category']}/delete", "/cup/form/{$f['form']}/delete", "/cup/api-key/{$f['apikey']}/delete",
+            "/cup/user/group/{$f['group']}/delete", "/cup/user/{$f['user']}/delete", "/cup/user/subscriber/{$f['subscriber']}/delete",
+            "/cup/guestbook/{$f['guestbook']}/delete", "/cup/file/{$f['file']}/delete", "/cup/catalog/category/{$f['catalog_category']}/delete",
+            "/cup/catalog/product/{$f['product']}/delete", "/cup/catalog/attribute/{$f['attribute']}/delete", "/cup/catalog/order/{$f['order']}/delete",
+            "/cup/publication/review/{$f['review_publication']}/delete", "/cup/catalog/review/{$f['review_catalog']}/delete",
+            "/cup/catalog/question/{$f['question_catalog']}/delete",
+            "/cup/form/{$f['form']}/view/{$f['form_data']}/delete",
+        ];
+        $before = [Reference::count(), Page::count(), Publication::count(), Form::count(), ApiKey::count(), UserGroup::count(), GuestBook::count(), File::count(),
+            \App\Domain\Models\CatalogProduct::count(), \App\Domain\Models\CatalogOrder::count(), \App\Domain\Models\Review::count(), FormData::count(),
+            \App\Domain\Models\UserSubscriber::count(), \App\Domain\Models\User::where('status', 'work')->count()];
 
-        $response = $this->cup('GET', "/cup/reference/{$uuid}/delete");
+        foreach ($paths as $path) {
+            $response = $this->cup('GET', $path);
 
-        $this->assertNotNull(Reference::find($uuid));
-        $this->assertNotEquals(200, $response->getStatusCode());
+            $this->assertNotContains($response->getStatusCode(), [200, 301, 302], $path . ': a link must not change anything');
+        }
+
+        $this->assertSame($before, [Reference::count(), Page::count(), Publication::count(), Form::count(), ApiKey::count(), UserGroup::count(), GuestBook::count(), File::count(),
+            \App\Domain\Models\CatalogProduct::count(), \App\Domain\Models\CatalogOrder::count(), \App\Domain\Models\Review::count(), FormData::count(),
+            \App\Domain\Models\UserSubscriber::count(), \App\Domain\Models\User::where('status', 'work')->count()]);
     }
 
     public function testEveryFileOfTheRecordsSurvivesTheirRemoval(): void
@@ -593,7 +612,7 @@ class CupContentTest extends CupTestCase
         $pageUuid = $this->fixtures()['page'];
         Page::find($pageUuid)->files()->sync([$uuid => ['comment' => '', 'order' => 1]]);
 
-        $this->cup('GET', "/cup/page/{$pageUuid}/delete");
+        $this->cup('POST', "/cup/page/{$pageUuid}/delete");
 
         $this->assertNotNull(File::find($uuid));
     }

@@ -65,7 +65,7 @@ class CupRoutesTest extends CupTestCase
      */
     private const ANSWERS = [
         'cup:user:subscriber:add' => [302, '/cup/user/subscriber'],
-        'cup:catalog:order:export' => [301, null],
+        'cup:catalog:order:export' => [302, null],
     ];
 
     /**
