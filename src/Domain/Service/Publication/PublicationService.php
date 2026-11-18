@@ -32,7 +32,7 @@ class PublicationService extends AbstractService
             throw new MissingTitleValueException();
         }
 
-        if (!$publication->category_uuid) {
+        if (!$publication->category_uuid || !\App\Domain\Models\PublicationCategory::query()->whereKey($publication->category_uuid)->exists()) {
             throw new MissingCategoryValueException();
         }
 
@@ -147,6 +147,14 @@ class PublicationService extends AbstractService
 
         if (is_object($entity) && is_a($entity, Publication::class)) {
             $entity->fill($data);
+
+            // as when it was made: a record cannot be left without a title
+            if (!$entity->title) {
+                throw new MissingTitleValueException();
+            }
+            if (!$entity->category_uuid || !\App\Domain\Models\PublicationCategory::query()->whereKey($entity->category_uuid)->exists()) {
+                throw new MissingCategoryValueException();
+            }
 
             // if address generation is enabled
             if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {

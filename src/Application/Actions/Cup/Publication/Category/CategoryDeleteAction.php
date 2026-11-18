@@ -39,6 +39,6 @@ class CategoryDeleteAction extends PublicationAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/publication/category')->withStatus(301);
+        return $this->respondWithRedirect('/cup/publication/category');
     }
 }

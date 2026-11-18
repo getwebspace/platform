@@ -24,6 +24,6 @@ class PublicationDeleteAction extends PublicationAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/publication')->withStatus(301);
+        return $this->respondWithRedirect('/cup/publication');
     }
 }

@@ -39,10 +39,10 @@ class CategoryUpdateAction extends PublicationAction
 
                         switch (true) {
                             case $this->getParam('save', 'exit') === 'exit':
-                                return $this->response->withAddedHeader('Location', '/cup/publication/category')->withStatus(301);
+                                return $this->respondWithRedirect('/cup/publication/category');
 
                             default:
-                                return $this->response->withAddedHeader('Location', '/cup/publication/category/' . $category->uuid . '/edit')->withStatus(301);
+                                return $this->respondWithRedirect('/cup/publication/category/' . $category->uuid . '/edit');
                         }
                     } catch (MissingTitleValueException|TitleAlreadyExistsException|WrongTitleValueException $e) {
                         $this->addError('title', $e->getMessage());
@@ -62,6 +62,6 @@ class CategoryUpdateAction extends PublicationAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/publication/category')->withStatus(301);
+        return $this->respondWithRedirect('/cup/publication/category');
     }
 }

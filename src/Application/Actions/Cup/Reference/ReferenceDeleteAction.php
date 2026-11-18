@@ -21,6 +21,9 @@ class ReferenceDeleteAction extends ReferenceAction
             }
         }
 
-        return $this->respondWithRedirect($_SERVER['HTTP_REFERER']);
+        // back to the list the click came from, never to an address the Referer header made up
+        $back = (string) parse_url((string) ($_SERVER['HTTP_REFERER'] ?? ''), PHP_URL_PATH);
+
+        return $this->respondWithRedirect(str_starts_with($back, '/cup/reference/') && $this->isLocalPath($back) ? $back : '/cup');
     }
 }

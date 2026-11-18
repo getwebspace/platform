@@ -3,6 +3,10 @@
 namespace App\Application\Actions\Cup\GuestBook;
 
 use App\Domain\Service\GuestBook\Exception\EntryNotFoundException;
+use App\Domain\Service\GuestBook\Exception\MissingEmailValueException;
+use App\Domain\Service\GuestBook\Exception\MissingMessageValueException;
+use App\Domain\Service\GuestBook\Exception\MissingNameValueException;
+use App\Domain\Service\GuestBook\Exception\WrongEmailValueException;
 
 class GuestBookUpdateAction extends GuestBookAction
 {
@@ -15,23 +19,31 @@ class GuestBookUpdateAction extends GuestBookAction
                 ]);
 
                 if ($this->isPost()) {
-                    $entry = $this->guestBookService->update($entry, [
-                        'name' => $this->getParam('name'),
-                        'email' => $this->getParam('email'),
-                        'message' => $this->getParam('message'),
-                        'response' => $this->getParam('response'),
-                        'date' => $this->getParam('date', 'now'),
-                        'status' => $this->getParam('status'),
-                    ]);
+                    try {
+                        $entry = $this->guestBookService->update($entry, [
+                            'name' => $this->getParam('name'),
+                            'email' => $this->getParam('email'),
+                            'message' => $this->getParam('message'),
+                            'response' => $this->getParam('response'),
+                            'date' => $this->getParam('date', 'now'),
+                            'status' => $this->getParam('status'),
+                        ]);
 
-                    $this->container->get(\App\Application\PubSub::class)->publish('cup:guestbook:edit', $entry);
+                        $this->container->get(\App\Application\PubSub::class)->publish('cup:guestbook:edit', $entry);
 
-                    switch (true) {
-                        case $this->getParam('save', 'exit') === 'exit':
-                            return $this->respondWithRedirect('/cup/guestbook');
+                        switch (true) {
+                            case $this->getParam('save', 'exit') === 'exit':
+                                return $this->respondWithRedirect('/cup/guestbook');
 
-                        default:
-                            return $this->respondWithRedirect('/cup/guestbook/' . $entry->uuid . '/edit');
+                            default:
+                                return $this->respondWithRedirect('/cup/guestbook/' . $entry->uuid . '/edit');
+                        }
+                    } catch (MissingNameValueException $e) {
+                        $this->addError('name', $e->getMessage());
+                    } catch (MissingEmailValueException|WrongEmailValueException $e) {
+                        $this->addError('email', $e->getMessage());
+                    } catch (MissingMessageValueException $e) {
+                        $this->addError('message', $e->getMessage());
                     }
                 }
 
@@ -43,6 +55,6 @@ class GuestBookUpdateAction extends GuestBookAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/guestbook')->withStatus(301);
+        return $this->respondWithRedirect('/cup/guestbook');
     }
 }

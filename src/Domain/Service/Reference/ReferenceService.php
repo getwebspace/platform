@@ -103,6 +103,11 @@ class ReferenceService extends AbstractService
         if (is_object($entity) && is_a($entity, Reference::class)) {
             $entity->fill($data);
 
+            // as when it was made: a record cannot be left without a title
+            if (!$entity->title) {
+                throw new MissingTitleValueException();
+            }
+
             if ($entity->isDirty('title') || $entity->isDirty('type')) {
                 $found = Reference::firstWhere(['title' => $entity->title, 'type' => $entity->type]);
 

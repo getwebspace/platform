@@ -80,14 +80,14 @@ class Form extends Model
     protected function origin(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => explode(PHP_EOL, $value),
+            get: fn ($value) => explode(PHP_EOL, (string) $value),
         );
     }
 
     protected function mailto(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => explode(PHP_EOL, $value),
+            get: fn ($value) => explode(PHP_EOL, (string) $value),
         );
     }
 }

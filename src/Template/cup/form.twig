@@ -33,6 +33,11 @@
 
     {% set args = args|merge({'value': args.value|e}) %}
 
+    {# a password is never sent back to the page, a failed attempt would print it into the markup #}
+    {% if type == 'password' %}
+        {% set args = args|merge({'value': ''}) %}
+    {% endif %}
+
     {% set error = '' %}
     {% if name in _error|keys %}
         {% set error = 'has-error' %}
@@ -72,6 +77,9 @@
                     <i class="text-danger">*</i>
                 {% endif %}
             </label>
+        {% elseif type == 'password' %}
+            {# written by hand: the form helper puts the submitted value back, and a password must not be printed into the page #}
+            <input class="form-control{{ error ? ' error' : '' }}" type="password" name="{{ name }}"{% if args.id is not empty %} id="{{ args.id }}"{% endif %} autocomplete="{{ args.autocomplete ?? 'current-password' }}" />
         {% else %}
             {{ form( type, name, { 'class': ['form-control'] } | merge(args) ) }}
         {% endif %}

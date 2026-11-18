@@ -23,7 +23,7 @@ class UpdateAction extends ApiKeyAction
                             // an unrecognised value would otherwise cast to an
                             // empty string, silently landing outside both
                             // "work" and "revoke" - keep the current one instead
-                            'status' => $this->getParam('status', $apiKey->status),
+                            'status' => in_array($status = $this->getParam('status', $apiKey->status), \App\Domain\Casts\ApiKey\Status::LIST, true) ? $status : $apiKey->status,
                         ]);
 
                         $this->container->get(\App\Application\PubSub::class)->publish('cup:api-key:edit', $apiKey);

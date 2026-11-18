@@ -137,6 +137,11 @@ class PageService extends AbstractService
         if (is_object($entity) && is_a($entity, Page::class)) {
             $entity->fill($data);
 
+            // as when it was made: a record cannot be left without a title
+            if (!$entity->title) {
+                throw new MissingTitleValueException();
+            }
+
             // if address generation is enabled
             if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {
                 $entity->address = $entity->title ?? uniqid();

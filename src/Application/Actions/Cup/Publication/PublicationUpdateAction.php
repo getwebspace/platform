@@ -38,10 +38,10 @@ class PublicationUpdateAction extends PublicationAction
 
                         switch (true) {
                             case $this->getParam('save', 'exit') === 'exit':
-                                return $this->response->withAddedHeader('Location', '/cup/publication')->withStatus(301);
+                                return $this->respondWithRedirect('/cup/publication');
 
                             default:
-                                return $this->response->withAddedHeader('Location', '/cup/publication/' . $publication->uuid . '/edit')->withStatus(301);
+                                return $this->respondWithRedirect('/cup/publication/' . $publication->uuid . '/edit');
                         }
                     } catch (MissingTitleValueException|TitleAlreadyExistsException|WrongTitleValueException $e) {
                         $this->addError('title', $e->getMessage());
@@ -63,6 +63,6 @@ class PublicationUpdateAction extends PublicationAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/publication')->withStatus(301);
+        return $this->respondWithRedirect('/cup/publication');
     }
 }

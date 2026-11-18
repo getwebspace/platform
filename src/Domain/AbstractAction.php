@@ -242,9 +242,11 @@ abstract class AbstractAction
     {
         if (in_array(HasFiles::class, class_uses($entity), true)) {
             $sync = [];
+            $touched = false;
 
             // updated/deleted files
             if (($files = $this->getParam($field)) !== null && is_array($files)) {
+                $touched = true;
                 foreach ($files as $uuid => $data) {
                     $default = [
                         'order' => count($sync) + 1,
@@ -264,6 +266,8 @@ abstract class AbstractAction
 
             // new files
             if (($uploaded = $this->getUploadedFiles($field)) !== []) {
+                $touched = true;
+
                 foreach ($uploaded as $comment => $files) {
                     if (is_numeric($comment)) {
                         $comment = '';
@@ -278,7 +282,8 @@ abstract class AbstractAction
                 }
             }
 
-            if ($sync) {
+            // the last file taken off is a change as well: an empty list has to be saved
+            if ($touched) {
                 $entity->files()->sync($sync);
             }
         }

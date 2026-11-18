@@ -35,7 +35,7 @@ class ProductService extends AbstractService
         if (!$product->title) {
             throw new MissingTitleValueException();
         }
-        if (!$product->category_uuid) {
+        if (!$product->category_uuid || !\App\Domain\Models\CatalogCategory::query()->whereKey($product->category_uuid)->exists()) {
             throw new MissingCategoryValueException();
         }
 

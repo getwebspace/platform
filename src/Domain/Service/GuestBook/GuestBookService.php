@@ -103,6 +103,20 @@ class GuestBookService extends AbstractService
 
         if (is_object($entity) && is_a($entity, GuestBook::class)) {
             $entity->fill($data);
+
+            // the same rules as for a new entry, for the fields that are being changed
+            $this->failIfDropped($entity, $data, 'email', new WrongEmailValueException());
+
+            if (array_key_exists('name', $data) && !$entity->name) {
+                throw new MissingNameValueException();
+            }
+            if (array_key_exists('email', $data) && !$entity->email) {
+                throw new MissingEmailValueException();
+            }
+            if (array_key_exists('message', $data) && !$entity->message) {
+                throw new MissingMessageValueException();
+            }
+
             $entity->save();
 
             return $entity;
