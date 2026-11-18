@@ -37,7 +37,7 @@ class SiteSearchTool extends AbstractMcpTool
 
     public function execute(array $args = []): mixed
     {
-        $query = mb_trim((string) ($args['query'] ?? ''));
+        $query = $this->textArgument($args, 'query');
 
         if ($query === '') {
             throw new \InvalidArgumentException('Field query is required');

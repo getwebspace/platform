@@ -39,7 +39,7 @@ class CatalogAttributeUpdateTool extends AbstractMcpTool
 
     public function execute(array $args = []): mixed
     {
-        $key = trim((string) ($args['attribute'] ?? $args['uuid'] ?? ''));
+        $key = ($this->textArgument($args, 'attribute') ?: $this->textArgument($args, 'uuid'));
 
         if ($key === '') {
             throw new \InvalidArgumentException('Field attribute (address or uuid) is required');

@@ -47,7 +47,7 @@ class PublicationCreateTool extends AbstractMcpTool
 
     public function execute(array $args = []): mixed
     {
-        if (blank(trim((string) ($args['title'] ?? '')))) {
+        if (blank($this->textArgument($args, 'title'))) {
             throw new \InvalidArgumentException('Field title is required');
         }
 

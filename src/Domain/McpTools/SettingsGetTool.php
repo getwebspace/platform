@@ -45,7 +45,7 @@ class SettingsGetTool extends AbstractMcpTool
         // notes of the administrators are theirs
         $all = $all->reject(fn (Parameter $parameter) => str_starts_with($parameter->name, 'notepad_'))->sortBy('name')->values();
 
-        if (!blank($name = trim((string) ($args['name'] ?? '')))) {
+        if (!blank($name = $this->textArgument($args, 'name'))) {
             $found = $all->first(fn (Parameter $parameter) => $parameter->name === $name);
 
             if ($found === null) {
@@ -57,14 +57,14 @@ class SettingsGetTool extends AbstractMcpTool
 
         $groups = $all->countBy(fn (Parameter $parameter) => $this->group($parameter->name))->sortKeys()->all();
 
-        if (!blank($group = trim((string) ($args['group'] ?? '')))) {
+        if (!blank($group = $this->textArgument($args, 'group'))) {
             $all = $all->filter(fn (Parameter $parameter) => $this->group($parameter->name) === $group);
 
             if ($all->isEmpty()) {
                 throw new \InvalidArgumentException('No such group, allowed: ' . implode(', ', array_keys($groups)));
             }
         }
-        if (!blank($search = trim((string) ($args['search'] ?? '')))) {
+        if (!blank($search = $this->textArgument($args, 'search'))) {
             $all = $all->filter(fn (Parameter $parameter) => mb_stripos($parameter->name, $search) !== false);
         }
 

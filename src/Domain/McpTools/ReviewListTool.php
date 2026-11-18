@@ -53,7 +53,7 @@ class ReviewListTool extends AbstractMcpTool
                 $filter[$key] = $key === 'entity_uuid' ? (string) $args[$key] : [(string) $args[$key]];
             }
         }
-        if (!blank($search = trim((string) ($args['search'] ?? '')))) {
+        if (!blank($search = $this->textArgument($args, 'search'))) {
             $filter['search'] = $search;
         }
 

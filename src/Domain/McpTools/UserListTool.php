@@ -48,7 +48,7 @@ class UserListTool extends AbstractMcpTool
         } elseif (!blank($args['group'] ?? null)) {
             $filter['group_uuid'] = [$this->findGroup((string) $args['group'])];
         }
-        if (!blank($search = trim((string) ($args['search'] ?? '')))) {
+        if (!blank($search = $this->textArgument($args, 'search'))) {
             $filter['search'] = $search;
         }
 

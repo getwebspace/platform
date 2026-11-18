@@ -43,7 +43,7 @@ class PublicationListTool extends AbstractMcpTool
         if (!blank($args['category_uuid'] ?? null)) {
             $filter['category_uuid'] = [(string) $args['category_uuid']];
         }
-        if (!blank($search = trim((string) ($args['search'] ?? '')))) {
+        if (!blank($search = $this->textArgument($args, 'search'))) {
             $filter['search'] = $search;
         }
 

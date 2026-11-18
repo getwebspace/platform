@@ -126,6 +126,14 @@ abstract class AbstractMcpTool
     }
 
     /**
+     * Text argument: trimmed, empty when it is missing or is not a scalar (a list passed by mistake is not "Array")
+     */
+    protected function textArgument(array $args, string $name): string
+    {
+        return is_scalar($args[$name] ?? null) ? trim((string) $args[$name]) : '';
+    }
+
+    /**
      * Integer argument within a range: a value outside of it is an error the client can see,
      * not something silently cut
      */

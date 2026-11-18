@@ -65,7 +65,7 @@ class CatalogProductSearchTool extends AbstractMcpTool
 
         $filter = ['status' => $status === 'all' ? CatalogStatus::LIST : $status];
 
-        if (!blank($query = trim((string) ($args['query'] ?? '')))) {
+        if (!blank($query = $this->textArgument($args, 'query'))) {
             $filter['search'] = $query;
         }
         // array form: a list, not a single-product lookup that throws on a miss

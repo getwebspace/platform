@@ -39,7 +39,7 @@ class CatalogAttributeCreateTool extends AbstractMcpTool
 
     public function execute(array $args = []): mixed
     {
-        $title = trim((string) ($args['title'] ?? ''));
+        $title = $this->textArgument($args, 'title');
 
         if ($title === '') {
             throw new \InvalidArgumentException('Field title is required');
@@ -55,7 +55,7 @@ class CatalogAttributeCreateTool extends AbstractMcpTool
             'title' => $title,
             'address' => $this->buildAddress('', $title, $args['address'] ?? null),
             'type' => $type,
-            'group' => trim((string) ($args['group'] ?? '')),
+            'group' => $this->textArgument($args, 'group'),
             'is_filter' => ($args['is_filter'] ?? true) !== false,
         ]);
 

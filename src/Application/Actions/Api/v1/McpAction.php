@@ -231,6 +231,10 @@ class McpAction extends ActionApi
 
         $tool->setApiKey($this->getApiKey());
 
+        if (($problem = $this->argumentProblem($tool, $args)) !== null) {
+            return $this->result($id, ['content' => [['type' => 'text', 'text' => $problem]], 'isError' => true]);
+        }
+
         $dryRun = !empty($args['dry_run']);
         // a tool with its own dry run gets the argument, the others are run in a rolled back transaction
         $own = $tool::DRY_RUN_SELF;
@@ -277,6 +281,30 @@ class McpAction extends ActionApi
             ],
             'isError' => true,
         ]);
+    }
+
+    /**
+     * A list or an object where the schema asks for a single value (a string, a number, a flag) is a mistake of the caller:
+     * the tools are written for what the schema says, and would turn it into the text "Array"
+     */
+    private function argumentProblem(AbstractMcpTool $tool, array $args): ?string
+    {
+        $properties = $tool->getInputSchema()['properties'] ?? [];
+
+        if (!is_array($properties)) {
+            return null;
+        }
+
+        foreach ($properties as $field => $schema) {
+            $type = $schema['type'] ?? null;
+            $scalar = is_array($type) ? !array_diff($type, ['string', 'integer', 'number', 'boolean', 'null']) : in_array($type, ['string', 'integer', 'number', 'boolean'], true);
+
+            if ($scalar && isset($args[$field]) && is_array($args[$field])) {
+                return 'Argument ' . $field . ' must be a single value, not a list';
+            }
+        }
+
+        return null;
     }
 
     /**

@@ -60,7 +60,7 @@ class CatalogPriceBulkUpdateTool extends AbstractMcpTool
         if (isset($args['percent']) && $args['percent'] <= -100) {
             throw new \InvalidArgumentException('Percent must be greater than -100');
         }
-        if (blank($args['category_uuid'] ?? null) && blank(trim((string) ($args['search'] ?? '')))) {
+        if (blank($args['category_uuid'] ?? null) && blank($this->textArgument($args, 'search'))) {
             throw new \InvalidArgumentException('Narrow the products down: pass category_uuid and/or search (all prices of the shop at once are not changed here)');
         }
 
@@ -72,7 +72,7 @@ class CatalogPriceBulkUpdateTool extends AbstractMcpTool
         if (!blank($args['category_uuid'] ?? null)) {
             $filter['category_uuid'] = $this->categories((string) $args['category_uuid'], $args['include_nested'] ?? true);
         }
-        if (!blank($search = trim((string) ($args['search'] ?? '')))) {
+        if (!blank($search = $this->textArgument($args, 'search'))) {
             // case-insensitive for any language, unlike a raw LIKE in SQLite
             $filter['search'] = $search;
         }

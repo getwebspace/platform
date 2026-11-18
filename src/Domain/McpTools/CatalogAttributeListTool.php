@@ -29,7 +29,7 @@ class CatalogAttributeListTool extends AbstractMcpTool
     {
         $filter = [];
 
-        if (!blank($search = trim((string) ($args['search'] ?? '')))) {
+        if (!blank($search = $this->textArgument($args, 'search'))) {
             $filter['search'] = $search;
         }
         if (isset($args['is_filter'])) {

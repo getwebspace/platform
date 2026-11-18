@@ -33,7 +33,7 @@ class ThemeFileListTool extends AbstractMcpTool
             throw new \InvalidArgumentException('Field section must be theme or resource');
         }
 
-        $files = (new ThemeFiles($this->container))->list($section, trim((string) ($args['search'] ?? '')), ($args['editable_only'] ?? true) !== false);
+        $files = (new ThemeFiles($this->container))->list($section, $this->textArgument($args, 'search'), ($args['editable_only'] ?? true) !== false);
 
         return ['total' => count($files)] + $this->paginate(
             $args,

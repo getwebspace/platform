@@ -38,7 +38,7 @@ class LogsTailTool extends AbstractMcpTool
     {
         $lines = $this->intArgument($args, 'lines', 100, 1, 500);
         $level = $args['level'] ?? null;
-        $contains = trim((string) ($args['contains'] ?? ''));
+        $contains = $this->textArgument($args, 'contains');
 
         if ($level !== null && !isset(self::LEVELS[$level])) {
             throw new \InvalidArgumentException('Field level must be one of: ' . implode(', ', array_keys(self::LEVELS)));
