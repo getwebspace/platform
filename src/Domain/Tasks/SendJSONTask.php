@@ -28,7 +28,7 @@ class SendJSONTask extends AbstractTask
             $data['files'] = $args['files'];
         }
 
-        $result = file_get_contents($args['url'], false, stream_context_create([
+        $result = @file_get_contents($args['url'], false, stream_context_create([
             'http' => [
                 'method' => 'POST',
                 'content' => json_encode($data),
@@ -42,7 +42,8 @@ class SendJSONTask extends AbstractTask
 
             $this->setStatusDone($result);
         } else {
-            $this->setStatusFail();
+            // the reason ("Connection refused", "HTTP/1.1 401 ...") is what tells an admin what to fix
+            $this->setStatusFail(mb_substr((string) (error_get_last()['message'] ?? ''), 0, 900));
         }
     }
 }

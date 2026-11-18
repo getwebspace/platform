@@ -80,7 +80,7 @@ class SendNewsLetterMailTask extends AbstractTask
             $lastError = '';
 
             for ($i = 0; $i < $count; ++$i) {
-                foreach ($list->forPage($i, $perPage) as $email) {
+                foreach ($list->forPage($i + 1, $perPage) as $email) {
                     try {
                         // a single bad address must not stop the rest of
                         // the batch, so this is caught per-recipient rather
@@ -96,8 +96,12 @@ class SendNewsLetterMailTask extends AbstractTask
                     }
                 }
 
-                $this->setProgress($i, $count);
-                sleep(10);
+                $this->setProgress($i + 1, $count);
+
+                // a pause between the batches keeps the mail server from calling it spam
+                if ($i + 1 < $count && empty($_ENV['TEST'])) {
+                    sleep(10);
+                }
             }
 
             $this->container->get(\App\Application\PubSub::class)->publish('task:mail:send');

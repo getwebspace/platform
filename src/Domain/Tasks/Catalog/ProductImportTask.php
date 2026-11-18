@@ -71,6 +71,7 @@ class ProductImportTask extends AbstractTask
             $now = datetime();
             $category = null;
             $nested = false;
+            $total = count($data);
 
             foreach ($data as $index => $item) {
                 switch ($item['type']) {
@@ -169,6 +170,9 @@ class ProductImportTask extends AbstractTask
                                             )
                                         );
                                     }
+                                } catch (\App\Domain\Service\Catalog\Exception\MissingCategoryValueException $e) {
+                                    // a row above the first category heading has nowhere to go
+                                    $this->logger->warning('Product has no category', $data->toArray());
                                 } catch (MissingTitleValueException $e) {
                                     $this->logger->warning('Product wrong title value');
                                 } catch (AddressAlreadyExistsException $e) {
@@ -213,7 +217,8 @@ class ProductImportTask extends AbstractTask
                         break;
                 }
 
-                $this->setProgress($index, count($data));
+                // $data is the current row by now, the number of rows was taken before the loop
+                $this->setProgress($index + 1, $total);
             }
         }
 

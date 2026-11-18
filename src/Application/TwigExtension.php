@@ -183,7 +183,8 @@ class TwigExtension extends AbstractExtension
         }
         // from params
         if (($host = $this->parameter('common_homepage', false))) {
-            return $host;
+            // the request path that follows starts with a slash of its own
+            return rtrim($host, '/');
         }
         // from request
         if (isset($_SERVER['REQUEST_SCHEME'], $_SERVER['HTTP_HOST'])) {
@@ -272,7 +273,8 @@ class TwigExtension extends AbstractExtension
                 default:
                     return $reference[$value];
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            // an unknown class or constant is an Error, not an Exception
             return $value;
         }
     }
@@ -433,6 +435,11 @@ class TwigExtension extends AbstractExtension
 
     public function convert_size(int $size): string
     {
+        // log() of zero is not a number
+        if ($size <= 0) {
+            return '0 b';
+        }
+
         $unit = ['b', 'kb', 'mb', 'gb', 'tb', 'pb'];
 
         return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[(int)$i];
