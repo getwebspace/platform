@@ -121,6 +121,6 @@ class OrderExportAction extends CatalogAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', $_SERVER['HTTP_REFERER'] ?? '/cup/catalog/order')->withStatus(301);
+        return $this->respondWithRedirect($this->backTo('/cup/catalog/order'));
     }
 }

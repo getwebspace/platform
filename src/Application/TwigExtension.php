@@ -107,6 +107,7 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('path_for', [$this, 'pathFor']),
             new TwigFunction('full_url_for', [$this, 'fullUrlFor']),
             new TwigFunction('base_url', [$this, 'baseUrl']),
+            new TwigFunction('csrf_token', [\App\Application\Csrf::class, 'token']),
             new TwigFunction('is_current_path', [$this, 'isCurrentPath']),
             new TwigFunction('current_path', [$this, 'currentPath']),
 

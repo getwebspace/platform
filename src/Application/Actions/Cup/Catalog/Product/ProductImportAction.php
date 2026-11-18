@@ -30,6 +30,6 @@ class ProductImportAction extends CatalogAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', $_SERVER['HTTP_REFERER'] ?? '/cup/catalog/product')->withStatus(301);
+        return $this->respondWithRedirect($this->backTo('/cup/catalog/product'));
     }
 }

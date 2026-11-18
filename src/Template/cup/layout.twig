@@ -3,6 +3,7 @@
 {% block title %}WebSpace Dashboard{% endblock %}
 
 {% block head %}
+    <meta name="csrf-token" content="{{ csrf_token(user) }}">
     <meta name="google" content="notranslate">
     <meta name="theme-color" content="#1269db">
     <meta name="apple-mobile-web-app-title" content="WebSpace Engine">
@@ -168,6 +169,7 @@
     <script src="/assets/js/plugin/select2/select2.full.min.js?v={{ SHA }}"></script>
     <script src="/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js?v={{ SHA }}"></script>
 
+    <script src="/assets/js/cup/csrf.js?v={{ SHA }}"></script>
     <script src="/assets/js/cup/script.js?v={{ SHA }}"></script>
 
     {# plugin scripts #}

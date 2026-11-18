@@ -10,7 +10,7 @@ class ListAction extends UserAction
     {
         return $this->respondWithTemplate('cup/user/group/index.twig', [
             'groups' => $this->userGroupService->read(['order' => ['title' => 'asc']]),
-            'users' => $this->userService->read(['status' => \App\Domain\Casts\User\Status::WORK]),
+            'users' => $this->userService->read(['status' => [\App\Domain\Casts\User\Status::WORK, \App\Domain\Casts\User\Status::BLOCK, \App\Domain\Casts\User\Status::CONFIRMATION]]),
         ]);
     }
 }

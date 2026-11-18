@@ -14,7 +14,10 @@ class UserDeleteAction extends UserAction
                     'uuid' => $this->resolveArg('uuid'),
                 ]);
 
-                if ($user) {
+                // not the account the administrator is signed in with: it would close the panel to him
+                $me = $this->request->getAttribute('user', false);
+
+                if (!($me && $me->uuid === $user->uuid)) {
                     $this->userService->delete($user);
 
                     $this->container->get(\App\Application\PubSub::class)->publish('cup:user:delete', $user);

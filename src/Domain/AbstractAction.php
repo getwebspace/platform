@@ -482,6 +482,24 @@ abstract class AbstractAction
     }
 
     /**
+     * The page the request came from, when it is a page of this very site; otherwise the given one
+     *
+     * The Referer is whatever the sender wrote, it is never followed as it is
+     */
+    protected function backTo(string $default): string
+    {
+        $parts = parse_url($this->request->getHeaderLine('Referer'));
+
+        if (!is_array($parts) || ($parts['host'] ?? null) !== $this->request->getUri()->getHost()) {
+            return $default;
+        }
+
+        $path = ($parts['path'] ?? '/') . (isset($parts['query']) ? '?' . $parts['query'] : '');
+
+        return $this->isLocalPath($path) ? $path : $default;
+    }
+
+    /**
      * Read a caller supplied redirect target, refusing anything that leaves the site
      *
      * Without this an attacker can hand out a link to our own login page that

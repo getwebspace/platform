@@ -138,7 +138,7 @@ return function (App $app, Container $container): void {
                             ->setName('cup:api-key:add');
                         $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\ApiKey\UpdateAction::class)
                             ->setName('cup:api-key:edit');
-                        $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\ApiKey\DeleteAction::class)
+                        $proxy->post('/{uuid}/delete', \App\Application\Actions\Cup\ApiKey\DeleteAction::class)
                             ->setName('cup:api-key:delete');
                     });
 
@@ -152,7 +152,7 @@ return function (App $app, Container $container): void {
                                 ->setName('cup:user:group:add');
                             $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\User\Group\UpdateAction::class)
                                 ->setName('cup:user:group:edit');
-                            $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\User\Group\DeleteAction::class)
+                            $proxy->post('/{uuid}/delete', \App\Application\Actions\Cup\User\Group\DeleteAction::class)
                                 ->setName('cup:user:group:delete');
                         });
 
@@ -162,7 +162,7 @@ return function (App $app, Container $container): void {
                                 ->setName('cup:user:subscriber:list');
                             $proxy->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\User\Subscriber\CreateAction::class)
                                 ->setName('cup:user:subscriber:add');
-                            $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\User\Subscriber\DeleteAction::class)
+                            $proxy->post('/{uuid}/delete', \App\Application\Actions\Cup\User\Subscriber\DeleteAction::class)
                                 ->setName('cup:user:subscriber:delete');
                         });
                         $proxy->map(['GET', 'POST'], '/newsletter', \App\Application\Actions\Cup\User\NewsLetter\CreateAction::class)
@@ -176,7 +176,7 @@ return function (App $app, Container $container): void {
                             ->setName('cup:user:view');
                         $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\User\UserUpdateAction::class)
                             ->setName('cup:user:edit');
-                        $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\User\UserDeleteAction::class)
+                        $proxy->post('/{uuid}/delete', \App\Application\Actions\Cup\User\UserDeleteAction::class)
                             ->setName('cup:user:delete');
                     });
 
@@ -188,7 +188,7 @@ return function (App $app, Container $container): void {
                             ->setName('cup:page:add');
                         $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Page\PageUpdateAction::class)
                             ->setName('cup:page:edit');
-                        $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Page\PageDeleteAction::class)
+                        $proxy->post('/{uuid}/delete', \App\Application\Actions\Cup\Page\PageDeleteAction::class)
                             ->setName('cup:page:delete');
                     });
 
@@ -200,7 +200,7 @@ return function (App $app, Container $container): void {
                             ->setName('cup:publication:add');
                         $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Publication\PublicationUpdateAction::class)
                             ->setName('cup:publication:edit');
-                        $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Publication\PublicationDeleteAction::class)
+                        $proxy->post('/{uuid}/delete', \App\Application\Actions\Cup\Publication\PublicationDeleteAction::class)
                             ->setName('cup:publication:delete');
                         $proxy->map(['GET', 'POST'], '/preview', \App\Application\Actions\Cup\Publication\PublicationPreviewAction::class)
                             ->setName('cup:publication:preview');
@@ -213,7 +213,7 @@ return function (App $app, Container $container): void {
                                 ->setName('cup:publication:category:add');
                             $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Publication\Category\CategoryUpdateAction::class)
                                 ->setName('cup:publication:category:edit');
-                            $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Publication\Category\CategoryDeleteAction::class)
+                            $proxy->post('/{uuid}/delete', \App\Application\Actions\Cup\Publication\Category\CategoryDeleteAction::class)
                                 ->setName('cup:publication:category:delete');
                         });
 
@@ -223,7 +223,7 @@ return function (App $app, Container $container): void {
                                 ->setName('cup:publication:review:list');
                             $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Review\ReviewUpdateAction::class)
                                 ->setName('cup:publication:review:edit');
-                            $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Review\ReviewDeleteAction::class)
+                            $proxy->post('/{uuid}/delete', \App\Application\Actions\Cup\Review\ReviewDeleteAction::class)
                                 ->setName('cup:publication:review:delete');
                         });
                     });
@@ -236,7 +236,7 @@ return function (App $app, Container $container): void {
                             ->setName('cup:form:add');
                         $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Form\FormUpdateAction::class)
                             ->setName('cup:form:edit');
-                        $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Form\FormDeleteAction::class)
+                        $proxy->post('/{uuid}/delete', \App\Application\Actions\Cup\Form\FormDeleteAction::class)
                             ->setName('cup:form:delete');
 
                         // forms data
@@ -247,7 +247,7 @@ return function (App $app, Container $container): void {
                                 ->setName('cup:form:view:data');
                             $proxy->map(['GET', 'POST'], '/{data}/preview', \App\Application\Actions\Cup\Form\Data\DataPreviewAction::class)
                                 ->setName('cup:form:view:preview');
-                            $proxy->map(['GET', 'POST'], '/{data}/delete', \App\Application\Actions\Cup\Form\Data\DataDeleteAction::class)
+                            $proxy->post('/{data}/delete', \App\Application\Actions\Cup\Form\Data\DataDeleteAction::class)
                                 ->setName('cup:form:view:delete');
                             $proxy->post('/{data}/restore', \App\Application\Actions\Cup\Form\Data\DataRestoreAction::class)
                                 ->setName('cup:form:view:restore');
@@ -266,7 +266,7 @@ return function (App $app, Container $container): void {
                                 ->setName('cup:catalog:category:add');
                             $proxy->map(['GET', 'POST'], '/{category}/edit', \App\Application\Actions\Cup\Catalog\Category\CategoryUpdateAction::class)
                                 ->setName('cup:catalog:category:edit');
-                            $proxy->map(['GET', 'POST'], '/{category}/delete', \App\Application\Actions\Cup\Catalog\Category\CategoryDeleteAction::class)
+                            $proxy->post('/{category}/delete', \App\Application\Actions\Cup\Catalog\Category\CategoryDeleteAction::class)
                                 ->setName('cup:catalog:category:delete');
                             $proxy->get('[/{parent}]', \App\Application\Actions\Cup\Catalog\Category\CategoryListAction::class)
                                 ->setName('cup:catalog:category:list');
@@ -283,7 +283,7 @@ return function (App $app, Container $container): void {
                                 ->setName('cup:catalog:product:add');
                             $proxy->map(['GET', 'POST'], '/{product}/edit', \App\Application\Actions\Cup\Catalog\Product\ProductUpdateAction::class)
                                 ->setName('cup:catalog:product:edit');
-                            $proxy->map(['GET', 'POST'], '/{product}/delete', \App\Application\Actions\Cup\Catalog\Product\ProductDeleteAction::class)
+                            $proxy->post('/{product}/delete', \App\Application\Actions\Cup\Catalog\Product\ProductDeleteAction::class)
                                 ->setName('cup:catalog:product:delete');
                             $proxy->get('[/{category}]', \App\Application\Actions\Cup\Catalog\Product\ProductListAction::class)
                                 ->setName('cup:catalog:product:list');
@@ -297,7 +297,7 @@ return function (App $app, Container $container): void {
                                 ->setName('cup:catalog:attribute:add');
                             $proxy->map(['GET', 'POST'], '/{attribute}/edit', \App\Application\Actions\Cup\Catalog\Attribute\AttributeUpdateAction::class)
                                 ->setName('cup:catalog:attribute:edit');
-                            $proxy->map(['GET', 'POST'], '/{attribute}/delete', \App\Application\Actions\Cup\Catalog\Attribute\AttributeDeleteAction::class)
+                            $proxy->post('/{attribute}/delete', \App\Application\Actions\Cup\Catalog\Attribute\AttributeDeleteAction::class)
                                 ->setName('cup:catalog:attribute:delete');
                         });
 
@@ -312,7 +312,7 @@ return function (App $app, Container $container): void {
                                 ->setName('cup:catalog:order:add');
                             $proxy->map(['GET', 'POST'], '/{order}/edit', \App\Application\Actions\Cup\Catalog\Order\OrderUpdateAction::class)
                                 ->setName('cup:catalog:order:edit');
-                            $proxy->map(['GET', 'POST'], '/{order}/delete', \App\Application\Actions\Cup\Catalog\Order\OrderDeleteAction::class)
+                            $proxy->post('/{order}/delete', \App\Application\Actions\Cup\Catalog\Order\OrderDeleteAction::class)
                                 ->setName('cup:catalog:order:delete');
                             $proxy->map(['GET', 'POST'], '/{order}/document/{uuid}', \App\Application\Actions\Cup\Catalog\Order\OrderDocumentAction::class)
                                 ->setName('cup:catalog:order:document');
@@ -326,7 +326,7 @@ return function (App $app, Container $container): void {
                                 ->setName('cup:catalog:review:list');
                             $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Review\ReviewUpdateAction::class)
                                 ->setName('cup:catalog:review:edit');
-                            $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Review\ReviewDeleteAction::class)
+                            $proxy->post('/{uuid}/delete', \App\Application\Actions\Cup\Review\ReviewDeleteAction::class)
                                 ->setName('cup:catalog:review:delete');
                         });
 
@@ -336,7 +336,7 @@ return function (App $app, Container $container): void {
                                 ->setName('cup:catalog:question:list');
                             $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Review\ReviewUpdateAction::class)
                                 ->setName('cup:catalog:question:edit');
-                            $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Review\ReviewDeleteAction::class)
+                            $proxy->post('/{uuid}/delete', \App\Application\Actions\Cup\Review\ReviewDeleteAction::class)
                                 ->setName('cup:catalog:question:delete');
                         });
                     });
@@ -347,7 +347,7 @@ return function (App $app, Container $container): void {
                             ->setName('cup:guestbook:list');
                         $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\GuestBook\GuestBookUpdateAction::class)
                             ->setName('cup:guestbook:edit');
-                        $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\GuestBook\GuestBookDeleteAction::class)
+                        $proxy->post('/{uuid}/delete', \App\Application\Actions\Cup\GuestBook\GuestBookDeleteAction::class)
                             ->setName('cup:guestbook:delete');
                     });
 
@@ -363,7 +363,7 @@ return function (App $app, Container $container): void {
 
                         $proxy->get('', \App\Application\Actions\Cup\File\FileListAction::class)
                             ->setName('cup:file:list');
-                        $proxy->any('/{uuid}/delete', \App\Application\Actions\Cup\File\FileDeleteAction::class)
+                        $proxy->post('/{uuid}/delete', \App\Application\Actions\Cup\File\FileDeleteAction::class)
                             ->setName('cup:file:delete');
                     });
 
@@ -403,6 +403,7 @@ return function (App $app, Container $container): void {
                         ->add(\Slim\Middleware\BodyParsingMiddleware::class)
                         ->add(\App\Application\Middlewares\MultipartParserMiddleware::class);
                 })
+                ->add(\App\Application\Middlewares\CsrfMiddleware::class)
                 ->add(new \Slim\HttpCache\Cache('private', 0, true));
 
             // COMMON section
