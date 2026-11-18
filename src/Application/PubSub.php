@@ -104,13 +104,13 @@ class PubSub
                 // mail to client
                 if (
                     ($this->parameter('catalog_mail_client', 'off') === 'on')
-                    && $order->getEmail()
+                    && !blank($order->email)
                     && ($tpl = $this->parameter('catalog_mail_client_template', '')) !== ''
                 ) {
                     // add task send client mail
                     $task = new \App\Domain\Tasks\SendMailTask($container);
                     $task->execute([
-                        'to' => $order->getEmail(),
+                        'to' => $order->email,
                         'template' => $this->render($tpl, ['order' => $order]),
                         'isHtml' => true,
                     ]);

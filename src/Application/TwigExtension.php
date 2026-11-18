@@ -237,7 +237,8 @@ class TwigExtension extends AbstractExtension
      */
     public function currentPath($withQueryString = false)
     {
-        $path = ltrim($this->currentUrl(), '/');
+        // the path of the request, not its address with the host: the host is what current_url() is for
+        $path = ltrim((string) ($_SERVER['REQUEST_URI'] ?? ''), '/');
 
         return $withQueryString || !mb_strrpos($path, '?') ? $path : mb_strstr($path, '?', true);
     }
