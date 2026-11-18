@@ -225,3 +225,14 @@ Found and fixed:
 - the task runner failed on a `params` that was not a list
 
 Observed, not changed: `ThemeFiles::clearTemplateCache()` removes every two-hex-digit folder of `var/cache`, which is also where the file cache keeps its entries (login throttle counters, form guard counters). Saving a template in the editor therefore resets them. Separate the template cache folder or limit the removal to compiled templates if that matters.
+
+## Done: batch 7 (2026-11-18) - the plan of the panel is finished
+
+`tests/Cup/CupFilesTest.php` (19: the library, the picture manager, rows that are not real files), `tests/Cup/CupFormDataTest.php` (15: lists, spam, view, delete, restore, from the site to the panel).
+
+Found and fixed:
+- **deleting a file ran `rm -rf <upload folder>/<salt>` through the shell.** The salt is whatever the row says: the API takes any salt on create, so a key with write access to `file` could make a delete run a command (`x; touch ...`), and a row with an empty salt (the default) made the delete remove the folder of every upload. The delete now removes the folder in PHP, only for a plain token salt, never following links; `File::info()` quotes the path with `escapeshellarg`
+- the picture manager of the text editor found the file by name and extension alone: two pictures with the same name got mixed up, and any document could be deleted through it. It now reads the folder and the name from the address and deletes pictures only
+- form submissions were read by their own id under any form's address (a submission shown, deleted or restored through the wrong form); an unknown form or submission was a 500
+
+The tests that cover the first two were run without the fixes to make sure they fail: they do, and the run removed the upload folder of the test instance - that is the bug.
