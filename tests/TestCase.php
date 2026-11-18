@@ -84,6 +84,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     public function setUp(): void
     {
+        // the parameters and everything else read once live in this cache for the whole process,
+        // a request is a fresh process, a test is not
+        static::$container->get(\Illuminate\Cache\ArrayStore::class)->flush();
+
         $file = VAR_DIR . '/database-test.sqlite';
         $template = VAR_DIR . '/database-test.template.sqlite';
 
