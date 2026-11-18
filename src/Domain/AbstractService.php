@@ -60,6 +60,20 @@ abstract class AbstractService
     abstract public function delete($entity);
 
     /**
+     * The Email and Phone casts quietly turn a malformed value into an empty one,
+     * which would store the record without the contact and tell nobody. Call
+     * this right after fill(): a value that was sent but did not survive is an error
+     *
+     * @throws \Throwable the given exception
+     */
+    protected function failIfDropped(\Illuminate\Database\Eloquent\Model $model, array $data, string $field, \Throwable $exception): void
+    {
+        if (!blank($data[$field] ?? null) && blank($model->getAttributes()[$field] ?? null)) {
+            throw $exception;
+        }
+    }
+
+    /**
      * Keep only the values present in the reference list
      *
      * Used for enum-like criteria (status, type), where an unknown value

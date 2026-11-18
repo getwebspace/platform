@@ -16,12 +16,12 @@ class NonWWWMiddleware extends AbstractMiddleware
     public function __invoke(Request $request, RequestHandlerInterface $handler): ResponseInterface
     {
         if ($this->parameter('common_non_www', 'no') === 'yes') {
-            $scheme = $request->getUri()->getScheme();
-            $host = $request->getUri()->getHost();
+            $uri = $request->getUri();
 
-            if (str_starts_with($host, 'www')) {
+            if (str_starts_with(mb_strtolower($uri->getHost()), 'www.')) {
+                // the same address without the prefix, nothing else changes
                 return (new Response())
-                    ->withHeader('Location', $scheme . '://' . str_replace('www.', '', $host))
+                    ->withHeader('Location', (string) $uri->withHost(mb_substr($uri->getHost(), 4)))
                     ->withStatus(308);
             }
         }

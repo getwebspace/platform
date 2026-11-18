@@ -338,9 +338,13 @@ class MiddlewareTest extends TestCase
 
         $this->setParameter('common_non_www', 'yes');
 
-        $www = $this->http('GET', '/guestbook?format=json', ['headers' => ['Host' => 'www.example.com']]);
+        $www = $this->http('GET', '/guestbook?format=json&page=2', ['headers' => ['Host' => 'www.example.com']]);
         $this->assertEquals(308, $www->getStatusCode());
-        $this->assertEquals('http://example.com', $www->getHeaderLine('Location'));
+        $this->assertEquals('http://example.com/guestbook?format=json&page=2', $www->getHeaderLine('Location'), 'path and query survive');
+
+        // only the "www." label is dropped, a host that merely starts with those letters is left alone
+        $lookalike = $this->http('GET', '/guestbook?format=json', ['headers' => ['Host' => 'wwwshop.example']]);
+        $this->assertEquals(200, $lookalike->getStatusCode());
 
         $bare = $this->http('GET', '/guestbook?format=json', ['headers' => ['Host' => 'example.com']]);
         $this->assertEquals(200, $bare->getStatusCode());

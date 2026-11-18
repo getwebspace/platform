@@ -56,7 +56,7 @@ class CommonActionsTest extends TestCase
             'password_again' => self::PASSWORD,
         ]]);
 
-        $this->assertEquals(301, $response->getStatusCode());
+        $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('/user/profile', $response->getHeaderLine('Location'));
         $cookies = $this->setCookies($response);
         $this->assertNotEmpty($cookies['access_token'] ?? '');
@@ -139,7 +139,7 @@ class CommonActionsTest extends TestCase
 
         $response = $this->http('POST', '/user/login', ['form_params' => ['username' => $user->username, 'password' => self::PASSWORD]]);
 
-        $this->assertEquals(301, $response->getStatusCode());
+        $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('/user/profile', $response->getHeaderLine('Location'));
         $this->assertArrayHasKey('access_token', $this->setCookies($response));
     }
@@ -151,7 +151,7 @@ class CommonActionsTest extends TestCase
         foreach ([$user->email, $user->username] as $identifier) {
             $response = $this->http('POST', '/user/login', ['form_params' => ['identifier' => $identifier, 'password' => self::PASSWORD]]);
 
-            $this->assertEquals(301, $response->getStatusCode(), $identifier);
+            $this->assertEquals(302, $response->getStatusCode(), $identifier);
         }
     }
 
@@ -210,7 +210,7 @@ class CommonActionsTest extends TestCase
 
         $response = $this->http('POST', '/user/login', ['form_params' => ['username' => $other->username, 'password' => self::PASSWORD]]);
 
-        $this->assertEquals(301, $response->getStatusCode());
+        $this->assertEquals(302, $response->getStatusCode());
     }
 
     public function testASuccessfulLoginResetsTheFailureCount(): void
@@ -223,15 +223,25 @@ class CommonActionsTest extends TestCase
             $this->http('POST', '/user/login?format=json', ['form_params' => ['username' => $user->username, 'password' => 'nope']]);
 
             $ok = $this->http('POST', '/user/login', ['form_params' => ['username' => $user->username, 'password' => self::PASSWORD]]);
-            $this->assertEquals(301, $ok->getStatusCode(), 'round ' . $round);
+            $this->assertEquals(302, $ok->getStatusCode(), 'round ' . $round);
         }
+    }
+
+    public function testRedirectsAfterAFormAreTemporary(): void
+    {
+        $user = $this->makeUser();
+
+        $login = $this->http('POST', '/user/login', ['form_params' => ['username' => $user->username, 'password' => self::PASSWORD]]);
+
+        // a permanent redirect would be cached by the browser: the login page would jump to the profile for good
+        $this->assertEquals(302, $login->getStatusCode());
     }
 
     public function testLogoutGoesThroughTheAuthEndpoint(): void
     {
         $response = $this->http('GET', '/user/logout');
 
-        $this->assertEquals(301, $response->getStatusCode());
+        $this->assertEquals(302, $response->getStatusCode());
         $this->assertEquals('/auth/logout', $response->getHeaderLine('Location'));
     }
 
@@ -247,7 +257,7 @@ class CommonActionsTest extends TestCase
             'form_params' => ['firstname' => 'Anna'],
         ]);
 
-        $this->assertEquals(301, $response->getStatusCode());
+        $this->assertEquals(302, $response->getStatusCode());
         $fresh = $this->getService(UserService::class)->read(['uuid' => $user->uuid]);
         $this->assertEquals('Anna', $fresh->firstname);
         $this->assertEquals('Kyiv', $fresh->city, 'a field that was not sent keeps its value');
@@ -440,6 +450,19 @@ class CommonActionsTest extends TestCase
         ]);
     }
 
+    public function testACartWithAMalformedContactReportsTheField(): void
+    {
+        $form = ['email' => 'buyer@example.com', 'phone' => '+380501234567', 'delivery' => ['address' => 'x']];
+
+        $badEmail = $this->http('POST', '/cart?format=json', ['headers' => self::AJAX, 'form_params' => ['email' => 'nonsense'] + $form]);
+        $this->assertArrayHasKey('email', $this->json($badEmail)['errors']);
+
+        $badPhone = $this->http('POST', '/cart?format=json', ['headers' => self::AJAX, 'form_params' => ['phone' => 'abc'] + $form]);
+        $this->assertArrayHasKey('phone', $this->json($badPhone)['errors']);
+
+        $this->assertSame(0, CatalogOrder::count());
+    }
+
     public function testCartPageIsNotIndexed(): void
     {
         $response = $this->http('GET', '/cart?format=json');
@@ -582,7 +605,7 @@ class CommonActionsTest extends TestCase
         $this->assertEquals(404, $unknown->getStatusCode());
 
         $junk = $this->http('GET', '/cart/done/not-a-uuid');
-        $this->assertEquals(301, $junk->getStatusCode());
+        $this->assertEquals(302, $junk->getStatusCode());
         $this->assertEquals('/cart', $junk->getHeaderLine('Location'));
     }
 }

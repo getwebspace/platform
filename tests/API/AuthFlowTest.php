@@ -73,17 +73,15 @@ class AuthFlowTest extends TestCase
         $this->assertEquals(400, $this->register(['email' => 'other@example.com'])->getStatusCode(), 'same username');
     }
 
-    /**
-     * Pins what happens today: the Email cast quietly turns a malformed address
-     * into an empty one, so the account is created without any e-mail and the
-     * visitor is never told. Worth a decision - see the test report
-     */
-    public function testRegisterDropsAMalformedEmailSilently(): void
+    public function testRegisterRejectsAMalformedEmailAndPhone(): void
     {
-        $response = $this->register(['email' => 'not-an-email']);
+        foreach (['email' => 'not-an-email', 'phone' => 'abc'] as $field => $value) {
+            $response = $this->register([$field => $value]);
 
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertSame('', (string) $this->getService(UserService::class)->read(['username' => 'newcomer'])->email);
+            $this->assertEquals(400, $response->getStatusCode(), $field);
+        }
+
+        $this->assertSame(0, \App\Domain\Models\User::count(), 'nobody is registered without the contact they gave');
     }
 
     public function testRegisterCannotChooseItsOwnStatusOrGroup(): void

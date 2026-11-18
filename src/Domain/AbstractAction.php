@@ -471,7 +471,7 @@ abstract class AbstractAction
         return $this->response->withHeader('Content-Type', 'text/plain; charset=utf-8');
     }
 
-    protected function respondWithRedirect(string $location = '/', int $status = 301): Response
+    protected function respondWithRedirect(string $location = '/', int $status = 302): Response
     {
         return $this->response->withAddedHeader('Location', $location)->withStatus($status);
     }

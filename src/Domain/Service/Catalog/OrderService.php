@@ -30,6 +30,9 @@ class OrderService extends AbstractService
         $order = $this->db->transaction(function () use ($data) {
             $order = new CatalogOrder();
             $order->fill(array_merge($data, ['serial' => $this->generateSerial()]));
+
+            $this->failIfDropped($order, $data, 'email', new Exception\WrongEmailValueException());
+            $this->failIfDropped($order, $data, 'phone', new Exception\WrongPhoneValueException());
             $order->save();
 
             return $order;
@@ -126,6 +129,9 @@ class OrderService extends AbstractService
 
         if (is_object($entity) && is_a($entity, CatalogOrder::class)) {
             $entity->fill($data);
+
+            $this->failIfDropped($entity, $data, 'email', new Exception\WrongEmailValueException());
+            $this->failIfDropped($entity, $data, 'phone', new Exception\WrongPhoneValueException());
 
             $entity->save();
 

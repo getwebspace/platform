@@ -46,6 +46,9 @@ class UserService extends AbstractService
         $user = new User();
         $user->fill($data);
 
+        $this->failIfDropped($user, $data, 'email', new WrongEmailValueException());
+        $this->failIfDropped($user, $data, 'phone', new WrongPhoneValueException());
+
         if (!$user->username && !$user->email && !$user->phone) {
             throw new MissingUniqueValueException();
         }
@@ -236,6 +239,9 @@ class UserService extends AbstractService
 
         if (is_object($entity) && is_a($entity, User::class)) {
             $entity->fill($data);
+
+            $this->failIfDropped($entity, $data, 'email', new WrongEmailValueException());
+            $this->failIfDropped($entity, $data, 'phone', new WrongPhoneValueException());
 
             if ($entity->isDirty('username')) {
                 $found = User::firstWhere(['username' => $entity->username]);
