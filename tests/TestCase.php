@@ -75,13 +75,36 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         file_put_contents($public, openssl_pkey_get_details($key)['key']);
     }
 
+    /**
+     * Migrating the schema from nothing takes most of the time of a small test,
+     * so it is done once per run: the migrated, empty database is kept as a
+     * template and every test starts from a copy of it
+     */
+    private static bool $templateReady = false;
+
     public function setUp(): void
     {
+        $file = VAR_DIR . '/database-test.sqlite';
+        $template = VAR_DIR . '/database-test.template.sqlite';
+
+        if (self::$templateReady && is_file($template)) {
+            // drop the open handle, the next query reconnects to the restored file
+            static::$container->get(\Illuminate\Database\Connection::class)->disconnect();
+
+            foreach (['-journal', '-wal', '-shm'] as $suffix) {
+                @unlink($file . $suffix);
+            }
+
+            copy($template, $file);
+            @chmod($file, 0o666);
+
+            return;
+        }
+
         /*
-         * for each test, we will use an empty database
+         * the first test of a run: use an empty database,
          * delete the scheme and create it again
          */
-
         $phinxApp = new PhinxApplication();
         $phinxApp->setAutoExit(false);
         $phinxApp->setCatchExceptions(false);
@@ -103,6 +126,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                 throw new \RuntimeException("phinx '{$command}' failed with exit code {$code}\n{$output->fetch()}");
             }
         }
+
+        static::$container->get(\Illuminate\Database\Connection::class)->disconnect();
+        copy($file, $template);
+        @chmod($template, 0o666);
+        self::$templateReady = true;
     }
 
     protected function getService($class): mixed

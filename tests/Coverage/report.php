@@ -1,0 +1,101 @@
+<?php declare(strict_types=1);
+
+/**
+ * Merges phpunit's clover report (code run by the tests themselves) with the
+ * lines php-fpm executed while serving the API tests, and prints the coverage
+ * by directory
+ *
+ * php report.php <clover.xml> <fpm-dir> [--min=<percent>]
+ */
+[, $cloverFile, $fpmDir] = $argv + [null, null, null];
+
+if (!$cloverFile || !$fpmDir || !is_file($cloverFile)) {
+    fwrite(STDERR, "usage: report.php <clover.xml> <fpm-dir> [--min=<percent>]\n");
+    exit(2);
+}
+
+$min = null;
+foreach ($argv as $arg) {
+    if (str_starts_with($arg, '--min=')) {
+        $min = (float) substr($arg, 6);
+    }
+}
+
+$clover = simplexml_load_file($cloverFile);
+
+$executable = [];
+$byTests = [];
+foreach ($clover->xpath('//file') as $file) {
+    $name = (string) $file['name'];
+
+    foreach ($file->line as $line) {
+        if ((string) $line['type'] !== 'stmt') {
+            continue;
+        }
+
+        $number = (int) $line['num'];
+        $executable[$name][$number] = true;
+
+        if ((int) $line['count'] > 0) {
+            $byTests[$name][$number] = true;
+        }
+    }
+}
+
+$byFpm = [];
+foreach (glob(rtrim($fpmDir, '/') . '/*.json') ?: [] as $json) {
+    foreach (json_decode((string) file_get_contents($json), true) ?: [] as $name => $lines) {
+        foreach ($lines as $number) {
+            $byFpm[$name][$number] = true;
+        }
+    }
+}
+
+$groups = [];
+foreach ($executable as $name => $lines) {
+    $parts = explode('/', str_replace('/var/container/src/', '', $name));
+    array_pop($parts);
+    $group = implode('/', array_slice($parts, 0, 3)) ?: '(root)';
+
+    $groups[$group] ??= ['lines' => 0, 'tests' => 0, 'all' => 0];
+
+    foreach (array_keys($lines) as $number) {
+        $tests = isset($byTests[$name][$number]);
+
+        ++$groups[$group]['lines'];
+        $groups[$group]['tests'] += $tests ? 1 : 0;
+        $groups[$group]['all'] += ($tests || isset($byFpm[$name][$number])) ? 1 : 0;
+    }
+}
+
+uasort($groups, static fn (array $a, array $b): int => $b['lines'] <=> $a['lines']);
+
+printf("%7s %7s %7s  %s\n", 'covered', 'phpunit', 'lines', 'directory');
+$total = ['lines' => 0, 'tests' => 0, 'all' => 0];
+foreach ($groups as $group => $data) {
+    foreach ($total as $key => $_) {
+        $total[$key] += $data[$key];
+    }
+
+    printf(
+        "%6.1f%% %6.1f%% %7d  %s\n",
+        100 * $data['all'] / $data['lines'],
+        100 * $data['tests'] / $data['lines'],
+        $data['lines'],
+        $group
+    );
+}
+
+$percent = $total['lines'] ? 100 * $total['all'] / $total['lines'] : 0.0;
+printf(
+    "\nTOTAL %.1f%% (%d of %d lines); %.1f%% by phpunit alone, the rest by php-fpm\n",
+    $percent,
+    $total['all'],
+    $total['lines'],
+    $total['lines'] ? 100 * $total['tests'] / $total['lines'] : 0.0
+);
+
+if ($min !== null && $percent < $min) {
+    fwrite(STDERR, sprintf("coverage %.1f%% is below the required %.1f%%\n", $percent, $min));
+    exit(1);
+}
