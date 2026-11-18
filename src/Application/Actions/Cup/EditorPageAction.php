@@ -67,7 +67,15 @@ class EditorPageAction extends AbstractAction
             ]);
         }
 
-        switch ($this->getParam('save', 'ajax')) {
+        $mode = $this->getParam('save', 'ajax');
+
+        // the resource folder is served by the web server: a script written there would be run, so only
+        // the kinds of files of a theme can be made or changed here (the same list as for the MCP tools)
+        if ($mode !== 'delete' && !(new \App\Application\ThemeFiles($this->container))->isEditable($path)) {
+            return $this->fail('Only files of these kinds can be written: ' . implode(', ', \App\Application\ThemeFiles::EDITABLE), 415);
+        }
+
+        switch ($mode) {
             case 'create':
                 if (file_exists($absolute)) {
                     return $this->fail('File already exists', 409);
@@ -131,7 +139,8 @@ class EditorPageAction extends AbstractAction
         }
 
         foreach (explode('/', $rest) as $part) {
-            if ($part === '' || $part === '.' || $part === '..') {
+            // letters, digits, dot, dash, underscore and space; nothing hidden, nothing that climbs
+            if ($part === '' || str_starts_with($part, '.') || mb_strlen($part) > 120 || preg_match('/^[A-Za-z0-9._ -]+$/', $part) !== 1) {
                 return null;
             }
         }

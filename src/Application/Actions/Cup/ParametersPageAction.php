@@ -13,14 +13,21 @@ class ParametersPageAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
+        // where to go after saving: a page of this site, whatever the link asks for
         $redirect = $this->getQueryParam('return', '/cup/parameters');
+        $redirect = is_string($redirect) && $this->isLocalPath($redirect) ? $redirect : '/cup/parameters';
         $parameters = $this->parameter();
 
         if ($this->isPost()) {
             /** @var ParameterService $parameterService */
             $parameterService = $this->container->get(ParameterService::class);
 
-            foreach ($this->request->getParsedBody() as $group => $params) {
+            foreach ((array) $this->request->getParsedBody() as $group => $params) {
+                // the security token and anything else that is not a group of settings
+                if (!is_array($params)) {
+                    continue;
+                }
+
                 foreach ($params as $key => $value) {
                     $data = [
                         'name' => trim($group . '_' . $key),

@@ -14,7 +14,7 @@ class TaskRunAction extends AbstractAction
             if (($name = $this->getParam('task', null)) !== null && is_string($name) && is_subclass_of($name, \App\Domain\AbstractTask::class)) {
                 /** @var \App\Domain\AbstractTask $task */
                 $task = new $name($this->container);
-                $task->execute($this->getParam('params', []));
+                $task->execute((array) $this->getParam('params', []));
 
                 // run worker
                 \App\Domain\AbstractTask::worker($task);
