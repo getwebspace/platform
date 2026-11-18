@@ -343,7 +343,8 @@ class UserService extends AbstractService
             switch ($this->parameter('user_email_list_mode', 'blacklist')) {
                 case 'blacklist':
                     foreach ($list as $item) {
-                        if (str_ends_with($email, $item)) {
+                        // an empty line is the end of every address
+                        if ($item !== '' && str_ends_with($email, $item)) {
                             return true;
                         }
                     }

@@ -6,11 +6,15 @@ class FileViewAction extends FileAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        /** @var \App\Domain\Models\File $file */
-        $file = $this->fileService->read([
-            'salt' => $this->resolveArg('salt'),
-            'hash' => $this->resolveArg('hash'),
-        ]);
+        try {
+            /** @var \App\Domain\Models\File $file */
+            $file = $this->fileService->read([
+                'salt' => $this->resolveArg('salt'),
+                'hash' => $this->resolveArg('hash'),
+            ]);
+        } catch (\App\Domain\Service\File\Exception\FileNotFoundException $e) {
+            return $this->respond('p404.twig')->withStatus(404);
+        }
 
         return $this->response
             ->withHeader('Content-Type', $file->type)

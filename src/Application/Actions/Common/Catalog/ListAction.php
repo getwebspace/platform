@@ -65,6 +65,25 @@ class ListAction extends CatalogAction
         ];
     }
 
+    /**
+     * The column and direction a category sorts by, the shop-wide setting where it has none
+     * of its own; only a real column and a real direction ever reach the query
+     *
+     * @return array{by: string, direction: string}
+     */
+    private function sortOf(array $sort): array
+    {
+        $by = in_array($sort['by'] ?? '', ['title', 'price', 'order', 'date', 'vendorcode', 'stock'], true)
+            ? $sort['by']
+            : $this->parameter('catalog_sort_by', 'title');
+        $direction = mb_strtolower((string) ($sort['direction'] ?? '')) ?: mb_strtolower((string) $this->parameter('catalog_sort_direction', 'asc'));
+
+        return [
+            'by' => in_array($by, ['title', 'price', 'order', 'date', 'vendorcode', 'stock'], true) ? $by : 'title',
+            'direction' => $direction === 'desc' ? 'desc' : 'asc',
+        ];
+    }
+
     protected function prepareMain(array $args, Collection $categories): ?Response
     {
         if ($args['address'] === '') {
@@ -258,15 +277,16 @@ class ListAction extends CatalogAction
                     $products->orderBy('cp.' . $order, $direction);
                 }
             } else {
-                $sortBy = $category->sort;
+                // a category made through the API or an import has no sort of its own yet
+                $sortBy = $this->sortOf($category->sort);
 
-                $params['order'][$sortBy['by']] = mb_strtolower($sortBy['direction']);
+                $params['order'][$sortBy['by']] = $sortBy['direction'];
                 $products->orderBy('cp.' . $sortBy['by'], $sortBy['direction']);
             }
 
             $filtered = $products->get()->forPage($args['offset'], $category->pagination);
 
-            return $this->respond($category->template['category'], [
+            return $this->respond($category->template['category'] ?? $this->parameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
                 'category' => $category,
                 'products' => [
@@ -293,13 +313,16 @@ class ListAction extends CatalogAction
             'status' => \App\Domain\Casts\Catalog\Status::WORK,
         ]);
 
+        // a product of a hidden or removed category is as hidden as the category
+        $products = $products->filter(fn (\App\Domain\Models\CatalogProduct $product) => $categories->contains('uuid', $product->category_uuid));
+
         if ($products->count()) {
             /**
              * @var \App\Domain\Models\CatalogProduct $product
              */
             $product = $products->first();
 
-            return $this->respond($product->category->template['product'] ?? '', [
+            return $this->respond($product->category->template['product'] ?? $this->parameter('catalog_product_template', 'catalog.product.twig'), [
                 'categories' => $categories,
                 'category' => $product->category,
                 'products' => $products,

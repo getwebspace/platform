@@ -23,6 +23,8 @@ class AddressUrl implements CastsAttributes
         $value = trim($value);
         $value = preg_replace(['/[^\w\s\/-]/', '/\s+/'], ['', '-'], $value);
 
-        return implode('/', array_unique(explode('/', $value))); // for fix duplicate parts
+        // for fix duplicate parts; no slash in front, the page is looked up by what comes after the first one
+        // (a slash left at the end stays: "category/" is how an address that could not be made shows itself)
+        return ltrim(implode('/', array_unique(explode('/', $value))), '/');
     }
 }

@@ -240,6 +240,7 @@ class FileService extends AbstractService
         $default = [
             'uuid' => null,
             'hash' => null,
+            'salt' => null,
             'name' => null,
             'ext' => null,
             'type' => null,
@@ -254,6 +255,10 @@ class FileService extends AbstractService
         }
         if ($data['hash'] !== null) {
             $criteria['hash'] = $data['hash'];
+        }
+        if ($data['salt'] !== null) {
+            // the folder the file lives in: the public link names both, and both must match
+            $criteria['salt'] = $data['salt'];
         }
         if ($data['name'] !== null) {
             $criteria['name'] = $data['name'];

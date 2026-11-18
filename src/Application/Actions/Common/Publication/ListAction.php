@@ -26,18 +26,23 @@ class ListAction extends AbstractAction
                 // publication category
                 case '':
                     $category = $categories->firstWhere('address', $args['category']);
-                    $order = $category->sort['by'] ?? \App\Domain\References\Publication::ORDER_BY_DATE;
-                    $direction = $category->sort['direction'] ?? \App\Domain\References\Publication::ORDER_DIRECTION_ASC;
+                    // a category made through the API or an import has no sort of its own yet
+                    $order = in_array($category->sort['by'] ?? '', ['date', 'title', 'address'], true)
+                        ? $category->sort['by']
+                        : \App\Domain\References\Publication::ORDER_BY_DATE;
+                    $direction = mb_strtolower((string) ($category->sort['direction'] ?? '')) === 'desc' ? 'desc' : 'asc';
 
                     $query = \App\Domain\Models\Publication::query();
                     $query->whereIn('category_uuid', $category->nested()->pluck('uuid'));
                     $query->where('date', '<=', datetime()->toDateTimeString());
-                    $query->orderBy($order, $direction);
-                    $query->limit($category->pagination);
-                    $query->offset($args['offset']);
 
                     $count = $query->count();
-                    $publications = $query->get()->forPage($args['offset'], $category->pagination);
+
+                    // page numbers start at one, the address without a number is the first page
+                    $query->orderBy($order, $direction);
+                    $query->limit($category->pagination);
+                    $query->offset(max(0, $args['offset'] - 1) * $category->pagination);
+                    $publications = $query->get();
 
                     return $this->respond($category->template['list'] ?? 'publication.list.twig', [
                         'categories' => $categories->where('is_public', true),
@@ -54,6 +59,12 @@ class ListAction extends AbstractAction
                 default:
                     try {
                         $publication = $publicationService->read(['address' => $args['address']]);
+
+                        // not yet published
+                        if ($publication->date > datetime()) {
+                            throw new PublicationNotFoundException();
+                        }
+
                         $category = $publication->category;
 
                         return $this->respond($category->template['full'] ?? 'publication.full.twig', [
