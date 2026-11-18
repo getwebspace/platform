@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Common\User;
 
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
 
@@ -39,7 +40,7 @@ class UserSubscribeAction extends UserAction
 
                     break;
             }
-        } catch (EmailAlreadyExistsException|UserNotFoundException|WrongEmailValueException $e) {
+        } catch (EmailAlreadyExistsException|MissingUniqueValueException|UserNotFoundException|WrongEmailValueException $e) {
             $output['status'] = 304;
             $output['description'] = $e->getDescription();
         }

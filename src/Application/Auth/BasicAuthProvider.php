@@ -25,7 +25,9 @@ class BasicAuthProvider extends AbstractAuthProvider
             'email' => null,
             'phone' => null,
             'password' => null,
-            'status' => UserStatus::WORK,
+            // the status is checked below, so that an account waiting for its
+            // e-mail confirmation can be told apart from one that does not exist
+            'status' => null,
         ];
         $credentials = array_merge($default, $credentials);
         $user = $this->userService->read($credentials);
@@ -70,6 +72,12 @@ class BasicAuthProvider extends AbstractAuthProvider
             'unique' => $token,
             'agent' => $params['agent'],
         ]);
+
+        // a session of an account that was blocked or deleted meanwhile must not live on
+        if ($token->user->status !== UserStatus::WORK) {
+            return null;
+        }
+
         $expired = $token->date->getTimestamp() + \App\Domain\References\Date::MONTH;
 
         if ($expired >= time()) {

@@ -13,7 +13,7 @@ class Phone implements CastsAttributes
 
     public function set($model, string $key, mixed $value, array $attributes): string
     {
-        $value = str_replace([' ', '-', '.', '(', ')'], '', $value);
+        $value = str_replace([' ', '-', '.', '(', ')'], '', (string) $value);
 
         if (isset($_ENV['SIMPLE_PHONE_CHECK']) && $_ENV['SIMPLE_PHONE_CHECK']) {
             return $value;

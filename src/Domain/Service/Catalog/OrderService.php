@@ -164,6 +164,17 @@ class OrderService extends AbstractService
         throw new OrderNotFoundException();
     }
 
+    /**
+     * How many orders are already booked for shipping on the given day
+     */
+    public function countShippingOn($date = 'now'): int
+    {
+        return CatalogOrder::query()->whereDate('shipping', datetime($date)->format('Y-m-d'))->count();
+    }
+
+    /**
+     * The number the next order created on that day gets (it numbers the serial)
+     */
     public function getDayCount($date = 'now'): int
     {
         $date = datetime($date)->format('Y-m-d');
@@ -193,7 +204,7 @@ class OrderService extends AbstractService
             $product = CatalogProduct::find($uuid);
 
             if ($product) {
-                $priceType = in_array($opts['price_type'], \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE, true) ? $opts['price_type'] : 'price';
+                $priceType = in_array($opts['price_type'] ?? '', \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE, true) ? $opts['price_type'] : 'price';
                 $price = match ($priceType) {
                     \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE => $product->price,
                     \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_WHOLESALE => $product->priceWholesale,

@@ -24,7 +24,13 @@ class RefreshTokenAction extends AuthAction
                     ]
                 );
 
-                $this->setAuthCookies($result);
+                // null: the session expired or its owner can no longer sign in
+                if ($result === null) {
+                    $result = [];
+                    $redirect = '/auth/logout';
+                } else {
+                    $this->setAuthCookies($result);
+                }
             } catch (TokenNotFoundException $e) {
                 $redirect = '/auth/logout';
             }

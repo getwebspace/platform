@@ -188,7 +188,12 @@ class UserService extends AbstractService
 
                             break;
                     }
-                })->first();
+                })->when(
+                    isset($criteria['status']),
+                    // an explicit status is a condition, not a hint: a blocked or deleted
+                    // account must not come back from a lookup that asked for a working one
+                    fn (Builder $query) => $query->whereIn('status', (array) $criteria['status'])
+                )->first();
 
                 return $user ?: throw new UserNotFoundException();
 

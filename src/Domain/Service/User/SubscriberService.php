@@ -18,14 +18,19 @@ class SubscriberService extends AbstractService
     /**
      * @throws MissingUniqueValueException
      * @throws EmailAlreadyExistsException
+     * @throws WrongEmailValueException
      */
     public function create(array $data = []): UserSubscriber
     {
         $userSubscriber = new UserSubscriber();
         $userSubscriber->fill($data);
 
-        if (!$userSubscriber->email) {
+        if (blank($data['email'] ?? null)) {
             throw new MissingUniqueValueException();
+        }
+
+        if (!filter_var($userSubscriber->email, FILTER_VALIDATE_EMAIL)) {
+            throw new WrongEmailValueException();
         }
 
         if (UserSubscriber::firstWhere(['email' => $userSubscriber->email]) !== null) {
@@ -80,6 +85,7 @@ class SubscriberService extends AbstractService
      * @param string|UserSubscriber|Uuid $entity
      *
      * @throws EmailAlreadyExistsException
+     * @throws WrongEmailValueException
      * @throws UserNotFoundException
      * @throws WrongEmailValueException
      *

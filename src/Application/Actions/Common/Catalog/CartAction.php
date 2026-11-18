@@ -63,7 +63,7 @@ class CartAction extends CatalogAction
                     if (($limit = $this->parameter('catalog_order_limit', 0)) > 0) {
                         $date = datetime($data['shipping'])->format(\App\Domain\References\Date::DATE);
 
-                        if ($this->catalogOrderService->getDayCount($date) >= $limit) {
+                        if ($this->catalogOrderService->countShippingOn($date) >= $limit) {
                             throw new OrderShippingLimitException();
                         }
                     }
