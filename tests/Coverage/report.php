@@ -57,6 +57,69 @@ foreach (glob(rtrim($fpmDir, '/') . '/*.json') ?: [] as $json) {
     }
 }
 
+/**
+ * A multi-line array literal is one operation for pcov (reported on one of its lines), but every line of it is a statement
+ * for phpunit, so an array that did run would leave its other lines "uncovered". The lines of a literal that has
+ * no code inside it (a closure, a match) count as run together with the one pcov saw
+ *
+ * @return array<int, array{0: int, 1: int}>
+ */
+function literalSpans(string $file): array
+{
+    $tokens = array_values(array_filter(
+        \PhpToken::tokenize((string) file_get_contents($file)),
+        static fn (\PhpToken $t): bool => !$t->is([T_WHITESPACE, T_COMMENT, T_DOC_COMMENT])
+    ));
+
+    $spans = [];
+    $stack = [];
+    foreach ($tokens as $i => $token) {
+        $previous = $tokens[$i - 1] ?? null;
+
+        if ($token->text === '[' && !($previous && ($previous->is([T_VARIABLE, T_STRING, T_NAME_QUALIFIED, T_NAME_FULLY_QUALIFIED]) || in_array($previous->text, [']', ')', '}'], true)))) {
+            $stack[] = [$token->line, false];
+        } elseif ($token->is(T_ARRAY) && ($tokens[$i + 1]->text ?? '') === '(') {
+            $stack[] = [$token->line, false];
+        } elseif ($token->text === '[' || $token->text === '(') {
+            $stack[] = [null, false];
+        } elseif ($token->is([T_FUNCTION, T_FN, T_MATCH])) {
+            foreach ($stack as $k => $_) {
+                $stack[$k][1] = true;
+            }
+        } elseif (($token->text === ']' || $token->text === ')') && $stack) {
+            [$start, $code] = array_pop($stack);
+
+            if ($start !== null && !$code && $token->line > $start) {
+                $spans[] = [$start, $token->line];
+            }
+        }
+    }
+
+    return $spans;
+}
+
+foreach ([&$byTests, &$byFpm] as &$source) {
+    foreach ($executable as $name => $lines) {
+        if (!isset($source[$name]) || !is_file($name)) {
+            continue;
+        }
+
+        foreach (literalSpans($name) as [$start, $end]) {
+            $hit = false;
+            for ($n = $start; $n <= $end; ++$n) {
+                $hit = $hit || isset($source[$name][$n]);
+            }
+
+            for ($n = $start; $hit && $n <= $end; ++$n) {
+                if (isset($lines[$n])) {
+                    $source[$name][$n] = true;
+                }
+            }
+        }
+    }
+}
+unset($source);
+
 if ($list !== null) {
     foreach ($executable as $name => $lines) {
         $relative = str_replace('/var/container/src/', '', $name);
