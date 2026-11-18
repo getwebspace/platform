@@ -248,3 +248,41 @@ Found and fixed:
 - an unknown `provider` in the request ended in "Invalid HTTP status code" (a 500): `WrongAuthProviderException` has the code 400, and any exception without a status of its own is answered with a 500 instead of an invalid response
 
 Pinned as it is: an e-mail that belongs to an existing account is not linked to the provider's identity (the sign in fails, nobody is taken over).
+
+## Done: models and traits (2026-11-18)
+
+`tests/Domain/ModelsTest.php` (the arithmetic of prices, taxes, discounts and order lines, typed attribute values, category trees, names and avatars of users, files of a record), `tests/Domain/TraitsTest.php` (parameters, storage, JWT, confirmation links, throttle, MCP registration, the renderer and the form guard).
+
+Found and fixed:
+- an attribute value of "0" was dropped (`CatalogAttribute::value()`)
+- the lowest price of the last days subtracted the negatively stored discount (the price went up) and ignored the tax (`CatalogProduct::price_lowest()`)
+- `HasFiles::documents()` returned the text files of every record (a bare `orWhere`)
+- `HasStorage::hasStorage()` searched the values, not the keys
+- `HasParameters::parameter_set()` worked on a stale cache: a second call for a new name failed
+- a throttle limit of 0 (meant to switch it off) blocked everybody (`UseThrottle::isThrottled()`)
+
+## Done: MCP tools, API search and telemetry (2026-11-18)
+
+`tests/API/Mcp/McpToolsSweepTest.php` (every tool: its schema, a call with nothing, wrong types; batches, answers of the client, invalid messages), `tests/API/ApiSearchTelemetryTest.php`.
+
+Found and fixed:
+- a list where a tool's schema asks for one value (`search`, `uuid`, `status`) turned into "Array" and a PHP warning written into the JSON-RPC answer; `McpAction` refuses it now and the tools read text through `AbstractMcpTool::textArgument()`
+
+Observed, not changed: `/api/v1/telemetry` needs no key by default (PHP version, OS, commit, counts, plugin names); it is switched off with `telemetry_is_enabled=no`.
+
+The coverage report (`tests/Coverage/report.php`) counts a multi-line array literal and a multi-line call chain as run when pcov saw one of their lines run: pcov reports them as one operation, PHPUnit counts every line. Before that the schemas of the tools and the chains of the exports were listed as uncovered (about 800 lines). `--list=<regex>` prints the uncovered lines of the matching files.
+
+## Done: the rest of the panel and of the public site (2026-11-18)
+
+`tests/Cup/CupRemainsTest.php`, `tests/API/CommonRemainsTest.php`, two general tests in `CupContentTest` ("save and continue" and a taken value on the edit form for every entity).
+
+Found and fixed:
+- `FormService::update()` looked the address up by the title: a taken address was a 500 (unique constraint)
+- the guest book and the cart answered a post with 301, which a browser remembers; 302 now
+- `ProductService` took values of attributes that do not exist (the actions waited for `AttributeNotFoundException`, nothing threw it); it throws now
+- an order could be made or saved for a customer that does not exist (`OrderService::assertUserExists()`, the actions already reported `UserNotFoundException` on the field)
+- a dead `catch (WrongPasswordException)` of the user form was removed, nothing throws it
+
+The repository theme `theme/default` has no pages of the visitor's account (they live in the separate default theme project), so `CommonRemainsTest` makes a small theme of its own for the tests of form errors and removes it after.
+
+Left alone: the payment through a plugin in the cart (the plugin's business), and the "cannot write" branches of the file editor (the web server of the dev container is root, so a folder cannot be made unwritable for it).

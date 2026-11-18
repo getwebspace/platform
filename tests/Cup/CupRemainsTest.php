@@ -110,6 +110,23 @@ class CupRemainsTest extends CupTestCase
         $this->assertRedirectsTo($this->cup('POST', "/cup/guestbook/{$gone}/delete"), '/cup/guestbook');
     }
 
+    public function testAnOrderOfAnUnknownCustomerIsReportedOnTheField(): void
+    {
+        $f = $this->fixtures();
+        $fields = ['email' => 'buyer@example.com', 'phone' => '+380501234567', 'delivery' => ['address' => 'x'], 'user_uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString()];
+        $before = \App\Domain\Models\CatalogOrder::count();
+
+        foreach (['/cup/catalog/order/add', "/cup/catalog/order/{$f['order']}/edit"] as $path) {
+            $response = $this->cup('POST', $path, ['form_params' => $fields]);
+
+            $this->assertSame(200, $response->getStatusCode(), $path . ' ' . $this->why($response));
+            $this->assertStringContainsString('has-error', (string) $response->getBody(), $path);
+        }
+
+        $this->assertSame($before, \App\Domain\Models\CatalogOrder::count());
+        $this->assertNull(\App\Domain\Models\CatalogOrder::find($f['order'])->user_uuid);
+    }
+
     public function testAnUnknownAttributeOnAProductFormIsReportedOnTheField(): void
     {
         $f = $this->fixtures();

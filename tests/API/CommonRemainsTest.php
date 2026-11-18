@@ -33,6 +33,39 @@ class CommonRemainsTest extends McpTestCase
 
     private const AJAX = ['X-Requested-With' => 'XMLHttpRequest'];
 
+    private ?string $pagesTheme = null;
+
+    public function tearDown(): void
+    {
+        if ($this->pagesTheme !== null) {
+            foreach (glob($this->pagesTheme . '/*') ?: [] as $file) {
+                @unlink($file);
+            }
+            @rmdir($this->pagesTheme);
+            $this->pagesTheme = null;
+        }
+
+        parent::tearDown();
+    }
+
+    /**
+     * The default theme of the repository has no pages for the visitor's account: a theme with the few that show the errors
+     * of the form, so that the answer to a wrong value can be seen
+     */
+    private function pagesTheme(): void
+    {
+        $this->pagesTheme = THEME_DIR . '/zz-test-pages';
+        @mkdir($this->pagesTheme, 0o777);
+        chmod($this->pagesTheme, 0o777);
+
+        foreach (['login', 'register', 'profile', 'confirmation', 'lostpassword'] as $page) {
+            file_put_contents($this->pagesTheme . "/user.{$page}.twig", "PAGE:{$page} ERRORS:{{ _error|keys|join(',') }}");
+            chmod($this->pagesTheme . "/user.{$page}.twig", 0o666);
+        }
+
+        $this->setting('common_theme', 'zz-test-pages');
+    }
+
     private function setting(string $name, string $value): void
     {
         $this->getService(ParameterService::class)->create(['name' => $name, 'value' => $value]);
@@ -291,53 +324,62 @@ class CommonRemainsTest extends McpTestCase
 
     public function testLoginRegistrationAndConfirmationAreNotAnsweredWithoutTheCaptcha(): void
     {
+        $this->pagesTheme();
         $this->captchaOn();
         $user = $this->makeUser();
 
         $login = $this->http('POST', '/user/login', ['form_params' => ['username' => $user->username, 'password' => self::PASSWORD]]);
-        $this->assertSame(400, $login->getStatusCode(), 'the form again, not a session');
+        $this->assertSame(200, $login->getStatusCode(), 'the form again, not a session');
+        $this->assertStringContainsString('ERRORS:grecaptcha', (string) $login->getBody());
         $this->assertArrayNotHasKey('access_token', $this->cookiesOf($login));
 
         $register = $this->http('POST', '/user/register', ['form_params' => ['username' => 'newbie', 'email' => 'newbie@example.com', 'password' => self::PASSWORD, 'password_again' => self::PASSWORD]]);
-        $this->assertSame(400, $register->getStatusCode());
+        $this->assertStringContainsString('ERRORS:grecaptcha', (string) $register->getBody());
         $this->assertNull(\App\Domain\Models\User::firstWhere('username', 'newbie'));
 
         $resend = $this->http('POST', '/user/confirm', ['form_params' => ['identifier' => $user->email]]);
-        $this->assertSame(400, $resend->getStatusCode());
+        $this->assertStringContainsString('ERRORS:grecaptcha', (string) $resend->getBody());
 
         $recovery = $this->http('POST', '/user/recovery', ['form_params' => ['identifier' => $user->email]]);
-        $this->assertSame(400, $recovery->getStatusCode());
+        $this->assertStringContainsString('ERRORS:grecaptcha', (string) $recovery->getBody());
     }
 
     public function testTheLetterIsNotSentAgainWithoutSayingToWhom(): void
     {
+        $this->pagesTheme();
+
         $response = $this->http('POST', '/user/confirm', ['form_params' => ['identifier' => '  ']]);
 
-        // the default theme has no page of its own for it: the answer is the page of the error, and nothing was sent
-        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsString('ERRORS:identifier', (string) $response->getBody());
         $this->assertSame(0, \App\Domain\Models\Task::count());
     }
 
     public function testAMalformedPhoneIsReportedOnRegistrationAndOnTheProfile(): void
     {
+        $this->pagesTheme();
+
         $register = $this->http('POST', '/user/register', ['form_params' => ['username' => 'newbie', 'email' => 'newbie@example.com', 'phone' => 'abc', 'password' => self::PASSWORD, 'password_again' => self::PASSWORD]]);
-        $this->assertSame(400, $register->getStatusCode());
+        $this->assertStringContainsString('ERRORS:phone', (string) $register->getBody());
         $this->assertNull(\App\Domain\Models\User::firstWhere('username', 'newbie'));
 
         $user = $this->makeUser();
         $profile = $this->http('POST', '/user/profile', ['headers' => $this->cookie($this->loginAs($user)['access_token'] ?? ''), 'form_params' => ['phone' => 'abc']]);
-        $this->assertSame(400, $profile->getStatusCode());
+        $this->assertSame(200, $profile->getStatusCode());
+        $this->assertStringContainsString('ERRORS:phone', (string) $profile->getBody());
         $this->assertNotSame('abc', \App\Domain\Models\User::find($user->uuid)->phone);
     }
 
     public function testAUsernameOfAnotherUserCannotBeTakenOnTheProfile(): void
     {
+        $this->pagesTheme();
         $taken = $this->makeUser();
         $user = $this->makeUser();
 
         $profile = $this->http('POST', '/user/profile', ['headers' => $this->cookie($this->loginAs($user)['access_token'] ?? ''), 'form_params' => ['username' => $taken->username]]);
 
-        $this->assertSame(400, $profile->getStatusCode());
+        $this->assertSame(200, $profile->getStatusCode());
+        $this->assertStringContainsString('ERRORS:username', (string) $profile->getBody());
         $this->assertNotSame($taken->username, \App\Domain\Models\User::find($user->uuid)->username);
     }
 
