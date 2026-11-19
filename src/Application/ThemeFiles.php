@@ -337,10 +337,16 @@ class ThemeFiles
             return;
         }
 
-        // the cache of Twig: folders named by two hex digits
+        // the cache of Twig: compiled `.php` files in folders named by two hex digits. The file cache of the application
+        // (the counters of failed logins, of the form guard) lives in folders of the same names, its entries have no extension
         foreach (glob($cache . '/[0-9a-f][0-9a-f]', GLOB_ONLYDIR) ?: [] as $dir) {
             foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST) as $item) {
-                $item->isDir() && !$item->isLink() ? @rmdir($item->getPathname()) : @unlink($item->getPathname());
+                if ($item->isDir() && !$item->isLink()) {
+                    // only an empty one goes, the rest still holds entries of the file cache
+                    @rmdir($item->getPathname());
+                } elseif (str_ends_with($item->getFilename(), '.php')) {
+                    @unlink($item->getPathname());
+                }
             }
 
             @rmdir($dir);

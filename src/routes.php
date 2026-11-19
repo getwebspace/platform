@@ -28,7 +28,8 @@ return function (App $app, Container $container): void {
                             // telemetry
                             $proxy
                                 ->map(['GET'], '/telemetry', \App\Application\Actions\Api\v1\TelemetryAction::class)
-                                ->setName('api:v1:telemetry');
+                                ->setName('api:v1:telemetry')
+                                ->add(\App\Application\Middlewares\AuthorizationAPIMiddleware::class);
 
                             // search
                             $proxy
