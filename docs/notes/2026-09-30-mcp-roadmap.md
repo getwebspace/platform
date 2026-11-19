@@ -192,6 +192,28 @@ Found by a review: external id, product type, "tax included" and filters could n
 - `entity_file_detach` takes the file off the record only; the file stays in the store (the answer says whether another record uses it). There is no tool that deletes a file.
 - The type of a file in the store is what the detector said (`image/png; charset=binary`); the tools show the plain type.
 
+## DONE: create everything (2026-11-19)
+
+Every entity of the admin panel / REST API now has a create tool (checked entity by entity). Rules kept: nothing is deleted, nobody is notified
+(create events that send mail are NOT published: order, guestbook, review, user), people-facing records wait for moderation, secrets/code are out.
+
+| Entity | Tools |
+| --- | --- |
+| page | `page_create`; `page_update` now also type, template (a file of the active theme), date |
+| publication category | `publication_category_create/update` (hidden until `is_public`; address kept on update) |
+| reference | `reference_create/update` (type `document` holds Twig - never handled) |
+| guestbook / review | `guestbook_create`, `review_create` (always `moderate`, status from caller ignored) |
+| user | `user_create` (random unusable password, no staff group, `allow_mail` false by default) |
+| user group | `user_group_create/update` (never `access`; staff groups can not be changed) |
+| subscriber | `subscriber_create` (full access key) |
+| form | `form_create/update` (full access key; no template, template file, `duplicate`; recipients and origins validated) |
+| order | `catalog_order_create` (catalog prices only, first status by default, no letters, `dry_run`) |
+| task | `task_run` (allow-list: `search_index`, `images`) |
+
+Not a separate tool on purpose: a standalone file upload - every file lives on a record, `entity_file_attach` creates it.
+Tests: `McpContentTest::testCreateMissingEntities`, `testCreateOrderFormAndTask`, `testPageCreateAndAllFields`; guards checked by mutation
+(staff group in `user_create`, forced `moderate`, fixed catalog price).
+
 ## Deliberately NOT covered
 
 - Deleting anything (also no deletion of files from the store: `entity_file_detach` only takes a file off a record)

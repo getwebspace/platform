@@ -5,16 +5,18 @@ namespace App\Domain\McpTools;
 use App\Application\PubSub;
 use App\Domain\AbstractMcpTool;
 use App\Domain\Casts\Page\Type as PageType;
+use App\Domain\McpTools\Concerns\ReadsPageFields;
 use App\Domain\McpTools\Concerns\SanitizesHtml;
 use App\Domain\Service\Page\PageService;
 
 class PageUpdateTool extends AbstractMcpTool
 {
+    use ReadsPageFields;
     use SanitizesHtml;
 
     public const NAME = 'page_update';
     public const TITLE = 'Update page';
-    public const DESCRIPTION = 'Changes a static page: title, content (HTML for html pages, scripts and event handlers are removed), SEO. Pass only the fields to change. '
+    public const DESCRIPTION = 'Changes a static page: title, content, type, template, date (HTML for html pages, scripts and event handlers are removed), SEO. Pass only the fields to change. '
         . 'Pages have no draft state - the change is LIVE on the site at once. Read the page with page_get, show the operator the new text and get explicit confirmation first. The address is kept unless "address" is passed.';
     public const READ_ONLY = false;
     public const SCOPE = 'page';
@@ -33,7 +35,7 @@ class PageUpdateTool extends AbstractMcpTool
                 'meta_description' => $string,
                 'meta_keywords' => $string,
                 'address' => $string + ['description' => 'Change the page address (breaks existing links!)'],
-            ],
+            ] + $this->pageFieldsSchema(),
             'required' => ['uuid'],
         ];
     }
@@ -57,8 +59,12 @@ class PageUpdateTool extends AbstractMcpTool
 
             $data['title'] = trim((string) $args['title']);
         }
-        if (array_key_exists('content', $args)) {
-            $data['content'] = $page->type === PageType::HTML ? $this->sanitizeHtml((string) $args['content']) : (string) $args['content'];
+        $data += $this->pageFields($args);
+
+        if (array_key_exists('content', $args) || isset($data['type'])) {
+            // a changed type re-checks the stored text too
+            $content = array_key_exists('content', $args) ? (string) $args['content'] : (string) $page->content;
+            $data['content'] = ($data['type'] ?? $page->type) === PageType::HTML ? $this->sanitizeHtml($content) : $content;
         }
 
         $meta = array_filter([

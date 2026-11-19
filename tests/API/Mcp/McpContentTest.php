@@ -205,6 +205,222 @@ class McpContentTest extends McpTestCase
         }
     }
 
+    public function testCreateMissingEntities(): void
+    {
+        $groups = $this->getService(UserGroupService::class);
+        $staff = $groups->create(['title' => 'Администраторы', 'access' => ['cup:main']]);
+        $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Телефоны', 'address' => 'phones']);
+        $product = $this->getService(CatalogProductService::class)->create(['title' => 'Смартфон', 'address' => 'phone', 'category_uuid' => $category->uuid]);
+
+        $token = $this->createApiKeyToken(['read' => [], 'write' => ['publication/category', 'reference', 'guestbook', 'review', 'user', 'user/group']], true);
+
+        // publication category: hidden until asked, nesting is checked
+        [$error, $parent] = $this->tool($token, 'publication_category_create', ['title' => 'Новости', 'address' => 'news', 'is_allow_nested' => true]);
+        $this->assertFalse($error, json_encode($parent));
+        $this->assertFalse($parent['is_public']);
+        [$error, $child] = $this->tool($token, 'publication_category_create', ['title' => 'Акции', 'address' => 'news/akcii', 'parent_uuid' => $parent['uuid'], 'pagination' => 5]);
+        $this->assertFalse($error, json_encode($child));
+        $this->assertEquals('news/akcii', $child['address']);
+        [$error, $result] = $this->tool($token, 'publication_category_update', ['uuid' => $child['uuid'], 'is_public' => true, 'description' => 'Скидки']);
+        $this->assertFalse($error, json_encode($result));
+        $this->assertTrue($result['is_public']);
+        $this->assertEquals('news/akcii', $result['address']);
+
+        // reference: a document is never handled, a value replaces whole
+        [$error, $reference] = $this->tool($token, 'reference_create', ['type' => 'payment', 'title' => 'Наличные', 'value' => ['x' => 1]]);
+        $this->assertFalse($error, json_encode($reference));
+        [$error, $result] = $this->tool($token, 'reference_update', ['uuid' => $reference['uuid'], 'status' => false]);
+        $this->assertFalse($error, json_encode($result));
+        $this->assertFalse($result['status']);
+        $document = $this->getService(ReferenceService::class)->create(['type' => 'document', 'title' => 'Счёт', 'value' => ['template' => '{{ 1 }}']]);
+
+        // guestbook and review always wait for moderation
+        [$error, $entry] = $this->tool($token, 'guestbook_create', ['name' => 'Иван', 'email' => 'ivan@example.com', 'message' => 'Спасибо', 'status' => 'work']);
+        $this->assertFalse($error, json_encode($entry));
+        $this->assertEquals('moderate', $entry['status']);
+        [$error, $review] = $this->tool($token, 'review_create', ['entity_type' => 'catalog_product', 'entity_uuid' => (string) $product->uuid, 'message' => 'Хорошо', 'rating' => 4, 'status' => 'work']);
+        $this->assertFalse($error, json_encode($review));
+        $this->assertEquals('moderate', $review['status']);
+        $this->assertEquals(4, $review['rating']);
+
+        // users: no password, no staff
+        [$error, $user] = $this->tool($token, 'user_create', ['email' => 'new@example.com', 'firstname' => 'Анна', 'group' => 'Администраторы']);
+        $this->assertTrue($error, json_encode($user));
+        [$error, $group] = $this->tool($token, 'user_group_create', ['title' => 'Оптовики', 'description' => 'Опт', 'access' => ['cup:main']]);
+        $this->assertFalse($error, json_encode($group));
+        $this->assertFalse($group['staff']);
+        [$error, $user] = $this->tool($token, 'user_create', ['email' => 'new@example.com', 'firstname' => 'Анна', 'group' => 'Оптовики', 'password' => '123456']);
+        $this->assertFalse($error, json_encode($user));
+        $this->assertEquals('Оптовики', $user['group']);
+        $this->assertFalse($user['staff']);
+        $stored = $this->getService(UserService::class)->read(['uuid' => $user['uuid']]);
+        $this->assertFalse(password_verify('123456', (string) $stored->password));
+        $this->assertFalse(password_verify('', (string) $stored->password));
+        [$error, $result] = $this->tool($token, 'user_group_update', ['uuid' => $group['uuid'], 'description' => 'Крупный опт']);
+        $this->assertFalse($error, json_encode($result));
+
+        // subscribers go with a full access key only
+        [$error, $subscriber] = $this->tool($this->createApiKeyToken(['read' => [], 'write' => []], true), 'subscriber_create', ['email' => 'Sub@Example.com']);
+        $this->assertFalse($error, json_encode($subscriber));
+        $this->assertEquals('sub@example.com', $subscriber['email']);
+
+        foreach ([
+            ['tool' => 'publication_category_create', 'args' => ['title' => 'Новости']],
+            ['tool' => 'publication_category_create', 'args' => ['title' => 'Вложенная', 'address' => 'sub', 'parent_uuid' => $child['uuid']]],
+            ['tool' => 'publication_category_update', 'args' => ['uuid' => $child['uuid']]],
+            ['tool' => 'reference_create', 'args' => ['type' => 'document', 'title' => 'Шаблон']],
+            ['tool' => 'reference_create', 'args' => ['type' => 'payment', 'title' => 'Наличные']],
+            ['tool' => 'reference_update', 'args' => ['uuid' => (string) $document->uuid, 'title' => 'Другой']],
+            ['tool' => 'guestbook_create', 'args' => ['name' => 'Иван', 'email' => 'не-почта', 'message' => 'x']],
+            ['tool' => 'guestbook_create', 'args' => ['name' => 'Иван', 'email' => 'a@example.com']],
+            ['tool' => 'review_create', 'args' => ['entity_type' => 'publication', 'entity_uuid' => (string) $product->uuid, 'message' => 'x']],
+            ['tool' => 'review_create', 'args' => ['entity_type' => 'catalog_product', 'entity_uuid' => (string) $product->uuid, 'message' => 'x', 'rating' => 9]],
+            ['tool' => 'review_create', 'args' => ['entity_type' => 'page', 'entity_uuid' => (string) $product->uuid, 'message' => 'x']],
+            ['tool' => 'user_create', 'args' => []],
+            ['tool' => 'user_create', 'args' => ['email' => 'new@example.com']],
+            ['tool' => 'user_group_create', 'args' => ['title' => 'Оптовики']],
+            ['tool' => 'user_group_update', 'args' => ['uuid' => (string) $staff->uuid, 'title' => 'Хозяева']],
+            ['tool' => 'subscriber_create', 'args' => ['email' => 'nope']],
+            ['tool' => 'subscriber_create', 'args' => ['email' => 'sub@example.com']],
+        ] as $case) {
+            [$error] = $this->tool($token, $case['tool'], $case['args']);
+            $this->assertTrue($error, json_encode($case));
+        }
+
+        // the staff group stayed as it was, nobody got in
+        $this->assertEquals(['cup:main'], (array) $groups->read(['uuid' => (string) $staff->uuid])->access);
+        $this->assertEquals([], (array) $groups->read(['uuid' => $group['uuid']])->access);
+        $this->assertEquals('Администраторы', $groups->read(['uuid' => (string) $staff->uuid])->title);
+
+        // scopes: a key without the right sees no create tool, subscribers need full access
+        $names = $this->tools($this->createApiKeyToken(['read' => ['user', 'review'], 'write' => []], false));
+        foreach (['user_create', 'review_create', 'reference_create', 'subscriber_create', 'user_group_create', 'guestbook_create', 'publication_category_create'] as $name) {
+            $this->assertNotContains($name, $names);
+        }
+        $this->assertNotContains('subscriber_create', $this->tools($this->createApiKeyToken(['read' => [], 'write' => ['user']], false)));
+    }
+
+    public function testCreateOrderFormAndTask(): void
+    {
+        $category = $this->getService(CatalogCategoryService::class)->create(['title' => 'Телефоны', 'address' => 'phones']);
+        $product = $this->getService(CatalogProductService::class)->create(['title' => 'Смартфон', 'address' => 'phone', 'category_uuid' => $category->uuid, 'price' => 100]);
+        $references = $this->getService(ReferenceService::class);
+        $references->create(['type' => ReferenceType::ORDER_STATUS, 'title' => 'Новый', 'order' => 1]);
+        $references->create(['type' => ReferenceType::PAYMENT, 'title' => 'Наличные']);
+
+        $token = $this->createApiKeyToken(['read' => [], 'write' => ['catalog/order', 'task']], false);
+        $full = $this->createApiKeyToken(['read' => [], 'write' => []], true);
+
+        [$error, $order] = $this->tool($token, 'catalog_order_create', [
+            'items' => [['product_uuid' => (string) $product->uuid, 'count' => 2, 'price' => 1]],
+            'phone' => '+7 900 111-22-33',
+            'client' => 'Иван',
+            'payment' => 'наличные',
+        ]);
+        $this->assertFalse($error, json_encode($order));
+        $this->assertEquals('Новый', $order['status']);
+        $this->assertEquals('Наличные', $order['payment']);
+        $this->assertEquals(200, $order['total']);
+        $this->assertFalse($order['notified']);
+
+        [, $found] = $this->tool($full, 'catalog_order_get', ['serial' => $order['serial']]);
+        $this->assertEquals('Иван', $found['client'] ?? $found['delivery']['client'] ?? null);
+
+        // dry_run leaves nothing behind
+        $before = $this->getService(CatalogOrderService::class)->read([])->count();
+        [$error] = $this->tool($token, 'catalog_order_create', ['items' => [['product_uuid' => (string) $product->uuid, 'count' => 1]], 'email' => 'a@example.com', 'dry_run' => true]);
+        $this->assertFalse($error);
+        $this->assertEquals($before, $this->getService(CatalogOrderService::class)->read([])->count());
+
+        foreach ([
+            ['items' => [['product_uuid' => (string) $product->uuid, 'count' => 1]]],
+            ['items' => [], 'phone' => '+79001112233'],
+            ['items' => [['product_uuid' => (string) $product->uuid, 'count' => 0]], 'phone' => '+79001112233'],
+            ['items' => [['product_uuid' => '6f1c1f0e-0000-4000-8000-000000000000', 'count' => 1]], 'phone' => '+79001112233'],
+            ['items' => [['product_uuid' => (string) $product->uuid, 'count' => 1], ['product_uuid' => (string) $product->uuid, 'count' => 1]], 'phone' => '+79001112233'],
+            ['items' => [['product_uuid' => (string) $product->uuid, 'count' => 1]], 'phone' => '+79001112233', 'status' => 'Выдуманный'],
+            ['items' => [['product_uuid' => (string) $product->uuid, 'count' => 1]], 'phone' => '+79001112233', 'payment' => 'Выдуманный'],
+            ['items' => [['product_uuid' => (string) $product->uuid, 'count' => 1]], 'email' => 'не-почта'],
+        ] as $args) {
+            [$error] = $this->tool($token, 'catalog_order_create', $args);
+            $this->assertTrue($error, json_encode($args));
+        }
+
+        // forms: full access only, no template or duplicate
+        [$error, $form] = $this->tool($full, 'form_create', ['title' => 'Обратная связь', 'address' => 'feedback', 'recipients' => ['boss@example.com'], 'origins' => ['https://example.com'], 'template' => '{{ x }}', 'duplicate' => 'https://evil.example']);
+        $this->assertFalse($error, json_encode($form));
+        $this->assertEquals(['boss@example.com'], $form['recipients']);
+        $stored = $this->getService(FormService::class)->read(['uuid' => $form['uuid']]);
+        $this->assertSame('', (string) $stored->getAttributes()['template']);
+        $this->assertSame('', (string) $stored->getAttributes()['duplicate']);
+        [$error, $result] = $this->tool($full, 'form_update', ['uuid' => $form['uuid'], 'recipients' => ['a@example.com', 'b@example.com'], 'recaptcha' => false, 'duplicate' => 'https://evil.example']);
+        $this->assertFalse($error, json_encode($result));
+        $this->assertEquals('feedback', $result['address']);
+        $this->assertEquals(['a@example.com', 'b@example.com'], $result['recipients']);
+        $this->assertSame('', (string) $this->getService(FormService::class)->read(['uuid' => $form['uuid']])->getAttributes()['duplicate']);
+
+        foreach ([
+            ['tool' => 'form_create', 'args' => ['title' => 'Обратная связь']],
+            ['tool' => 'form_create', 'args' => ['title' => 'Новая', 'address' => 'new', 'recipients' => ['не-почта']]],
+            ['tool' => 'form_create', 'args' => ['title' => 'Новая', 'address' => 'new', 'origins' => ['javascript:alert(1)']]],
+            ['tool' => 'form_update', 'args' => ['uuid' => $form['uuid']]],
+        ] as $case) {
+            [$error] = $this->tool($full, $case['tool'], $case['args']);
+            $this->assertTrue($error, json_encode($case));
+        }
+        $this->assertNotContains('form_create', $this->tools($this->createApiKeyToken(['read' => [], 'write' => ['page']], false)));
+
+        // tasks: only the allow-listed ones
+        [$error, $task] = $this->tool($token, 'task_run', ['task' => 'search_index']);
+        $this->assertFalse($error, json_encode($task));
+        foreach (['', 'send_mail', 'App\\Domain\\Tasks\\SendNewsLetterMailTask'] as $name) {
+            [$error] = $this->tool($token, 'task_run', ['task' => $name]);
+            $this->assertTrue($error, $name);
+        }
+    }
+
+    public function testPageCreateAndAllFields(): void
+    {
+        $token = $this->createApiKeyToken(['read' => ['page'], 'write' => ['page']], false);
+
+        [$error, $created] = $this->tool($token, 'page_create', [
+            'title' => 'Доставка',
+            'content' => '<p onclick="x()">Условия</p><script>alert(1)</script>',
+            'address' => 'delivery',
+            'meta_title' => 'SEO',
+            'date' => '2026-01-02 10:30',
+        ]);
+        $this->assertFalse($error, json_encode($created));
+        $this->assertEquals('delivery', $created['address']);
+
+        [, $page] = $this->tool($token, 'page_get', ['uuid' => $created['uuid']]);
+        $this->assertEquals('<p>Условия</p>', $page['content']);
+        $this->assertEquals('html', $page['type']);
+        $this->assertEquals('SEO', $page['meta']['title']);
+
+        [$error, $result] = $this->tool($token, 'page_update', ['uuid' => $created['uuid'], 'type' => 'text', 'date' => '2026-02-03']);
+        $this->assertFalse($error, json_encode($result));
+        $this->assertEqualsCanonicalizing(['type', 'date', 'content'], $result['changed_fields']);
+        [, $page] = $this->tool($token, 'page_get', ['uuid' => $created['uuid']]);
+        $this->assertEquals('text', $page['type']);
+
+        foreach ([
+            ['tool' => 'page_create', 'args' => []],
+            ['tool' => 'page_create', 'args' => ['title' => 'Доставка']],
+            ['tool' => 'page_create', 'args' => ['title' => 'Другая', 'address' => 'delivery']],
+            ['tool' => 'page_create', 'args' => ['title' => 'Ещё', 'type' => 'php']],
+            ['tool' => 'page_create', 'args' => ['title' => 'Ещё', 'template' => '../../etc/passwd.twig']],
+            ['tool' => 'page_create', 'args' => ['title' => 'Ещё', 'template' => 'nope.twig']],
+            ['tool' => 'page_create', 'args' => ['title' => 'Ещё', 'date' => 'вчера']],
+            ['tool' => 'page_update', 'args' => ['uuid' => $created['uuid'], 'template' => 'missing.twig']],
+        ] as $case) {
+            [$error] = $this->tool($token, $case['tool'], $case['args']);
+            $this->assertTrue($error, json_encode($case));
+        }
+
+        $this->assertNotContains('page_create', $this->tools($this->createApiKeyToken(['read' => ['page']], false)));
+    }
+
     public function testPages(): void
     {
         $pages = $this->getService(PageService::class);
