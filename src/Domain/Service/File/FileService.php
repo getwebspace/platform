@@ -178,9 +178,11 @@ class FileService extends AbstractService
                 $url = parse_url($path);
                 $scheme = $url['scheme'] ?? 'http';
 
+                // the port is a part of the address: a server on 8080 redirects to its own 8080
+                $authority = ($url['host'] ?? '') . (isset($url['port']) ? ':' . $url['port'] : '');
                 $location = str_starts_with($location, '//')
                     ? $scheme . ':' . $location
-                    : $scheme . '://' . ($url['host'] ?? '') . '/' . ltrim($location, '/');
+                    : $scheme . '://' . $authority . '/' . ltrim($location, '/');
             }
 
             return static::getFileFromRemote($location, $depth + 1, $maxBytes);
