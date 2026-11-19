@@ -224,7 +224,7 @@ Found and fixed:
 - the settings page followed `?return=` to any address, and choked on the security token field (a string where a group of settings was expected)
 - the task runner failed on a `params` that was not a list
 
-Observed, not changed: `ThemeFiles::clearTemplateCache()` removes every two-hex-digit folder of `var/cache`, which is also where the file cache keeps its entries (login throttle counters, form guard counters). Saving a template in the editor therefore resets them. Separate the template cache folder or limit the removal to compiled templates if that matters.
+Observed and fixed later: `ThemeFiles::clearTemplateCache()` removed every two-hex-digit folder of `var/cache`, which is also where the file cache keeps its entries (login throttle counters, form guard counters), so saving a template reset them. It removes only the compiled `.php` files now.
 
 ## Done: batch 7 (2026-11-18) - the plan of the panel is finished
 
@@ -268,7 +268,7 @@ Found and fixed:
 Found and fixed:
 - a list where a tool's schema asks for one value (`search`, `uuid`, `status`) turned into "Array" and a PHP warning written into the JSON-RPC answer; `McpAction` refuses it now and the tools read text through `AbstractMcpTool::textArgument()`
 
-Observed, not changed: `/api/v1/telemetry` needs no key by default (PHP version, OS, commit, counts, plugin names); it is switched off with `telemetry_is_enabled=no`.
+Observed and fixed later: `/api/v1/telemetry` needed no key (PHP version, OS, commit, counts, plugin names); it needs an API key now (`AuthorizationAPIMiddleware`) and can still be switched off with `telemetry_is_enabled=no`.
 
 The coverage report (`tests/Coverage/report.php`) counts a multi-line array literal and a multi-line call chain as run when pcov saw one of their lines run: pcov reports them as one operation, PHPUnit counts every line. Before that the schemas of the tools and the chains of the exports were listed as uncovered (about 800 lines). `--list=<regex>` prints the uncovered lines of the matching files.
 

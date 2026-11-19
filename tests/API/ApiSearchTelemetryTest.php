@@ -41,7 +41,7 @@ class ApiSearchTelemetryTest extends McpTestCase
         $this->getService(PageService::class)->create(['title' => 'About', 'address' => 'about', 'content' => 'x']);
         $this->getService(CategoryService::class)->create(['title' => 'Goods', 'address' => 'goods']);
 
-        $response = $this->get('telemetry');
+        $response = $this->get('telemetry', $this->createApiKeyToken());
         $body = $this->json($response);
 
         $this->assertSame(200, $response->getStatusCode(), $this->why($response));
@@ -56,11 +56,20 @@ class ApiSearchTelemetryTest extends McpTestCase
         }
     }
 
+    public function testTelemetryNeedsAKey(): void
+    {
+        $response = $this->get('telemetry');
+
+        $this->assertSame(401, $response->getStatusCode());
+        $this->assertStringNotContainsString(PHP_VERSION, (string) $response->getBody());
+        $this->assertSame(401, $this->get('telemetry', 'not-a-key')->getStatusCode());
+    }
+
     public function testTelemetryCanBeSwitchedOff(): void
     {
         $this->getService(ParameterService::class)->create(['name' => 'telemetry_is_enabled', 'value' => 'no']);
 
-        $response = $this->get('telemetry');
+        $response = $this->get('telemetry', $this->createApiKeyToken());
 
         $this->assertSame(423, $response->getStatusCode());
         $this->assertStringNotContainsString(PHP_VERSION, (string) $response->getBody());

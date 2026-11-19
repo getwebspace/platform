@@ -231,6 +231,24 @@ class CupEditorTest extends CupTestCase
         $this->assertFileDoesNotExist($compiled . '/zz-cup-compiled.php');
     }
 
+    public function testASavedTemplateLeavesTheFileCacheAlone(): void
+    {
+        $this->admin();
+        $folder = CACHE_DIR . '/fa/ce';
+        @mkdir($folder, 0o777, true);
+        // the entry of the file cache (the counters of failed logins live there): no extension
+        $entry = $folder . '/zz-cup-entry';
+        file_put_contents($entry, 'counter');
+        $this->made[] = $entry;
+        $this->made[] = $folder;
+        $this->made[] = CACHE_DIR . '/fa';
+        $twig = $this->make($this->theme() . '/' . $this->fileName('twig'));
+
+        $this->write('theme/' . basename($twig), ['content' => '<p></p>']);
+
+        $this->assertFileExists($entry);
+    }
+
     public function testOnlyTheKindsOfFilesOfAThemeCanBeWritten(): void
     {
         $this->admin();
