@@ -22,29 +22,19 @@ env:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     name: Run tests
     timeout-minutes: 30
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      # built without NO_DEV, so phpunit and the other dev dependencies are present
+      # built without NO_DEV, so phpunit and the other dev dependencies are present;
+      # plain docker build: no buildx setup, no cache export/import round trip
       - name: Build test image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: docker/Dockerfile
-          push: false
-          load: true
-          tags: platform:test
-          build-args: |
-            COMMIT=${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+        run: |
+          docker build -f docker/Dockerfile -t platform:test \
+            --build-arg COMMIT=${{ github.sha }} .
 
       # API tests talk to the app over http://127.0.0.1:80 from inside the
       # container, so nginx and php-fpm must be up - start it the regular way
@@ -104,7 +94,7 @@ jobs:
         run: docker rm -f platform-test
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-26.04
     name: Build base container
     needs: test
     if: startsWith(github.ref, 'refs/tags/')
