@@ -268,7 +268,7 @@ Found and fixed:
 Found and fixed:
 - a list where a tool's schema asks for one value (`search`, `uuid`, `status`) turned into "Array" and a PHP warning written into the JSON-RPC answer; `McpAction` refuses it now and the tools read text through `AbstractMcpTool::textArgument()`
 
-Observed and fixed later: `/api/v1/telemetry` needed no key (PHP version, OS, commit, counts, plugin names); it needs an API key now (`AuthorizationAPIMiddleware`) and can still be switched off with `telemetry_is_enabled=no`.
+Observed, kept by decision of the owner: `/api/v1/telemetry` needs no key (PHP version, OS, commit, counts, plugin names); it is switched off with `telemetry_is_enabled=no`.
 
 The coverage report (`tests/Coverage/report.php`) counts a multi-line array literal and a multi-line call chain as run when pcov saw one of their lines run: pcov reports them as one operation, PHPUnit counts every line. Before that the schemas of the tools and the chains of the exports were listed as uncovered (about 800 lines). `--list=<regex>` prints the uncovered lines of the matching files.
 
