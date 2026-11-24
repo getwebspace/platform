@@ -115,7 +115,8 @@ class ListAction extends CatalogAction
                             $value = $params[$attribute->address];
 
                             $query->orWhere(function (Builder $q) use ($address, $value): void {
-                                $q->where('ca.address', $address)->where('cap.value', $value);
+                                // several values of one attribute (?color[]=red&color[]=blue) match any of them
+                                $q->where('ca.address', $address)->whereIn('cap.value', array_values(array_filter((array) $value, 'is_scalar')));
                             });
                         }
                     });
@@ -170,7 +171,7 @@ class ListAction extends CatalogAction
             }
 
             $pagination = $this->parameter('catalog_category_pagination', 10);
-            $filtered = $products->get()->forPage($args['offset'], $pagination);
+            $filtered = $products->forPage(max(1, $args['offset']), $pagination)->get();
 
             return $this->respond($this->parameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
@@ -230,7 +231,8 @@ class ListAction extends CatalogAction
                             $value = $params[$attribute->address];
 
                             $query->orWhere(function (Builder $q) use ($address, $value): void {
-                                $q->where('ca.address', $address)->where('cap.value', $value);
+                                // several values of one attribute (?color[]=red&color[]=blue) match any of them
+                                $q->where('ca.address', $address)->whereIn('cap.value', array_values(array_filter((array) $value, 'is_scalar')));
                             });
                         }
                     });
@@ -282,7 +284,7 @@ class ListAction extends CatalogAction
                 $products->orderBy('cp.' . $sortBy['by'], $sortBy['direction']);
             }
 
-            $filtered = $products->get()->forPage($args['offset'], $category->pagination);
+            $filtered = $products->forPage(max(1, $args['offset']), $category->pagination)->get();
 
             return $this->respond($category->template['category'] ?? $this->parameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
