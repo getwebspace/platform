@@ -131,11 +131,22 @@ class Auth
         ];
         $params = array_merge($default, $params);
 
+        $presented = $token;
         $token = $this->providers[$provider]->refresh($token, $params);
 
         if ($token) {
             /** @var UserToken $token */
             $user = $token->user;
+
+            // the token was rotated a moment ago by a parallel request: the session lives on
+            // under its current token, which is handed out again instead of rotating once more
+            if ($token->unique !== $presented) {
+                return [
+                    'user' => $user,
+                    'access_token' => $this->getAccessToken($user),
+                    'refresh_token' => $token->unique,
+                ];
+            }
 
             $tokens = $this->getTokenPairs($user, $token, $token->agent, $token->ip, $token->comment);
 
@@ -185,6 +196,7 @@ class Auth
 
             default:
                 $token->update([
+                    'previous' => $token->unique,
                     'unique' => $this->getRefreshToken($user->uuid, $ip, $agent),
                     'agent' => $agent,
                     'ip' => $ip,

@@ -14,9 +14,11 @@ class LogoutAction extends AuthAction
                 $this->getParam('provider', $_SESSION['auth_provider'] ?? 'BasicAuthProvider'),
                 $refresh_token,
             );
-
-            $this->clearAuthCookies();
         }
+
+        // stale cookies must go even when there is no refresh token to match them,
+        // or an expired access token keeps sending the visitor round the refresh
+        $this->clearAuthCookies();
 
         switch ($this->isRequestJson()) {
             case true:

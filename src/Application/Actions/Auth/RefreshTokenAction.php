@@ -11,7 +11,13 @@ class RefreshTokenAction extends AuthAction
         $redirect = $this->getRedirectParam();
         $refresh_token = $this->getParam('token', $this->getCookie('refresh_token'));
 
+        // the authorization middleware sends a request here with the address it was going to:
+        // the answer to such a request is the way back, whatever format the caller speaks
+        $raw = $this->getParam('redirect');
+        $back = is_string($raw) && $this->isLocalPath($raw) && !str_starts_with($raw, '/auth/refresh-token') ? $raw : null;
+
         $result = [];
+        $failed = false;
 
         if ($refresh_token) {
             try {
@@ -26,16 +32,26 @@ class RefreshTokenAction extends AuthAction
 
                 // null: the session expired or its owner can no longer sign in
                 if ($result === null) {
-                    $result = [];
-                    $redirect = '/auth/logout';
+                    $failed = true;
                 } else {
                     $this->setAuthCookies($result);
                 }
             } catch (TokenNotFoundException $e) {
-                $redirect = '/auth/logout';
+                $failed = true;
             }
         } else {
-            $redirect = '/auth/logout';
+            $failed = true;
+        }
+
+        if ($failed) {
+            // dead cookies would send every next request here again
+            $result = [];
+            $this->clearAuthCookies();
+        }
+
+        if ($back !== null) {
+            // the visitor goes on to the page as a guest if the session could not be renewed
+            return $this->response->withAddedHeader('Location', $back)->withStatus(308);
         }
 
         switch ($this->isRequestJson()) {
@@ -44,7 +60,7 @@ class RefreshTokenAction extends AuthAction
 
             case false:
             default:
-                return $this->response->withAddedHeader('Location', $redirect)->withStatus(308);
+                return $this->response->withAddedHeader('Location', $failed ? '/auth/logout' : $redirect)->withStatus(308);
         }
     }
 }

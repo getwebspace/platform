@@ -12,6 +12,9 @@ use App\Domain\Service\User\Exception\WrongPasswordException;
 
 class BasicAuthProvider extends AbstractAuthProvider
 {
+    /** seconds the replaced refresh token stays valid, for requests that were already on their way */
+    private const ROTATION_GRACE = 30;
+
     /**
      * @throws WrongPasswordException
      * @throws UserNotFoundException
@@ -68,10 +71,24 @@ class BasicAuthProvider extends AbstractAuthProvider
      */
     public function refresh(string $token, array $params): ?UserToken
     {
-        $token = $this->userTokenService->read([
-            'unique' => $token,
-            'agent' => $params['agent'],
-        ]);
+        try {
+            $presented = $token;
+            $token = $this->userTokenService->read([
+                'unique' => $presented,
+                'agent' => $params['agent'],
+            ]);
+        } catch (TokenNotFoundException $e) {
+            // the value that was replaced by a refresh seconds ago still counts
+            $token = $presented === '' ? null : UserToken::query()
+                ->where('previous', $presented)
+                ->where('agent', $params['agent'])
+                ->where('date', '>=', \Illuminate\Support\Carbon::now()->subSeconds(self::ROTATION_GRACE))
+                ->first();
+
+            if (!$token) {
+                throw $e;
+            }
+        }
 
         // a session of an account that was blocked or deleted meanwhile must not live on
         if ($token->user->status !== UserStatus::WORK) {

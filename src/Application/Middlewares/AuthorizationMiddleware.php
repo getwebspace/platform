@@ -42,16 +42,27 @@ class AuthorizationMiddleware extends AbstractMiddleware
                     $request = $request->withAttribute('user', $user);
                 }
             } catch (ExpiredException|SignatureInvalidException $e) {
+                // 308 keeps the method and the body: a posted form comes back to its own address
                 return (new Response())
-                    ->withHeader('Location', '/auth/refresh-token?redirect=' . $request->getUri()->getPath())
+                    ->withHeader('Location', '/auth/refresh-token?redirect=' . $this->target($request))
                     ->withStatus(308);
             } catch (\RuntimeException|UserNotFoundException $e) {
                 return (new Response())
-                    ->withHeader('Location', '/auth/logout?redirect=' . $request->getUri()->getPath())
+                    ->withHeader('Location', '/auth/logout?redirect=' . $this->target($request))
                     ->withStatus(307);
             }
         }
 
         return $handler->handle($request);
+    }
+
+    /**
+     * Where the visitor was going, with its query, encoded to travel as one parameter
+     */
+    private function target(Request $request): string
+    {
+        $uri = $request->getUri();
+
+        return rawurlencode($uri->getPath() . ($uri->getQuery() !== '' ? '?' . $uri->getQuery() : ''));
     }
 }

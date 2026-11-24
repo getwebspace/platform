@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $uuid
  * @property string $user_uuid
  * @property string $unique
+ * @property string $previous
  * @property string $comment
  * @property string $ip
  * @property string $agent
@@ -31,6 +32,7 @@ class UserToken extends Model
     protected $fillable = [
         'user_uuid',
         'unique',
+        'previous',
         'comment',
         'ip',
         'agent',
@@ -42,6 +44,7 @@ class UserToken extends Model
     protected $casts = [
         'user_uuid' => Uuid::class,
         'unique' => 'string',
+        'previous' => 'string',
         'comment' => 'string',
         'ip' => 'string',
         'agent' => 'string',
@@ -51,6 +54,7 @@ class UserToken extends Model
     protected $attributes = [
         'user_uuid' => '',
         'unique' => '',
+        'previous' => '',
         'comment' => '',
         'ip' => '',
         'agent' => '',

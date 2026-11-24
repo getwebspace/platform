@@ -249,6 +249,66 @@ class AuthFlowTest extends TestCase
         $this->assertSame([], $this->json($response), 'nothing is issued for a token that does not exist');
     }
 
+    public function testRefreshFromTheMiddlewareGoesBackToTheRequestWhateverItsFormat(): void
+    {
+        $login = $this->loginAs($this->makeUser());
+
+        // an ajax post that met an expired access token must come back to its own address
+        $response = $this->http('POST', '/auth/refresh-token', [
+            'headers' => self::JSON + ['X-Requested-With' => 'XMLHttpRequest'],
+            'form_params' => ['token' => $login['refresh_token'], 'redirect' => '/cart?a=1'],
+        ]);
+
+        $this->assertEquals(308, $response->getStatusCode());
+        $this->assertEquals('/cart?a=1', $response->getHeaderLine('Location'));
+        $this->assertStringContainsString('access_token=', implode(';', $response->getHeader('Set-Cookie')));
+    }
+
+    public function testFailedRefreshClearsTheCookiesAndLetsTheRequestThroughAsGuest(): void
+    {
+        $response = $this->http('POST', '/auth/refresh-token', [
+            'headers' => self::JSON,
+            'form_params' => ['token' => 'made-up', 'redirect' => '/cart'],
+        ]);
+
+        $this->assertEquals(308, $response->getStatusCode());
+        $this->assertEquals('/cart', $response->getHeaderLine('Location'));
+        $cookies = implode(';', $response->getHeader('Set-Cookie'));
+        $this->assertStringContainsString('access_token=', $cookies);
+        $this->assertStringContainsString('refresh_token=', $cookies);
+    }
+
+    public function testRefreshNeverSendsToItself(): void
+    {
+        $response = $this->http('POST', '/auth/refresh-token', [
+            'form_params' => ['token' => 'made-up', 'redirect' => '/auth/refresh-token?redirect=/'],
+        ]);
+
+        $this->assertEquals('/auth/logout', $response->getHeaderLine('Location'));
+    }
+
+    public function testTheTokenReplacedByARefreshWorksForAMomentForAParallelRequest(): void
+    {
+        $user = $this->makeUser();
+        $login = $this->loginAs($user);
+        $refresh = fn () => $this->json($this->http('POST', '/auth/refresh-token', [
+            'headers' => self::JSON,
+            'form_params' => ['token' => $login['refresh_token']],
+        ]));
+
+        $first = $refresh();
+        $second = $refresh();
+
+        $this->assertNotEmpty($first['refresh_token']);
+        $this->assertNotEquals($login['refresh_token'], $first['refresh_token']);
+        $this->assertNotEmpty($second['access_token'], 'the parallel request is not signed out');
+        $this->assertEquals($first['refresh_token'], $second['refresh_token'], 'and gets the current token, nothing is rotated twice');
+
+        // after the grace the replaced token is dead
+        UserToken::query()->toBase()->where('user_uuid', $user->uuid)->update(['date' => date('Y-m-d H:i:s', time() - 120)]);
+        $this->assertSame([], $refresh());
+    }
+
     public function testRefreshTokenIsBoundToTheUserAgentItWasIssuedTo(): void
     {
         $login = $this->loginAs($this->makeUser());
@@ -280,6 +340,13 @@ class AuthFlowTest extends TestCase
             'form_params' => ['token' => $login['refresh_token']],
         ]);
         $this->assertSame([], $this->json($again), 'a logged out token cannot be refreshed');
+    }
+
+    public function testLogoutClearsStaleCookiesEvenWithoutARefreshToken(): void
+    {
+        $response = $this->http('POST', '/auth/logout', ['headers' => self::JSON]);
+
+        $this->assertStringContainsString('access_token=', implode(';', $response->getHeader('Set-Cookie')));
     }
 
     public function testLogoutWithoutATokenIsHarmless(): void
@@ -356,6 +423,16 @@ class AuthFlowTest extends TestCase
 
         $this->assertEquals(308, $response->getStatusCode());
         $this->assertStringStartsWith('/auth/refresh-token?redirect=', $response->getHeaderLine('Location'));
+    }
+
+    public function testTheRefreshRedirectKeepsTheQueryOfTheRequest(): void
+    {
+        $user = $this->makeUser();
+        $expired = $this->signToken('user', $user->uuid, ['uuid' => $user->uuid], time() - 60);
+
+        $response = $this->http('GET', '/user/profile?tab=orders&page=2', ['headers' => $this->cookie($expired)]);
+
+        $this->assertEquals('/auth/refresh-token?redirect=' . rawurlencode('/user/profile?tab=orders&page=2'), $response->getHeaderLine('Location'));
     }
 
     public function testAForgedAccessTokenIsNotAccepted(): void
