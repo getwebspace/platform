@@ -295,6 +295,52 @@ class ProductService extends AbstractService
     }
 
     /**
+     * Products that customers bought together with the given one: those found in the same
+     * orders, the most frequent first. Only what the site shows (a product on sale, of a shown
+     * category, not a service) and never the product itself. Each product carries `together`,
+     * the number of orders it shares with the given one.
+     *
+     * @param CatalogProduct|string $product a product or its uuid
+     *
+     * @return Collection<int, CatalogProduct>
+     */
+    public function boughtTogether(CatalogProduct|string $product, int $limit = 4): Collection
+    {
+        $uuid = $product instanceof CatalogProduct ? (string) $product->uuid : $product;
+
+        if ($limit < 1 || !\Ramsey\Uuid\Uuid::isValid($uuid)) {
+            return new Collection();
+        }
+
+        $ranked = CatalogProduct::query()
+            ->toBase()
+            ->from('catalog_order_product as a')
+            ->join('catalog_order_product as b', 'a.order_uuid', '=', 'b.order_uuid')
+            ->join('catalog_product as p', 'p.uuid', '=', 'b.product_uuid')
+            ->join('catalog_category as c', 'c.uuid', '=', 'p.category_uuid')
+            ->where('a.product_uuid', $uuid)
+            ->where('b.product_uuid', '!=', $uuid)
+            ->where('p.status', \App\Domain\Casts\Catalog\Status::WORK)
+            ->where('p.type', \App\Domain\Casts\Catalog\Product\Type::PRODUCT)
+            ->where('c.status', \App\Domain\Casts\Catalog\Status::WORK)
+            ->where('c.is_hidden', false)
+            ->groupBy('b.product_uuid')
+            ->selectRaw('b.product_uuid as uuid, count(distinct b.order_uuid) as together')
+            ->orderByDesc('together')
+            ->orderBy('b.product_uuid')
+            ->limit($limit)
+            ->pluck('together', 'uuid');
+
+        /** @var Collection<int, CatalogProduct> $found */
+        $found = CatalogProduct::query()->whereIn('uuid', $ranked->keys())->get();
+
+        return $found
+            ->each(fn (CatalogProduct $p) => $p->setAttribute('together', (int) $ranked[(string) $p->uuid]))
+            ->sortBy(fn (CatalogProduct $p) => array_search((string) $p->uuid, $ranked->keys()->all(), true))
+            ->values();
+    }
+
+    /**
      * An address a product is found by must belong to one product only: a generated one that
      * is taken gets the vendor code (or external id) as a suffix, then a counter
      */

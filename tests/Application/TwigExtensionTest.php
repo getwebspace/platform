@@ -292,6 +292,12 @@ class TwigExtensionTest extends TestCase
         $this->assertSame('', $this->render("{{ catalog_category_tree('nope')|map(c => c.title)|join(',') }}"));
     }
 
+    public function testBoughtTogetherIsSafeToCallFromATemplate(): void
+    {
+        $this->assertSame('0', $this->render('{{ catalog_product_bought_together(null)|length }}'), 'no product on the page: nothing to show');
+        $this->assertSame('0', $this->render("{{ catalog_product_bought_together('00000000-0000-0000-0000-000000000000')|length }}"));
+    }
+
     public function testTheCatalogCanBeListedAndCounted(): void
     {
         $categories = $this->getService(CategoryService::class);

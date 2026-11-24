@@ -182,6 +182,37 @@ class OrderServiceTest extends TestCase
         $this->assertSame([], $this->service->sanitizeCartProducts([$product->uuid => ['count' => -3]]));
     }
 
+    public function testBoughtTogether(): void
+    {
+        $products = $this->getService(ProductService::class);
+        $category = $this->getRandomCategory();
+        $make = fn (string $name, array $extra = []) => $products->create($extra + ['title' => $name, 'address' => $name, 'category_uuid' => $category->uuid]);
+        [$main, $often, $once, $gone, $service] = [
+            $make('main'),
+            $make('often'),
+            $make('once'),
+            $make('gone', ['status' => \App\Domain\Casts\Catalog\Status::DELETE]),
+            $make('delivery', ['type' => \App\Domain\Casts\Catalog\Product\Type::SERVICE]),
+        ];
+        $hidden = $products->create(['title' => 'hidden', 'address' => 'hidden', 'category_uuid' => $this->getService(CategoryService::class)->create(['title' => 'Hidden', 'address' => 'hidden-cat', 'is_hidden' => true])->uuid]);
+
+        $order = fn (array $items) => $this->service->create(['products' => array_combine(
+            array_map(fn ($p) => $p->uuid, $items),
+            array_map(fn () => ['count' => 1, 'price_type' => 'price'], $items)
+        )]);
+        $order([$main, $often, $once, $gone, $service, $hidden]);
+        $order([$main, $often]);
+        $order([$often, $once]); // without the main one
+
+        $result = $products->boughtTogether($main, 10);
+
+        $this->assertSame(['often', 'once'], $result->map(fn ($p) => $p->title)->all(), 'the most frequent first; no services, removed or hidden products, not itself');
+        $this->assertSame([2, 1], $result->map(fn ($p) => $p->together)->all());
+        $this->assertSame(['often'], $products->boughtTogether($main->uuid, 1)->map(fn ($p) => $p->title)->all());
+        $this->assertCount(0, $products->boughtTogether('not-a-uuid'));
+        $this->assertCount(0, $products->boughtTogether($main, 0));
+    }
+
     public function testReadSuccess1(): void
     {
         $data = [

@@ -162,6 +162,7 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('catalog_product_count', [$this, 'catalog_product_count']),
             new TwigFunction('catalog_product_price_type', [$this, 'catalog_product_price_type'], ['needs_context' => true]),
             new TwigFunction('catalog_product_popular', [$this, 'catalog_product_popular']),
+            new TwigFunction('catalog_product_bought_together', [$this, 'catalog_product_bought_together']),
             new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
             new TwigFunction('catalog_product_dimensional_weight', [$this, 'catalog_product_dimensional_weight'], ['needs_context' => true]),
             new TwigFunction('catalog_order', [$this, 'catalog_order']),
@@ -647,6 +648,16 @@ class TwigExtension extends AbstractExtension
         }
 
         return \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE;
+    }
+
+    // products bought in the same orders as the given one (a model or its uuid), the most frequent first
+    public function catalog_product_bought_together(mixed $product, int $limit = 4): Collection
+    {
+        if (!is_string($product) && !$product instanceof \App\Domain\Models\CatalogProduct) {
+            return new Collection();
+        }
+
+        return $this->container->get(CatalogProductService::class)->boughtTogether($product, $limit);
     }
 
     public function catalog_product_popular(int $limit = 10, string $type = \App\Domain\Casts\Catalog\Product\Type::PRODUCT): Collection
