@@ -2,13 +2,8 @@
 {% htmlcompress %}
     <script>
         /* global grecaptcha */
-        // simple cart catalog functions
-        ($ => {
-            if (typeof $ === 'undefined') {
-                console.warn('Simple cart need jQuery');
-                return;
-            }
-
+        // simple cart catalog functions, no dependencies (jQuery is not needed)
+        (() => {
             const defaults = {
                 // localstorage key
                 storage: 'catalog-cart',
@@ -121,9 +116,7 @@
             let
                 options = {},
                 cart = {},
-                delivery = null,
-                $window = $(window),
-                $document = $(window.document)
+                delivery = null
             ;
 
             window.catalog = new class {
@@ -135,54 +128,95 @@
                     if (options.init.listeners) {
                         let focus = null;
 
-                        $window.on('event:catalog:ready event:catalog:cart:add event:catalog:cart:update event:catalog:cart:remove event:catalog:cart:remove:all', () => {
+                        const render = () => {
                             // render delivery options
-                            $(getSelector('cart-delivery')).html(this.cartRenderDelivery()).trigger('change');
+                            for (const select of queryAll(getSelector('cart-delivery'))) {
+                                select.replaceChildren(...this.cartRenderDelivery());
+                                select.dispatchEvent(new Event('change', {bubbles: true}));
+                            }
 
                             // render payment options
-                            $(getSelector('cart-payment')).html(this.cartRenderPayment());
+                            for (const select of queryAll(getSelector('cart-payment'))) {
+                                select.replaceChildren(...this.cartRenderPayment());
+                            }
 
                             // render cart
-                            let $cart = $(getSelector('cart')).html(this.cartRender());
+                            for (const place of queryAll(getSelector('cart'))) {
+                                place.replaceChildren(this.cartRender());
 
-                            $(getSelector('count-items')).attr(options.selectors['count-items'], this.cartCount(false)).text(this.cartCount(true));
-                            $(getSelector('count-total')).attr(options.selectors['count-total'], this.cartTotal(false)).text(this.cartTotal(true, options.item_type));
-                            $(getSelector('count-total-service')).attr(options.selectors['count-total-service'], this.cartTotal(false, 'service')).text(this.cartTotal(true, 'service'));
-                            $(getSelector('count-total-all')).attr(options.selectors['count-total-all'], this.cartTotal(false)).text(this.cartTotal(true, null));
+                                if (focus) {
+                                    const input = place.querySelector('[data-uuid="' + focus + '"] [data-attr="quantity"] input');
 
-                            if (focus) {
-                                $cart.find('[data-uuid="' + focus + '"] [data-attr="quantity"] input').focus();
+                                    if (input) {
+                                        input.focus();
+                                    }
+                                }
                             }
-                        });
+
+                            setCounter('count-items', this.cartCount(false), this.cartCount(true));
+                            setCounter('count-total', this.cartTotal(false), this.cartTotal(true, options.item_type));
+                            setCounter('count-total-service', this.cartTotal(false, 'service'), this.cartTotal(true, 'service'));
+                            setCounter('count-total-all', this.cartTotal(false), this.cartTotal(true, null));
+                        };
+
+                        for (const name of ['ready', 'cart:add', 'cart:update', 'cart:remove', 'cart:remove:all']) {
+                            window.addEventListener('event:catalog:' + name, render);
+                        }
 
                         // handler focus in cart
-                        $(getSelector('cart'))
-                            .on('focus', '[data-attr="quantity"] input', (e) => {
-                                focus = $(e.currentTarget).parents('[data-uuid]').attr('data-uuid');
-                            })
-                            .on('blur', '[data-attr="quantity"] input', () => {
+                        document.addEventListener('focusin', (e) => {
+                            if (e.target.matches && e.target.matches('[data-attr="quantity"] input') && e.target.closest(getSelector('cart'))) {
+                                focus = e.target.closest('[data-uuid]').getAttribute('data-uuid');
+                            }
+                        });
+                        document.addEventListener('focusout', (e) => {
+                            if (e.target.matches && e.target.matches('[data-attr="quantity"] input')) {
                                 focus = null;
-                            });
+                            }
+                        });
                     }
 
                     // auto init handlers
                     if (options.init.handlers) {
-                        $document.on('click', getSelector('item-add'), (e) => {
-                            this.cartAddItemFromJQuery($(e.currentTarget).parents(getSelector('item')));
-                        });
-                        $document.on('click', `${getSelector('cart-checkout')}:not(:disabled)`, (e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
+                        document.addEventListener('click', (e) => {
+                            const add = e.target.closest(getSelector('item-add'));
 
-                            this.cartCheckout($(`${getSelector('cart-data')}, ${getSelector('cart-payment')}`));
+                            if (add) {
+                                const item = add.closest(getSelector('item'));
+
+                                if (item) {
+                                    this.cartAddItemFromElement(item);
+                                }
+
+                                return;
+                            }
+
+                            const checkout = e.target.closest(getSelector('cart-checkout'));
+
+                            if (checkout && !checkout.disabled) {
+                                e.preventDefault();
+                                e.stopPropagation();
+
+                                this.cartCheckout(queryAll(getSelector('cart-data') + ', ' + getSelector('cart-payment')));
+                            }
                         });
-                        $document.on('change', getSelector('cart-delivery'), (e) => {
-                            this.changeDelivery($(e.currentTarget).find('option:selected').data('uuid'));
-                        })
+                        document.addEventListener('change', (e) => {
+                            if (e.target.matches && e.target.matches(getSelector('cart-delivery'))) {
+                                const option = e.target.selectedOptions[0];
+
+                                this.changeDelivery(option ? option.dataset.uuid : undefined);
+                            }
+                        });
                     }
 
                     // ready
-                    setTimeout(() => triggerEvent('ready', cart), 100);
+                    const ready = () => setTimeout(() => triggerEvent('ready', cart), 100);
+
+                    if (document.readyState === 'loading') {
+                        document.addEventListener('DOMContentLoaded', ready, {once: true});
+                    } else {
+                        ready();
+                    }
                 }
 
                 /**
@@ -193,242 +227,187 @@
                 }
 
                 /**
-                 * Render cart in jQuery object
-                 * @return {*|jQuery|HTMLElement}
+                 * Render cart, returns the root element
+                 * @return {HTMLElement}
                  */
                 cartRender() {
-                    let
-                        $Tag = cartRenderGet$El,
-                        $root = $Tag('root').addClass(options.cart.class.container),
-                        $table = $Tag('table').addClass(options.cart.class.table),
-                        $thead = $Tag('thead'),
-                        $tbody = $Tag('tbody'),
-                        $items = $Tag('items')
+                    const
+                        root = cartRenderEl('root'),
+                        table = cartRenderEl('table'),
+                        thead = cartRenderEl('thead'),
+                        tbody = cartRenderEl('tbody'),
+                        items = cartRenderEl('items')
                     ;
+
+                    root.classList.add(...options.cart.class.container.split(' ').filter(Boolean));
+                    table.classList.add(...options.cart.class.table.split(' ').filter(Boolean));
 
                     // table head
                     if (options.cart.columns_header) {
-                        for (let column of options.cart.columns) {
-                            let $column = $Tag('th').attr('data-attr', column.attr).html(column.label);
+                        for (const column of options.cart.columns) {
+                            const th = cartRenderEl('th');
 
-                            if (column.class) {
-                                $column.addClass(column.class);
-                            }
-                            if (column.style) {
-                                $column.attr('style', column.style);
-                            }
-
-                            $thead.append($column);
+                            th.setAttribute('data-attr', column.attr);
+                            th.innerHTML = column.label;
+                            decorate(th, column);
+                            thead.append(th);
                         }
                     }
 
                     // table body
-                    let grouped = groupBy(cart, 'group');
-                    for (let title in grouped) {
-                        if (!grouped.hasOwnProperty(title)) {
-                            continue;
-                        }
+                    const grouped = groupBy(cart, 'group');
 
+                    for (const title of Object.keys(grouped)) {
                         // group title
                         if (options.cart.group_header && title) {
-                            $tbody.append(
-                                $Tag('tr')
-                                    .attr('data-group', title)
-                                    .attr('data-group-count', grouped[title].length)
-                                    .html(
-                                        $Tag('td')
-                                            .attr('colspan', options.cart.columns.length)
-                                            .text(title)
-                                    )
-                            );
+                            const tr = cartRenderEl('tr'), td = cartRenderEl('td');
+
+                            tr.setAttribute('data-group', title);
+                            tr.setAttribute('data-group-count', grouped[title].length);
+                            td.setAttribute('colspan', options.cart.columns.length);
+                            td.textContent = title;
+                            tr.append(td);
+                            tbody.append(tr);
                         }
 
                         // cart items
-                        for (let item of grouped[title]) {
+                        for (const item of grouped[title]) {
                             if (item.type === options.item_type) {
-                                let $row = $Tag('tr')
-                                    .attr('data-uuid', item.uuid)
-                                    .attr('data-type', item.type)
-                                ;
+                                const row = cartRenderEl('tr');
 
-                                for (let column of options.cart.columns) {
-                                    let $column = $Tag('td')
-                                        .attr('data-label', column.label)
-                                        .attr('data-attr', column.attr)
-                                    ;
+                                row.setAttribute('data-uuid', item.uuid);
+                                row.setAttribute('data-type', item.type);
 
-                                    if (column.class) {
-                                        $column.addClass(column.class);
-                                    }
-                                    if (column.style) {
-                                        $column.attr('style', column.style);
-                                    }
+                                for (const column of options.cart.columns) {
+                                    const td = cartRenderEl('td');
+
+                                    td.setAttribute('data-label', column.label);
+                                    td.setAttribute('data-attr', column.attr);
+                                    decorate(td, column);
 
                                     if (!column.view) {
                                         // draw by column type
                                         switch (column.attr) {
-                                            case 'title':
-                                                $column.html(
-                                                    $('<span>')
-                                                        .text(item.title)
-                                                );
+                                            case 'title': {
+                                                const span = document.createElement('span');
+
+                                                span.textContent = item.title;
+                                                td.append(span);
                                                 break;
-                                            case 'url':
-                                                $column.html(
-                                                    $('<a>')
-                                                        .attr('href', item.url)
-                                                        .attr('title', item.title)
-                                                        .text(item.title)
-                                                );
+                                            }
+                                            case 'url': {
+                                                const a = document.createElement('a');
+
+                                                a.href = item.url;
+                                                a.title = item.title;
+                                                a.textContent = item.title;
+                                                td.append(a);
                                                 break;
-                                            case 'thumb':
-                                                $column.html(
-                                                    $('<img>')
-                                                        .attr('src', item.thumb)
-                                                        .attr('alt', item.title)
-                                                );
+                                            }
+                                            case 'thumb': {
+                                                const img = document.createElement('img');
+
+                                                img.src = item.thumb;
+                                                img.alt = item.title;
+                                                td.append(img);
                                                 break;
+                                            }
                                             case 'decrement':
-                                                $column.html(
-                                                    $('<button>')
-                                                        .addClass('btn btn-icon')
-                                                        .text('-')
-                                                        .on('click', () => {
-                                                            this.cartItemDecrement(item.uuid, 'uuid');
-                                                        })
-                                                );
+                                                td.append(button('-', () => this.cartItemDecrement(item.uuid, 'uuid')));
                                                 break;
                                             case 'increment':
-                                                $column.html(
-                                                    $('<button>')
-                                                        .addClass('btn btn-icon')
-                                                        .text('+')
-                                                        .on('click', () => {
-                                                            this.cartItemIncrement(item.uuid, 'uuid');
-                                                        })
-                                                );
+                                                td.append(button('+', () => this.cartItemIncrement(item.uuid, 'uuid')));
                                                 break;
-                                            case 'quantity':
-                                                $column.html(
-                                                    $('<input>')
-                                                        .attr('type', 'number')
-                                                        .attr('pattern', '[0-9]*')
-                                                        .attr('inputmode', 'numeric')
-                                                        .attr('step', item.quantity_step || 1)
-                                                        .val(
-                                                            formatNumber(item.quantity, {
-                                                                ...options.format.count,
-                                                                currencySymbolStart: '',
-                                                                currencySymbolEnd: '',
-                                                                thousandsSeparator: '',
-                                                                decimalSeparator: '.'
-                                                            })
-                                                        )
-                                                        .on('change', (e) => {
-                                                            this.cartItemChangeCount($(e.currentTarget).val(), item.uuid, 'uuid');
-                                                        })
-                                                );
+                                            case 'quantity': {
+                                                const input = document.createElement('input');
+
+                                                input.type = 'number';
+                                                input.setAttribute('pattern', '[0-9]*');
+                                                input.setAttribute('inputmode', 'numeric');
+                                                input.step = item.quantity_step || 1;
+                                                input.value = formatNumber(item.quantity, {
+                                                    ...options.format.count,
+                                                    currencySymbolStart: '',
+                                                    currencySymbolEnd: '',
+                                                    thousandsSeparator: '',
+                                                    decimalSeparator: '.'
+                                                });
+                                                input.addEventListener('change', () => this.cartItemChangeCount(input.value, item.uuid, 'uuid'));
+                                                td.append(input);
                                                 break;
+                                            }
                                             case 'price':
-                                                $column.text(
-                                                    formatNumber(item[item.price_type], options.format.price)
-                                                );
+                                                td.textContent = formatNumber(item[item.price_type], options.format.price);
                                                 break;
                                             case 'total':
-                                                $column.text(
-                                                    formatNumber(item[item.price_type] * item.quantity, options.format.price)
-                                                );
+                                                td.textContent = formatNumber(item[item.price_type] * item.quantity, options.format.price);
                                                 break;
                                             case 'remove':
-                                                $column.html(
-                                                    $('<button>')
-                                                        .addClass('btn btn-icon')
-                                                        .text('×')
-                                                        .on('click', () => {
-                                                            this.cartRemoveItemByField(item.uuid, 'uuid');
-                                                        })
-                                                );
+                                                td.append(button('×', () => this.cartRemoveItemByField(item.uuid, 'uuid')));
                                                 break;
                                             default:
-                                                $column.text(item[column.attr]);
+                                                td.textContent = item[column.attr];
                                         }
                                     } else {
-                                        // custom view
-                                        $column.html(typeof column.view === 'function' ? column.view(item) : column.view);
+                                        // custom view: a string, a node or a function returning one of them
+                                        const view = typeof column.view === 'function' ? column.view(item) : column.view;
+
+                                        if (view instanceof Node) {
+                                            td.append(view);
+                                        } else {
+                                            td.innerHTML = view;
+                                        }
                                     }
 
-                                    $row.append($column);
+                                    row.append(td);
                                 }
 
-                                $tbody.append($row);
+                                tbody.append(row);
                             }
 
-                            // append system line with uuid => quantity
-                            $items.append(
-                                $('<input ' + options.selectors['cart-data'] + '>')
-                                    .attr('type', 'number')
-                                    .attr('name', 'products[' + item.uuid + '][count]')
-                                    .val(item.quantity)
-                            );
-
-                            // append system line with uuid => price
-                            $items.append(
-                                $('<input ' + options.selectors['cart-data'] + '>')
-                                    .attr('type', 'number')
-                                    .attr('name', 'products[' + item.uuid + '][price]')
-                                    .val(item[item.price_type])
-                            );
-
-                            // append system line with uuid => price_type
-                            $items.append(
-                                $('<input ' + options.selectors['cart-data'] + '>')
-                                    .attr('type', 'text')
-                                    .attr('name', 'products[' + item.uuid + '][price_type]')
-                                    .val(item.price_type)
+                            // append system lines: uuid => quantity, price, price_type
+                            items.append(
+                                hidden('products[' + item.uuid + '][count]', item.quantity, 'number'),
+                                hidden('products[' + item.uuid + '][price]', item[item.price_type], 'number'),
+                                hidden('products[' + item.uuid + '][price_type]', item.price_type, 'text')
                             );
                         }
                     }
 
-                    return $root
-                        .append(
-                            $table
-                                .append($thead)
-                                .append($tbody)
-                        )
-                        .append($items);
+                    table.append(thead, tbody);
+                    root.append(table, items);
+
+                    return root;
                 }
 
                 /**
                  * Render select options by rules
-                 * @return {*|jQuery|HTMLElement}
+                 * @return {HTMLOptionElement[]}
                  */
                 cartRenderDelivery() {
-                    let $delivery = $(getSelector('cart-delivery')),
-                        $collect = $();
+                    const select = document.querySelector(getSelector('cart-delivery')), collect = [];
 
-                    if ($delivery.length) {
-                        let selected = $delivery.val(),
-                            total = this.cartTotal(false);
+                    if (select) {
+                        const selected = select.value, total = this.cartTotal(false);
 
-                        for (let type in options.delivery) {
-                            let items = options.delivery[type].sort(
+                        for (const type in options.delivery) {
+                            const items = options.delivery[type].sort(
                                 (a, b) => parseFloat(b.condition) - parseFloat(a.condition)
                             );
 
-                            for (let item of items) {
+                            for (const item of items) {
                                 if (
                                     (typeof item.condition === 'string' && total >= parseFloat(item.condition)) ||
                                     (typeof item.condition === 'boolean' && item.condition.toString() === 'true')
                                 ) {
-                                    let properties = getItemPropertiesFromJQuery($(getSelector('item', item.uuid)));
+                                    const properties = getItemProperties(document.querySelector(getSelector('item', item.uuid))),
+                                        option = document.createElement('option');
 
-                                    $collect = $collect.add(
-                                        $('<option>')
-                                            .prop('selected', selected && selected === type)
-                                            .data('uuid', item.uuid)
-                                            .val(type)
-                                            .text(options.cart.delivery === 'title' ? properties.title : type)
-                                    );
+                                    option.selected = !!selected && selected === type;
+                                    option.dataset.uuid = item.uuid;
+                                    option.value = type;
+                                    option.textContent = options.cart.delivery === 'title' ? properties.title : type;
+                                    collect.push(option);
 
                                     break;
                                 }
@@ -436,31 +415,30 @@
                         }
                     }
 
-                    return $collect;
+                    return collect;
                 }
 
                 /**
                  * Render payment select options
-                 * @return {*|jQuery|HTMLElement}
+                 * @return {HTMLOptionElement[]}
                  */
                 cartRenderPayment() {
-                    let $payment = $(getSelector('cart-payment')),
-                        $collect = $();
+                    const select = document.querySelector(getSelector('cart-payment')), collect = [];
 
-                    if ($payment.length) {
-                        let selected = $payment.val();
+                    if (select) {
+                        const selected = select.value;
 
-                        for (let [uuid, title] of Object.entries(options.payment)) {
-                            $collect = $collect.add(
-                                $('<option>')
-                                    .prop('selected', selected && selected === uuid)
-                                    .val(uuid)
-                                    .text(title)
-                            );
+                        for (const [uuid, title] of Object.entries(options.payment)) {
+                            const option = document.createElement('option');
+
+                            option.selected = !!selected && selected === uuid;
+                            option.value = uuid;
+                            option.textContent = title;
+                            collect.push(option);
                         }
                     }
 
-                    return $collect;
+                    return collect;
                 }
 
                 changeDelivery(uuid) {
@@ -469,41 +447,40 @@
                             delivery = uuid;
 
                             // first remove exist
-                            for (let type in options.delivery) {
-                                for (let item of options.delivery[type]) {
+                            for (const type in options.delivery) {
+                                for (const item of options.delivery[type]) {
                                     this.cartRemoveItemByField(item.uuid, 'uuid');
                                 }
                             }
 
                             // add item
-                            let properties = getItemPropertiesFromJQuery($(getSelector('item', uuid)));
-                                properties['uuid'] = uuid;
-                                properties['price_type'] = 'price';
-                                properties['quantity'] = 1;
+                            const properties = getItemProperties(document.querySelector(getSelector('item', uuid)));
 
-                            this.cartAddItem(properties)
+                            properties['uuid'] = uuid;
+                            properties['price_type'] = 'price';
+                            properties['quantity'] = 1;
+
+                            this.cartAddItem(properties);
                         }
-                    } else {
-                        if (delivery) {
-                            // remove exist
-                            for (let type in options.delivery) {
-                                for (let item of options.delivery[type]) {
-                                    this.cartRemoveItemByField(item.uuid, 'uuid');
-                                }
+                    } else if (delivery) {
+                        // remove exist
+                        for (const type in options.delivery) {
+                            for (const item of options.delivery[type]) {
+                                this.cartRemoveItemByField(item.uuid, 'uuid');
                             }
-
-                            delivery = null;
                         }
+
+                        delivery = null;
                     }
                 }
 
                 /**
-                 * Add item to cart by jQuery object
-                 * @param $item
+                 * Add item to cart by the element of item
+                 * @param {Element} element
                  * @return {number}
                  */
-                cartAddItemFromJQuery($item) {
-                    return this.cartAddItem(getItemPropertiesFromJQuery($item));
+                cartAddItemFromElement(element) {
+                    return this.cartAddItem(getItemProperties(element));
                 }
 
                 /**
@@ -512,24 +489,24 @@
                  * @return {number}
                  */
                 cartAddItem(item) {
-                    let index,
-                        defaults = {
-                            'uuid': '',
-                            'title': '',
-                            'url': '',
-                            'thumb': '',
-                            'vendorcode': '',
-                            'price': 0,
-                            'price_wholesale': 0,
-                            'price_wholesale_from': 0,
-                            'price_self': 0,
-                            'price_type': 'price', // price, price_wholesale, price_self
-                            'quantity': 1,
-                            'quantity_step': 1,
-                            'quantity_min': 1,
-                            'group': '',
-                            'type': options.item_type,
-                        };
+                    let index;
+                    const defaults = {
+                        'uuid': '',
+                        'title': '',
+                        'url': '',
+                        'thumb': '',
+                        'vendorcode': '',
+                        'price': 0,
+                        'price_wholesale': 0,
+                        'price_wholesale_from': 0,
+                        'price_self': 0,
+                        'price_type': 'price', // price, price_wholesale, price_self
+                        'quantity': 1,
+                        'quantity_step': 1,
+                        'quantity_min': 1,
+                        'group': '',
+                        'type': options.item_type,
+                    };
 
                     item = merge({}, defaults, item);
                     item['quantity_step'] = item['quantity_step'] ? +item['quantity_step'] : 1;
@@ -559,22 +536,16 @@
 
                 // return cart item
                 cartGetItemByField(value, field = 'uuid') {
-                    let index = this.cartFindItemByField(value, field);
+                    const index = this.cartFindItemByField(value, field);
 
-                    if (index >= 0) {
-                        return cart[index];
-                    }
-
-                    return null;
+                    return index >= 0 ? cart[index] : null;
                 }
 
                 /**
                  * Increment item quantity
-                 * @param value
-                 * @param field
                  */
                 cartItemIncrement(value, field = 'uuid') {
-                    let index = this.cartFindItemByField(value, field);
+                    const index = this.cartFindItemByField(value, field);
 
                     if (index >= 0) {
                         this.cartItemChangeCountById(index, cart[index].quantity + cart[index].quantity_step);
@@ -583,11 +554,9 @@
 
                 /**
                  * Decrement item quantity
-                 * @param value
-                 * @param field
                  */
                 cartItemDecrement(value, field = 'uuid') {
-                    let index = this.cartFindItemByField(value, field);
+                    const index = this.cartFindItemByField(value, field);
 
                     if (index >= 0) {
                         this.cartItemChangeCountById(index, cart[index].quantity - cart[index].quantity_step);
@@ -596,12 +565,9 @@
 
                 /**
                  * Change item quantity
-                 * @param count
-                 * @param value
-                 * @param field
                  */
                 cartItemChangeCount(count, value, field = 'uuid') {
-                    let index = this.cartFindItemByField(value, field);
+                    const index = this.cartFindItemByField(value, field);
 
                     if (index >= 0) {
                         this.cartItemChangeCountById(index, count);
@@ -610,14 +576,12 @@
 
                 /**
                  * Change item quantity by id
-                 * @param index
-                 * @param count
                  */
                 cartItemChangeCountById(index, count) {
                     if (index >= 0 && cart[index]) {
                         cart[index].quantity = +count;
 
-                        let {quantity, quantity_min, quantity_step, price_wholesale_from} = cart[index];
+                        const {quantity, quantity_min, quantity_step, price_wholesale_from} = cart[index];
 
                         if (price_wholesale_from > 0 && quantity >= price_wholesale_from) {
                             cart[index].price_type = 'price_wholesale';
@@ -625,14 +589,18 @@
                             cart[index].price_type = 'price';
                         }
 
-                        if (quantity < quantity_min) {
+                        // an item below the minimum (or a broken number) leaves the cart
+                        if (!(quantity >= quantity_min)) {
                             this.cartRemoveItemById(index);
-                        } else {
-                            let difference = quantity - quantity_min;
+                            saveCartData(cart);
 
-                            if (difference % quantity_step !== 0) {
-                                cart[index].quantity = quantity_min + Math.ceil(difference / quantity_step) * quantity_step;
-                            }
+                            return;
+                        }
+
+                        const difference = quantity - quantity_min;
+
+                        if (difference % quantity_step !== 0) {
+                            cart[index].quantity = quantity_min + Math.ceil(difference / quantity_step) * quantity_step;
                         }
 
                         triggerEvent('cart:update', cart[index]);
@@ -642,11 +610,11 @@
 
                 /**
                  * Remove item from cart by index
-                 * @param index
                  */
                 cartRemoveItemById(index) {
                     if (index >= 0 && cart[index]) {
-                        let removed = cart.splice(index, 1);
+                        const removed = cart.splice(index, 1);
+
                         triggerEvent('cart:remove', removed.shift());
                         saveCartData(cart);
                     }
@@ -654,13 +622,9 @@
 
                 /**
                  * Remove item from cart by value of field
-                 * @param value
-                 * @param field
                  */
                 cartRemoveItemByField(value, field = 'uuid') {
-                    this.cartRemoveItemById(
-                        this.cartFindItemByField(value, field)
-                    );
+                    this.cartRemoveItemById(this.cartFindItemByField(value, field));
                 }
 
                 /**
@@ -678,8 +642,7 @@
                  */
                 cartCount(ret_str = true) {
                     if (cart.length) {
-                        let count = cart
-                            .reduce((count, item) => item['type'] === options.item_type ? count + 1 : count, 0);
+                        const count = cart.reduce((count, item) => item['type'] === options.item_type ? count + 1 : count, 0);
 
                         return !ret_str ? count : formatNumber(count, options.format.count);
                     }
@@ -693,7 +656,7 @@
                  */
                 cartTotal(ret_str = true, type = options.item_type) {
                     if (cart.length) {
-                        let price = cart
+                        const price = cart
                             .filter((el) => type ? el.type === type : true)
                             .map((el) => el.quantity * el[el.price_type])
                             .reduce((a, b) => a + b, 0);
@@ -706,231 +669,258 @@
 
                 /**
                  * Checkout cart
-                 * @param $fields list of cart data (by selector 'cart-data')
-                 * @return {Promise<void>}
+                 * @param fields list of cart data elements (by selector 'cart-data')
+                 * @return {Promise<boolean>} true when the order was accepted by the server
                  */
-                async cartCheckout($fields) {
-                    let data = new FormData();
+                async cartCheckout(fields = queryAll(getSelector('cart-data') + ', ' + getSelector('cart-payment'))) {
+                    const data = new FormData();
+                    let valid = true;
 
-                    $fields.each((i, el) => {
-                        if (!el.disabled) {
-                            const isCheckable = (el.type === 'checkbox' || el.type === 'radio');
-
-                            // skip unchecked checkbox/radio
-                            if (isCheckable && !el.checked) {
-                                return;
-                            }
-
-                            // check required fields
-                            if (el.required && ((!isCheckable && !el.value.trim()) || (isCheckable && !el.checked))) {
-                                el.classList.add('check-error');
-                                throw new Error('Required field');
-                            }
-
-                            // check email field
-                            if (el.required && el.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value)) {
-                                el.classList.add('check-error');
-                                throw new Error('Invalid E-Mail address');
-                            }
-
-                            // add value into FormData
-                            if (el.value) {
-                                data.append(el.name, el.value);
-                            }
+                    for (const el of fields) {
+                        if (el.disabled) {
+                            continue;
                         }
-                    });
+
+                        const isCheckable = (el.type === 'checkbox' || el.type === 'radio');
+
+                        // skip unchecked checkbox/radio
+                        if (isCheckable && !el.checked) {
+                            if (el.required) {
+                                el.classList.add('check-error');
+                                valid = false;
+                            }
+                            continue;
+                        }
+
+                        // check required fields
+                        if (el.required && !isCheckable && !el.value.trim()) {
+                            el.classList.add('check-error');
+                            valid = false;
+                            continue;
+                        }
+
+                        // check email field
+                        if (el.required && el.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value)) {
+                            el.classList.add('check-error');
+                            valid = false;
+                            continue;
+                        }
+
+                        el.classList.remove('check-error');
+
+                        // add value into FormData
+                        if (el.value) {
+                            data.append(el.name, el.value);
+                        }
+                    }
+
+                    if (!valid) {
+                        return false;
+                    }
 
                     // disable btn
-                    let $btn = $document.find(getSelector('cart-checkout'));
-                    let html = $btn.html();
+                    const buttons = queryAll(getSelector('cart-checkout')), html = buttons.map((b) => b.innerHTML);
 
-                    $btn.prop('disabled', true).html('Подождите..');
+                    buttons.forEach((b) => {
+                        b.disabled = true;
+                        b.textContent = 'Подождите..';
+                    });
 
                     triggerEvent('cart:checkout:before', data);
 
-                    // Google reCAPTCHA работает если подключен mixin/recaptcha.twig
-                    if (typeof (grecaptcha) !== 'undefined' && grecaptcha.getToken) {
-                        data.append('recaptcha', await grecaptcha.getToken());
-                    }
+                    let accepted = false;
 
-                    $.ajax({
-                        url: options.cart.url || location.pathname,
-                        type: 'POST',
-                        data,
-                        contentType: false,
-                        cache: false,
-                        processData: false,
-                        success: (res) => {
-                            if (res) {
-                                if (res.redirect) {
-                                    triggerEvent('cart:checkout:after', data);
+                    try {
+                        // Google reCAPTCHA работает если подключен mixin/recaptcha.twig
+                        if (typeof (grecaptcha) !== 'undefined' && grecaptcha.getToken) {
+                            data.append('recaptcha', await grecaptcha.getToken());
+                        }
 
-                                    // flexibility
-                                    setTimeout(() => {this.cartRemoveAll(); location = res.redirect;}, options.cart.delay);
-                                } else if (res.errors) {
-                                    for(let name in res.errors) {
-                                        $(getSelector('cart-data'))
-                                            .filter('[name="' + name + '"]')
-                                            .parents('[data-input]')
-                                            .addClass('has-error');
+                        const response = await fetch(options.cart.url || location.pathname, {
+                            method: 'POST',
+                            body: data,
+                            cache: 'no-store',
+                            credentials: 'same-origin',
+                            // the server answers a plain form post with a redirect, an ajax one with json
+                            headers: {'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json'},
+                        });
+                        const res = await response.json().catch(() => null);
+
+                        if (res) {
+                            if (res.redirect) {
+                                accepted = true;
+                                triggerEvent('cart:checkout:after', data);
+
+                                // flexibility
+                                setTimeout(() => {
+                                    this.cartRemoveAll();
+                                    location = res.redirect;
+                                }, options.cart.delay);
+                            } else if (res.errors) {
+                                for (const name in res.errors) {
+                                    for (const field of queryAll(getSelector('cart-data'))) {
+                                        if (field.name === name && field.closest('[data-input]')) {
+                                            field.closest('[data-input]').classList.add('has-error');
+                                        }
                                     }
                                 }
                             }
-                        },
-                        complete: () => {
-                            // enable btn
-                            setTimeout(() => {$btn.prop('disabled', false).html(html);}, options.cart.delay);
                         }
-                    });
+                    } finally {
+                        // enable btn
+                        setTimeout(() => buttons.forEach((b, i) => {
+                            b.disabled = false;
+                            b.innerHTML = html[i];
+                        }), options.cart.delay);
+                    }
+
+                    return accepted;
                 }
             }(window.catalog || {});
 
             /**
              * Generate element of cart structure by cart style
-             *
-             * @param tag
-             * @return {*|jQuery|HTMLElement}
              */
-            function cartRenderGet$El(tag) {
-                let selector = '';
+            function cartRenderEl(tag) {
+                const table = options.cart.style === 'table';
+                const map = {
+                    root: ['div'],
+                    table: [table ? 'table' : 'div'],
+                    thead: table ? ['thead'] : ['div', 'row'],
+                    th: table ? ['th'] : ['div', 'col'],
+                    tbody: [table ? 'tbody' : 'div'],
+                    tr: table ? ['tr'] : ['div', 'row'],
+                    td: table ? ['td'] : ['div', 'col'],
+                    items: ['noindex'],
+                };
+                const [name, cls] = map[tag];
+                const el = document.createElement(name);
 
-                switch (tag) {
-                    case 'root':
-                        selector = '<div>';
-                        break;
-                    case 'table': {
-                        switch (options.cart.style) {
-                            case 'table':
-                                selector = '<table>';
-                                break;
-                            case 'div':
-                                selector = '<div>';
-                                break;
-                        }
-                        break;
-                    }
-                    case 'thead': {
-                        switch (options.cart.style) {
-                            case 'table':
-                                selector = '<thead>';
-                                break;
-                            case 'div':
-                                selector = '<div class="row">';
-                                break;
-                        }
-                        break;
-                    }
-                    case 'th': {
-                        switch (options.cart.style) {
-                            case 'table':
-                                selector = '<th>';
-                                break;
-                            case 'div':
-                                selector = '<div class="col">';
-                                break;
-                        }
-                        break;
-                    }
-                    case 'tbody': {
-                        switch (options.cart.style) {
-                            case 'table':
-                                selector = '<tbody>';
-                                break;
-                            case 'div':
-                                selector = '<div>';
-                                break;
-                        }
-                        break;
-                    }
-                    case 'tr': {
-                        switch (options.cart.style) {
-                            case 'table':
-                                selector = '<tr>';
-                                break;
-                            case 'div':
-                                selector = '<div class="row">';
-                                break;
-                        }
-                        break;
-                    }
-                    case 'td': {
-                        switch (options.cart.style) {
-                            case 'table':
-                                selector = '<td>';
-                                break;
-                            case 'div':
-                                selector = '<div class="col">';
-                                break;
-                        }
-                        break;
-                    }
-                    case 'items':
-                        selector = '<noindex style="display: none;">';
-                        break;
+                if (cls) {
+                    el.className = cls;
+                }
+                if (tag === 'items') {
+                    el.style.display = 'none';
                 }
 
-                return $(selector);
+                return el;
+            }
+
+            // class and style of a column
+            function decorate(el, column) {
+                if (column.class) {
+                    el.classList.add(...column.class.split(' ').filter(Boolean));
+                }
+                if (column.style) {
+                    el.setAttribute('style', column.style);
+                }
+            }
+
+            function button(text, onclick) {
+                const el = document.createElement('button');
+
+                el.type = 'button';
+                el.className = 'btn btn-icon';
+                el.textContent = text;
+                el.addEventListener('click', onclick);
+
+                return el;
+            }
+
+            // hidden cart data field (posted with the order)
+            function hidden(name, value, type) {
+                const el = document.createElement('input');
+
+                el.setAttribute(options.selectors['cart-data'], '');
+                el.type = type;
+                el.name = name;
+                el.value = value;
+
+                return el;
+            }
+
+            function setCounter(selector, value, text) {
+                for (const el of queryAll(getSelector(selector))) {
+                    el.setAttribute(options.selectors[selector], value);
+                    el.textContent = text;
+                }
+            }
+
+            function queryAll(selector) {
+                return Array.from(document.querySelectorAll(selector));
+            }
+
+            // the number formatter of wse.js, or the same one when that is not loaded
+            function formatNumber(number, format) {
+                if (typeof window.formatNumber === 'function') {
+                    return window.formatNumber(number, format);
+                }
+
+                const {decimalPlaces = 0, currencySymbolStart = '', currencySymbolEnd = '', thousandsSeparator = '', decimalSeparator = ''} = format;
+                const [int, fraction] = Math.abs(+number || 0).toFixed(decimalPlaces).split('.');
+
+                return (number < 0 ? '-' : '') + currencySymbolStart
+                    + int.replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSeparator)
+                    + (fraction ? decimalSeparator + fraction : '') + currencySymbolEnd;
             }
 
             /**
              * Read cart data from localstorage
-             * @return {any}
              */
             function readCartData() {
-                return JSON.parse(localStorage.getItem(options.storage) || '[]');
+                try {
+                    const data = JSON.parse(localStorage.getItem(options.storage) || '[]');
+
+                    return Array.isArray(data) ? data : [];
+                } catch (e) {
+                    return [];
+                }
             }
 
             /**
              * Save cart data to localstorage
              */
             function saveCartData(cart) {
-                localStorage.setItem(options.storage, JSON.stringify(cart));
-            }
-
-            /**
-             * Return selector name
-             * @param selector
-             * @return {*}
-             */
-            function getAttrName(selector) {
-                return options.selectors[selector];
+                try {
+                    localStorage.setItem(options.storage, JSON.stringify(cart));
+                } catch (e) {
+                    // private mode or full storage: the cart lives until the page is closed
+                }
             }
 
             /**
              * Generate selector
-             * @param selector
-             * @param value
-             * @return {string}
              */
             function getSelector(selector, value = false) {
-                return '[' + getAttrName(selector) + (value ? '="' + value + '"' : '') + ']';
+                return '[' + options.selectors[selector] + (value ? '="' + value + '"' : '') + ']';
             }
 
             /**
              * Return item attrs
-             * @param $item
+             * @param {?Element} element
              * @return object
              */
-            function getItemPropertiesFromJQuery($item) {
-                let properties = {},
-                    attr = getAttrName('item-attr');
+            function getItemProperties(element) {
+                const properties = {}, attr = options.selectors['item-attr'];
 
-                $item.find(getSelector('item-attr')).each((i, item) => {
-                    let $item = $(item);
-
-                    properties[$item.attr(attr)] = $item.val() || $item.text() || $item.attr(getAttrName('item-attr-value')) || '';
-                });
+                if (element) {
+                    for (const el of element.querySelectorAll(getSelector('item-attr'))) {
+                        properties[el.getAttribute(attr)] = (typeof el.value === 'string' ? el.value : '')
+                            || el.textContent
+                            || el.getAttribute(options.selectors['item-attr-value'])
+                            || '';
+                    }
+                }
 
                 return properties;
             }
 
             /**
-             * Event trigger
-             * @param event
-             * @param data
+             * Event trigger: a DOM event on window (detail is the data, cart is the second one)
+             * and the handler from options
              */
             function triggerEvent(event, data) {
-                $window.trigger('event:catalog:' + event, data, cart);
+                window.dispatchEvent(new CustomEvent('event:catalog:' + event, {detail: data}));
 
                 // вызывает обработчик
                 if (options.events['on:' + event]) {
@@ -940,9 +930,6 @@
 
             /**
              * Cart item grouping
-             * @param array
-             * @param key
-             * @return {*}
              */
             function groupBy(array, key) {
                 return array.reduce((rv, x) => {
@@ -951,20 +938,12 @@
                 }, {});
             }
 
-            /**
-             * Checks if item is object
-             * @param item
-             * @return {*|boolean}
-             */
             function isObject(item) {
                 return (item && typeof item === 'object' && !Array.isArray(item));
             }
 
             /**
-             * Merge two objects
-             * @param target
-             * @param sources
-             * @return {*}
+             * Merge objects deeply
              */
             function merge(target, ...sources) {
                 if (sources.length) {
@@ -972,7 +951,7 @@
 
                     if (isObject(target) && isObject(source)) {
                         for (const key in source) {
-                            if (source.hasOwnProperty(key)) {
+                            if (Object.prototype.hasOwnProperty.call(source, key)) {
                                 if (isObject(source[key])) {
                                     if (!target[key]) Object.assign(target, {[key]: {}});
                                     merge(target[key], source[key]);
@@ -988,6 +967,6 @@
 
                 return target;
             }
-        })(window.jQuery);
+        })();
     </script>
 {% endhtmlcompress %}
