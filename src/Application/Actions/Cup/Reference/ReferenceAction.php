@@ -74,6 +74,9 @@ abstract class ReferenceAction extends AbstractAction
             case 'documents':
                 return ReferenceType::DOCUMENT;
 
+            case 'requisites':
+                return ReferenceType::REQUISITE;
+
             default:
                 return ReferenceType::TEXT;
         }

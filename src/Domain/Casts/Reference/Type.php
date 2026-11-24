@@ -21,6 +21,7 @@ class Type extends Enum
     public const SOCIAL_NETWORK = 'social_network';
     public const MANUFACTURER = 'manufacturer';
     public const DOCUMENT = 'document';
+    public const REQUISITE = 'requisite';
 
     public const LIST = [
         self::TEXT,
@@ -38,5 +39,6 @@ class Type extends Enum
         self::SOCIAL_NETWORK,
         self::MANUFACTURER,
         self::DOCUMENT,
+        self::REQUISITE,
     ];
 }

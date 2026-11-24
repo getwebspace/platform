@@ -167,7 +167,7 @@ class CupRoutesTest extends CupTestCase
     public function testEveryReferenceKindHasItsPages(): void
     {
         foreach (['currencies', 'deliveries', 'payments', 'countries', 'order-status', 'stock-status', 'tax-rates', 'length-classes',
-            'weight-classes', 'address-format', 'store-locations', 'social-networks', 'manufacturer', 'documents'] as $kind) {
+            'weight-classes', 'address-format', 'store-locations', 'social-networks', 'manufacturer', 'documents', 'requisites'] as $kind) {
             $this->assertRenders($this->cup('GET', "/cup/reference/{$kind}"), $kind . ' list');
             $this->assertRenders($this->cup('GET', "/cup/reference/{$kind}/add"), $kind . ' add');
         }
@@ -215,6 +215,30 @@ class CupRoutesTest extends CupTestCase
 
         $this->assertSame($status->uuid, $product->fresh()->stock_status_uuid);
         $this->assertMatchesRegularExpression('/<option[^>]*value="' . $status->uuid . '"[^>]*selected/', (string) $this->cup('GET', "/cup/catalog/product/{$product->uuid}/edit")->getBody());
+    }
+
+    public function testRequisitesAreSavedAndShownInTheirForm(): void
+    {
+        $response = $this->cup('POST', '/cup/reference/requisites/add', ['form_params' => [
+            'title' => 'Main company',
+            'value' => ['legal_name' => 'Daisy LLC', 'tax_id' => '7701234567', 'bank_id' => '044525225', 'account' => '40702810000000000001'],
+            'order' => 1,
+            'status' => 'yes',
+        ]]);
+        $this->assertEquals(302, $response->getStatusCode());
+
+        $requisite = \App\Domain\Models\Reference::firstWhere(['title' => 'Main company']);
+        $this->assertSame('requisite', $requisite->type);
+        $this->assertSame('Daisy LLC', $requisite->value('legal_name'));
+
+        $form = (string) $this->cup('GET', "/cup/reference/requisites/{$requisite->uuid}/edit")->getBody();
+        foreach (['Daisy LLC', '7701234567', '044525225', '40702810000000000001'] as $shown) {
+            $this->assertStringContainsString($shown, $form);
+        }
+        $this->assertStringContainsString('Main company', (string) $this->cup('GET', '/cup/reference/requisites')->getBody());
+
+        // it is a reference like the others for a template
+        $this->assertSame('Daisy LLC', $this->getService(\App\Domain\Service\Reference\ReferenceService::class)->read(['type' => 'requisite'])->first()->value('legal_name'));
     }
 
     public function testAnUnknownKindOfReferenceIsNotAPage(): void
