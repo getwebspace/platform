@@ -241,6 +241,33 @@ class CupRoutesTest extends CupTestCase
         $this->assertSame('Daisy LLC', $this->getService(\App\Domain\Service\Reference\ReferenceService::class)->read(['type' => 'requisite'])->first()->value('legal_name'));
     }
 
+    public function testProductFormListsVariantsAndStartsANewOneFromACopy(): void
+    {
+        $category = $this->getService(\App\Domain\Service\Catalog\CategoryService::class)->create(['title' => 'Shirts', 'address' => 'shirts']);
+        $products = $this->getService(\App\Domain\Service\Catalog\ProductService::class);
+        $base = $products->create(['title' => 'Shirt', 'address' => 'shirts/shirt', 'category_uuid' => $category->uuid, 'price' => 20, 'vendorcode' => 'SH-1', 'external_id' => 'a']);
+        $blue = $products->create(['title' => 'Shirt blue', 'address' => 'shirts/shirt', 'category_uuid' => $category->uuid, 'price' => 22, 'vendorcode' => 'SH-2', 'external_id' => 'b']);
+        $products->create(['title' => 'Other', 'address' => 'shirts/other', 'category_uuid' => $category->uuid]);
+
+        $form = (string) $this->cup('GET', "/cup/catalog/product/{$base->uuid}/edit")->getBody();
+        $this->assertStringContainsString('id="variants"', $form);
+        $this->assertStringContainsString("/cup/catalog/product/{$blue->uuid}/edit", $form, 'the variant is a link');
+        $this->assertStringContainsString("/cup/catalog/product/add?variant_of={$base->uuid}", $form);
+        $this->assertStringNotContainsString('Other', substr($form, (int) strpos($form, 'id="variants"')), 'a product of another address is no variant');
+
+        // a new product that starts as a copy: same address and title, nothing that identifies it
+        $new = (string) $this->cup('GET', "/cup/catalog/product/add?variant_of={$base->uuid}")->getBody();
+        $this->assertStringContainsString('shirts/shirt', $new);
+        $this->assertStringContainsString('Creation of a new product', $new);
+        $this->assertStringNotContainsString('SH-1', $new);
+        $this->assertStringContainsString('Save the product first', $new);
+
+        $this->cup('POST', '/cup/catalog/product/add', ['form_params' => [
+            'category' => $category->uuid, 'title' => 'Shirt', 'address' => 'shirts/shirt', 'external_id' => 'c', 'price' => 21,
+        ]]);
+        $this->assertCount(3, \App\Domain\Models\CatalogProduct::where('address', 'shirts/shirt')->get());
+    }
+
     public function testAnUnknownKindOfReferenceIsNotAPage(): void
     {
         foreach (['nothing', '..%2f..%2feditor', '%2e%2e'] as $kind) {

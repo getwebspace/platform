@@ -81,7 +81,22 @@ class ProductCreateAction extends CatalogAction
             'status' => \App\Domain\Casts\Catalog\Status::WORK,
         ]);
 
+        // "Add variant" of a product: a new product that starts as a copy of it, so it shares its
+        // address (and with it the product page); what identifies one product is left empty
+        $item = null;
+        $source = $this->getParam('variant_of');
+        if (!$this->isPost() && is_string($source) && \Ramsey\Uuid\Uuid::isValid($source)) {
+            try {
+                $item = $this->catalogProductService->read(['uuid' => $source])
+                    ->replicate(['uuid', 'vendorcode', 'barcode', 'external_id', 'stock_status_uuid']);
+                $category = (string) $item->category_uuid;
+            } catch (\App\Domain\Service\Catalog\Exception\ProductNotFoundException $e) {
+                // an ordinary empty form
+            }
+        }
+
         return $this->respondWithTemplate('cup/catalog/product/form.twig', [
+            'item' => $item,
             'categories' => $categories,
             'category' => $categories->firstWhere('uuid', $category),
             'attributes' => $this->catalogAttributeService->read(),

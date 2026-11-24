@@ -174,6 +174,20 @@ class ApiEntityTest extends TestCase
         $this->assertEquals(201, $allowed->getStatusCode(), (string) $allowed->getBody());
     }
 
+    public function testAReferenceKeepsItsDescriptionAndKindThroughTheApi(): void
+    {
+        $created = $this->api('POST', 'reference', ['json' => ['type' => 'payment', 'title' => 'Card', 'description' => 'Visa, Mastercard']]);
+        $this->assertEquals(201, $created->getStatusCode(), (string) $created->getBody());
+        $data = $this->json($created)['data'];
+        $this->assertSame('Visa, Mastercard', $data['description']);
+
+        $this->api('PATCH', 'reference?uuid=' . $data['uuid'], ['json' => ['description' => 'Cards and wallets']]);
+        $this->assertSame('Cards and wallets', $this->json($this->api('GET', 'reference?uuid=' . $data['uuid']))['data']['description']);
+
+        $delivery = $this->json($this->api('POST', 'reference', ['json' => ['type' => 'delivery', 'title' => 'Courier', 'kind' => 'courier']]))['data'];
+        $this->assertSame('courier', $delivery['kind']);
+    }
+
     // ------------------------------------------------------------------ lifecycle
 
     /**

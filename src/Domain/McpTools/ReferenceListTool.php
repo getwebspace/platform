@@ -54,6 +54,8 @@ class ReferenceListTool extends AbstractMcpTool
                 'uuid' => (string) $reference->uuid,
                 'title' => $reference->title,
                 'value' => $reference->value,
+                'description' => $reference->description,
+                'kind' => $reference->kind,
                 'enabled' => $reference->status,
             ]
         );

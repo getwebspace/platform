@@ -51,6 +51,11 @@ class ReferenceUpdateTool extends ReferenceCreateTool
             }
             $data['value'] = $args['value'];
         }
+        foreach (['description', 'kind'] as $field) {
+            if (array_key_exists($field, $args)) {
+                $data[$field] = $this->textArgument($args, $field);
+            }
+        }
         if (isset($args['order'])) {
             $data['order'] = $this->intArgument($args, 'order', 1, 0, 100000);
         }

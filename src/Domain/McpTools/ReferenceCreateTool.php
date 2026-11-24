@@ -35,6 +35,8 @@ class ReferenceCreateTool extends AbstractMcpTool
                 'type' => ['type' => 'string', 'enum' => self::TYPES],
                 'title' => ['type' => 'string'],
                 'value' => ['type' => 'object', 'description' => 'Type specific values, copy the shape of an existing record from reference_list'],
+                'description' => ['type' => 'string', 'description' => 'Free text shown to the customer, for a payment or a delivery method, say'],
+                'kind' => ['type' => 'string', 'description' => 'Subtype: for a delivery pickup, courier or carrier; for an order status canceled. Anything else is saved empty'],
                 'order' => ['type' => 'integer', 'description' => 'Sort order, 1 by default'],
                 'status' => ['type' => 'boolean', 'description' => 'Enabled, true by default'],
             ],
@@ -58,6 +60,8 @@ class ReferenceCreateTool extends AbstractMcpTool
             'type' => $args['type'],
             'title' => $title,
             'value' => $args['value'] ?? [],
+            'description' => $this->textArgument($args, 'description'),
+            'kind' => $this->textArgument($args, 'kind'),
             'order' => $this->intArgument($args, 'order', 1, 0, 100000),
             'status' => (bool) ($args['status'] ?? true),
         ]);
@@ -75,6 +79,8 @@ class ReferenceCreateTool extends AbstractMcpTool
             'type' => $reference->type,
             'title' => $reference->title,
             'value' => $reference->value,
+            'description' => $reference->description,
+            'kind' => $reference->kind,
             'order' => $reference->order,
             'status' => (bool) $reference->status,
         ];

@@ -227,8 +227,13 @@ class McpContentTest extends McpTestCase
         $this->assertEquals('news/akcii', $result['address']);
 
         // reference: a document is never handled, a value replaces whole
-        [$error, $reference] = $this->tool($token, 'reference_create', ['type' => 'payment', 'title' => 'Наличные', 'value' => ['x' => 1]]);
+        [$error, $reference] = $this->tool($token, 'reference_create', ['type' => 'payment', 'title' => 'Наличные', 'value' => ['x' => 1], 'description' => 'Курьеру при получении']);
         $this->assertFalse($error, json_encode($reference));
+        $this->assertSame('Курьеру при получении', $reference['description']);
+        [, $listed] = $this->tool($token, 'reference_list', ['type' => 'payment']);
+        $this->assertSame(['Курьеру при получении'], array_column($listed['items'], 'description'));
+        [, $changed] = $this->tool($token, 'reference_update', ['uuid' => $reference['uuid'], 'description' => 'Картой курьеру']);
+        $this->assertSame('Картой курьеру', $changed['description']);
         [$error, $result] = $this->tool($token, 'reference_update', ['uuid' => $reference['uuid'], 'status' => false]);
         $this->assertFalse($error, json_encode($result));
         $this->assertFalse($result['status']);

@@ -167,6 +167,16 @@ falls back to displaying the raw key string, never an error.
 
 ## Gotchas
 
+- **Variants are products that share an address** (the product page lists
+  them all); they must differ by `external_id` or `dimension`, the unique key
+  is category + address + dimension + external_id. The panel's product form
+  has a *Variants* tab that lists the siblings and "Add variant"
+  (`/cup/catalog/product/add?variant_of=<uuid>`) opens a new product form
+  prefilled from the source (address, title, category, prices; code, barcode
+  and external ID left empty).
+- **Reference `description` and `kind`** are in the REST API (`/api/v1/reference`)
+  and in the MCP tools `reference_list`, `reference_create`, `reference_update`.
+
 - **`price_self` in the public cart** is charged the client's own price, so
   it works only with `catalog_order_price_self = on` (off by default); the
   cart otherwise charges the catalog price.
