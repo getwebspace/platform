@@ -57,7 +57,7 @@ RUN set -eux; \
     rm -f /etc/nginx/http.d/default.conf; \
     mkdir -p /etc/cron.d /docker-entrypoint-init.d; \
     chmod 0755 /bin/docker-entrypoint.sh; \
-    chmod -R 0755 /etc/service; \
+    chmod -R 0755 /etc/service /docker-entrypoint-init.d; \
     echo "* * * * * /usr/local/bin/php ${PLATFORM_HOME}/bin/cron_worker.php >/dev/null 2>&1" > /etc/crontabs/root; \
     nginx -V; \
     php -v; \

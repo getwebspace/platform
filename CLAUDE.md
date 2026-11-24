@@ -145,7 +145,12 @@ Two independent tree roots feed the same Twig loader: `src/Template/`
 (admin panel `cup/*`, shared `mixin/*` includes, error pages — always
 available) and `theme/{name}/` (front-end site templates, selected by the
 `common_theme` parameter, added to the loader per-request in
-`HasRenderer::render()`). `App\Application\TwigExtension` is where all
+`HasRenderer::render()`). The engine's folder is searched **first**, so a
+theme file named like one of `src/Template/` (`layout.twig`, `mixin/*`) is
+never loaded — only the error pages can be replaced by a theme. In `DEBUG` a
+PHP warning raised while a template renders becomes an error naming the
+template and line, and an `{% extends %}` cycle is reported with its chain
+(without `DEBUG` neither check runs). `App\Application\TwigExtension` is where all
 custom Twig functions/filters live (`parameter()`, `page()`, `catalog_product()`,
 `df`/date-format, etc.) — most of them are thin wrappers calling straight
 into a domain service.
@@ -162,6 +167,14 @@ falls back to displaying the raw key string, never an error.
 
 ## Gotchas
 
+- **Image and CPU.** Tagged images are built for `linux/amd64` and
+  `linux/arm64` (native runners in parallel, then one multi-arch manifest;
+  `.github/workflows/docker.yml`). An amd64 image run on an arm64 host is
+  emulated, and the PHP JIT can hang a request there until
+  `max_execution_time` — start such a container with `PHP_JIT=off`
+  (`tracing` is the default; `function` and `off` are the others;
+  `docker-compose.dev.yml` sets `off`). Read at start by
+  `docker/rootfs/docker-entrypoint-init.d/10-php-jit.sh`.
 - **SQLite is the default DB** (`sqlite://./var/database.sqlite`,
   `database-test.sqlite` under `TEST=1`) unless `DATABASE` env is set. Two
   consequences that have caused real bugs: its `lower()` only folds ASCII

@@ -46,6 +46,8 @@ class TraitsTest extends TestCase
 
             public ContainerInterface $container;
 
+            public ?bool $debug = null;
+
             public ArrayStore $arrayCache;
 
             public FileStore $fileCache;
@@ -61,6 +63,11 @@ class TraitsTest extends TestCase
                 if ($path !== null) {
                     $this->request = (new \Slim\Psr7\Factory\ServerRequestFactory())->createServerRequest('GET', $path);
                 }
+            }
+
+            protected function renderDebug(): bool
+            {
+                return $this->debug ?? (bool) ($this->container->get('settings')['displayErrorDetails'] ?? false);
             }
 
             public function __call(string $name, array $args): mixed
@@ -364,6 +371,114 @@ class TraitsTest extends TestCase
         $this->expectException(HttpBadRequestException::class);
 
         $this->host('/')->render('no/such/template.twig');
+    }
+
+    /**
+     * A folder of templates the loader knows, removed afterwards
+     *
+     * @param array<string, string> $files
+     */
+    private function templates(array $files): string
+    {
+        $dir = sys_get_temp_dir() . '/wse-tpl-' . uniqid();
+        mkdir($dir);
+        foreach ($files as $name => $code) {
+            file_put_contents($dir . '/' . $name, $code);
+        }
+        $this->getService('view')->getLoader()->addPath($dir);
+        $this->cleanup[] = $dir;
+
+        return $dir;
+    }
+
+    private array $cleanup = [];
+
+    public function tearDown(): void
+    {
+        foreach ($this->cleanup as $dir) {
+            array_map('unlink', glob($dir . '/*'));
+            rmdir($dir);
+        }
+        $this->cleanup = [];
+
+        parent::tearDown();
+    }
+
+    public function testAnExtendsCycleIsNamedInDevelopment(): void
+    {
+        $this->templates([
+            'cycle-a.twig' => "{% extends 'cycle-b.twig' %}",
+            'cycle-b.twig' => "{% extends 'cycle-c.twig' %}",
+            'cycle-c.twig' => "{% extends 'cycle-a.twig' %}",
+            'cycle-self.twig' => "{% extends 'cycle-self.twig' %}",
+            'fine.twig' => "{% extends 'fine-base.twig' %}{% block b %}ok{% endblock %}",
+            'fine-base.twig' => '[{% block b %}{% endblock %}]',
+        ]);
+        $host = $this->host('/');
+        $host->debug = true;
+
+        foreach (['cycle-a.twig', 'cycle-self.twig'] as $template) {
+            try {
+                $host->render($template);
+                $this->fail('a cycle was rendered');
+            } catch (HttpBadRequestException $e) {
+                $this->assertStringContainsString('extends itself', $e->getMessage());
+                $this->assertStringContainsString($template, $e->getMessage());
+            }
+        }
+        $this->assertMatchesRegularExpression(
+            '~cycle-a\.twig \([^)]+\) -> cycle-b\.twig \([^)]+\) -> cycle-c\.twig \([^)]+\) -> cycle-a\.twig~',
+            $this->catchMessage(fn () => $host->render('cycle-a.twig')),
+            'the whole chain, with the files'
+        );
+
+        $this->assertSame('[ok]', $host->render('fine.twig'));
+    }
+
+    private function catchMessage(callable $call): string
+    {
+        try {
+            $call();
+        } catch (\Throwable $e) {
+            return $e->getMessage();
+        }
+
+        return '';
+    }
+
+    public function testAPhpWarningInATemplateIsAnErrorWithTheTemplateInDevelopment(): void
+    {
+        $this->templates(['warns.twig' => '<a title="{{ thing.boom }}">link</a>']);
+        $thing = new class() {
+            public function boom(): string
+            {
+                $list = [];
+
+                return $list['missing']; // Undefined array key: a warning
+            }
+        };
+        $host = $this->host('/');
+        $host->debug = true;
+        $handler = set_error_handler(fn () => false);
+        restore_error_handler();
+
+        // what DEBUG sets at start: the test run itself reports no warnings
+        $level = error_reporting(E_ALL & ~E_DEPRECATED);
+
+        try {
+            $message = $this->catchMessage(fn () => $host->render('warns.twig', ['thing' => $thing]));
+        } finally {
+            error_reporting($level);
+        }
+
+        $this->assertStringContainsString('warns.twig', $message);
+        $this->assertStringContainsString('Undefined array key', $message);
+        $this->assertStringContainsString('line 1', $message);
+
+        // the handler is gone afterwards: nothing leaks into the next request
+        $after = set_error_handler(fn () => false);
+        restore_error_handler();
+        $this->assertSame($handler, $after, 'the error handler is as it was before the render');
     }
 
     public function testATemplateStringIsRenderedAndABrokenOneIsAnError(): void

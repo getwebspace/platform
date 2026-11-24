@@ -43,9 +43,67 @@ trait HasRenderer
             // add default errors pages
             $this->renderer->getLoader()->addPath(VIEW_ERROR_DIR);
 
-            return $this->injectFormGuard($this->renderer->fetch($template, $data));
+            if ($this->renderDebug()) {
+                $this->assertNoExtendsCycle($template);
+
+                // a PHP warning raised while a template renders would be printed into the page where
+                // it happens (into an attribute, say) with the status 200 and nobody the wiser: it
+                // becomes an error that names the template and the line
+                set_error_handler(static function (int $level, string $message, string $file, int $line): bool {
+                    if (!(error_reporting() & $level)) {
+                        return false;
+                    }
+
+                    throw new \ErrorException($message, 0, $level, $file, $line);
+                });
+            }
+
+            try {
+                return $this->injectFormGuard($this->renderer->fetch($template, $data));
+            } finally {
+                if ($this->renderDebug()) {
+                    restore_error_handler();
+                }
+            }
         } catch (\Twig\Error\LoaderError|\Twig\Error\RuntimeError|\Twig\Error\SyntaxError $exception) {
             throw new HttpBadRequestException($exception->getMessage());
+        }
+    }
+
+    /**
+     * Whether the strict development checks of the render are on (DEBUG)
+     */
+    protected function renderDebug(): bool
+    {
+        return (bool) ($this->container->get('settings')['displayErrorDetails'] ?? false);
+    }
+
+    /**
+     * A template that extends itself, directly or through others, never finishes: it ends with a
+     * timeout that names no template. Follows the `{% extends 'name' %}` chain and says where it closes.
+     *
+     * @throws HttpBadRequestException
+     */
+    private function assertNoExtendsCycle(string $template): void
+    {
+        $loader = $this->renderer->getLoader();
+        $chain = [];
+        $name = $template;
+
+        while ($name !== null) {
+            try {
+                $source = $loader->getSourceContext($name);
+            } catch (\Twig\Error\LoaderError $e) {
+                return; // a missing template is reported by Twig itself
+            }
+
+            $chain[] = $name . ' (' . ($source->getPath() ?: 'string') . ')';
+
+            if (in_array($name, array_map(static fn (string $item) => explode(' (', $item, 2)[0], array_slice($chain, 0, -1)), true)) {
+                throw new HttpBadRequestException('Template "' . $name . '" extends itself: ' . implode(' -> ', $chain));
+            }
+
+            $name = preg_match('/\{%-?\s*extends\s+([\'"])(.+?)\1\s*-?%\}/', $source->getCode(), $match) === 1 ? $match[2] : null;
         }
     }
 
