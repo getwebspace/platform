@@ -277,7 +277,12 @@ class OrderService extends AbstractService
             /** @var CatalogProduct $product */
             $product = CatalogProduct::find($uuid);
 
-            if ($product && is_array($opts) && floatval($opts['count'] ?? 0) > 0) {
+            if ($product) {
+                // a line without a positive count is no line
+                if (!is_array($opts) || floatval($opts['count'] ?? 0) <= 0) {
+                    continue;
+                }
+
                 $priceType = in_array($opts['price_type'] ?? '', \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE, true) ? $opts['price_type'] : 'price';
                 $price = match ($priceType) {
                     \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE => $product->price,

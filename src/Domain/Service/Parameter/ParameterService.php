@@ -36,7 +36,7 @@ class ParameterService extends AbstractService
      */
     private function normalize(Parameter $parameter): void
     {
-        if ($parameter->name === 'common_homepage' && is_string($parameter->value) && trim($parameter->value) !== '') {
+        if ($parameter->name === 'common_homepage' && trim($parameter->value) !== '') {
             $value = trim($parameter->value);
 
             if (!preg_match('#^https?://#i', $value)) {

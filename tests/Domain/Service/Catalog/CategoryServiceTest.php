@@ -262,4 +262,23 @@ class CategoryServiceTest extends TestCase
 
         $this->service->delete(null);
     }
+
+    public function testTreeGivesTheFirstImageOfACategory(): void
+    {
+        $service = $this->getService(CategoryService::class);
+        $category = $service->create(['title' => 'With picture', 'address' => 'with-picture']);
+
+        foreach ([['doc', 'application/pdf; charset=binary'], ['pic', 'image/png; charset=binary']] as $order => [$name, $type]) {
+            $file = new \App\Domain\Models\File();
+            $file->fill(['name' => $name, 'ext' => $name === 'pic' ? 'png' : 'pdf', 'type' => $type, 'size' => 1, 'salt' => 'salt', 'hash' => $name]);
+            $file->save();
+            $category->files()->attach($file->uuid, ['comment' => '', 'order' => $order]);
+        }
+
+        $tree = $service->tree();
+
+        $this->assertCount(1, $tree);
+        $this->assertSame('pic', $tree[0]['image']->name, 'a document is not a picture');
+        $this->assertSame('/uploads/salt/pic.png', $tree[0]['image']->public_path());
+    }
 }

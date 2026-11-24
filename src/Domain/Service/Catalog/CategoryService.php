@@ -215,4 +215,71 @@ class CategoryService extends AbstractService
 
         throw new CategoryNotFoundException();
     }
+
+    /**
+     * The tree of shown categories with the number of products in each and a picture.
+     *
+     * A node is `['category' => CatalogCategory, 'uuid', 'title', 'address', 'image' => ?File,
+     * 'own_count', 'count', 'children' => [nodes]]`. `count` is what the category page lists:
+     * the products of the category and, when it allows nested ones, of everything below it.
+     * A hidden or removed category takes its whole branch with it, as it does on the site.
+     * Two queries for the whole tree, whatever its size.
+     *
+     * @param null|string $root uuid or address of the category to start under, the top level by default
+     */
+    public function tree(?string $root = null): array
+    {
+        /** @var Collection<int, CatalogCategory> $shown */
+        $shown = CatalogCategory::query()
+            ->with('files')
+            ->where('status', \App\Domain\Casts\Catalog\Status::WORK)
+            ->where('is_hidden', false)
+            ->orderBy('order')
+            ->orderBy('title')
+            ->get();
+
+        $own = \App\Domain\Models\CatalogProduct::query()
+            ->where('status', \App\Domain\Casts\Catalog\Status::WORK)
+            ->toBase()
+            ->selectRaw('category_uuid, count(*) as total')
+            ->groupBy('category_uuid')
+            ->pluck('total', 'category_uuid');
+
+        $byParent = [];
+        foreach ($shown as $category) {
+            $byParent[(string) ($category->getAttributes()['parent_uuid'] ?? '')][] = $category;
+        }
+
+        $build = function (CatalogCategory $category) use (&$build, $byParent, $own): array {
+            $children = array_map($build, $byParent[$category->uuid] ?? []);
+            $count = (int) ($own[$category->uuid] ?? 0);
+
+            if ($category->is_allow_nested) {
+                $count += array_sum(array_column($children, 'count'));
+            }
+
+            return [
+                'category' => $category,
+                'uuid' => $category->uuid,
+                'title' => $category->title,
+                'address' => $category->address,
+                'image' => $category->files->first(fn ($file) => str_starts_with((string) $file->type, 'image/')),
+                'own_count' => (int) ($own[$category->uuid] ?? 0),
+                'count' => $count,
+                'children' => $children,
+            ];
+        };
+
+        $start = '';
+        if ($root !== null && $root !== '') {
+            $found = $shown->first(fn (CatalogCategory $c) => $c->uuid === $root || $c->address === $root);
+
+            if (!$found) {
+                return [];
+            }
+            $start = $found->uuid;
+        }
+
+        return array_map($build, $byParent[$start] ?? []);
+    }
 }

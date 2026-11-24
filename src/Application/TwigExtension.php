@@ -157,6 +157,7 @@ class TwigExtension extends AbstractExtension
             // catalog functions
             new TwigFunction('catalog_attribute', [$this, 'catalog_attribute']),
             new TwigFunction('catalog_category', [$this, 'catalog_category']),
+            new TwigFunction('catalog_category_tree', [$this, 'catalog_category_tree']),
             new TwigFunction('catalog_product', [$this, 'catalog_product']),
             new TwigFunction('catalog_product_count', [$this, 'catalog_product_count']),
             new TwigFunction('catalog_product_price_type', [$this, 'catalog_product_price_type'], ['needs_context' => true]),
@@ -612,6 +613,12 @@ class TwigExtension extends AbstractExtension
                 'order' => $order,
             ]
         ));
+    }
+
+    // the tree of categories with product counts and pictures, from the top or from a category (uuid or address)
+    public function catalog_category_tree(?string $root = null): array
+    {
+        return $this->container->get(CatalogCategoryService::class)->tree($root);
     }
 
     // returns a product or a list of products by criteria

@@ -265,6 +265,33 @@ class TwigExtensionTest extends TestCase
         $this->assertStringContainsString('currency', $this->render("{{ reference('not-a-type')|join(',') }}"));
     }
 
+    public function testTheCategoryTreeCountsProductsAndSkipsHiddenBranches(): void
+    {
+        $categories = $this->getService(CategoryService::class);
+        $products = $this->getService(ProductService::class);
+        $root = $categories->create(['title' => 'Root', 'address' => 'root', 'is_allow_nested' => true, 'order' => 1]);
+        $leaf = $categories->create(['title' => 'Leaf', 'address' => 'root/leaf', 'parent_uuid' => $root->uuid]);
+        $closed = $categories->create(['title' => 'Closed', 'address' => 'closed', 'is_allow_nested' => false, 'order' => 2]);
+        $inside = $categories->create(['title' => 'Inside', 'address' => 'closed/inside', 'parent_uuid' => $closed->uuid]);
+        $secret = $categories->create(['title' => 'Secret', 'address' => 'secret', 'is_hidden' => true, 'order' => 3]);
+        $under = $categories->create(['title' => 'Under', 'address' => 'secret/under', 'parent_uuid' => $secret->uuid]);
+
+        foreach ([[$root, 'a'], [$leaf, 'b'], [$leaf, 'c'], [$inside, 'd'], [$under, 'e']] as [$category, $name]) {
+            $products->create(['title' => $name, 'address' => $name, 'category_uuid' => $category->uuid]);
+        }
+        $products->create(['title' => 'gone', 'address' => 'gone', 'category_uuid' => $leaf->uuid, 'status' => \App\Domain\Casts\Catalog\Status::DELETE]);
+
+        $this->assertSame(
+            'Root:3(1)[Leaf:2(2)],Closed:0(0)[Inside:1(1)]',
+            $this->render("{% macro n(list) %}{% for c in list %}{{ c.title }}:{{ c.count }}({{ c.own_count }}){% if c.children %}[{{ _self.n(c.children) }}]{% endif %}{% if not loop.last %},{% endif %}{% endfor %}{% endmacro %}{{ _self.n(catalog_category_tree()) }}"),
+            'the count is what the page lists: nested products only where the category allows them'
+        );
+        $this->assertSame('Leaf', $this->render("{{ catalog_category_tree('root')|map(c => c.title)|join(',') }}"));
+        $this->assertSame('Leaf', $this->render("{{ catalog_category_tree('" . $root->uuid . "')|map(c => c.title)|join(',') }}"));
+        $this->assertSame('', $this->render("{{ catalog_category_tree('secret')|map(c => c.title)|join(',') }}"));
+        $this->assertSame('', $this->render("{{ catalog_category_tree('nope')|map(c => c.title)|join(',') }}"));
+    }
+
     public function testTheCatalogCanBeListedAndCounted(): void
     {
         $categories = $this->getService(CategoryService::class);
