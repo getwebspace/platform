@@ -453,6 +453,17 @@
                                             }
                                         } %}
                                     </div>
+                                    <div class="col-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Stock status'|locale,
+                                            'type': 'select',
+                                            'name': 'stock_status',
+                                            'args': {
+                                                'option': {'': '---'}|merge(reference('stock_status').pluck('title', 'uuid').all()),
+                                                'selected': item.stock_status_uuid,
+                                            }
+                                        } %}
+                                    </div>
                                 </div>
                             </div>
 

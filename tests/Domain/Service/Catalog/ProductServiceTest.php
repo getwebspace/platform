@@ -319,4 +319,26 @@ class ProductServiceTest extends TestCase
 
         $this->service->delete(null);
     }
+
+    public function testStockStatusIsARecordOfTheStockStatusReference(): void
+    {
+        $references = $this->getService(\App\Domain\Service\Reference\ReferenceService::class);
+        $status = $references->create(['type' => 'stock_status', 'title' => 'Pre-order']);
+        $payment = $references->create(['type' => 'payment', 'title' => 'Card']);
+        $make = fn (array $extra) => $this->service->create($extra + ['title' => 'P' . uniqid(), 'address' => 'p' . uniqid(), 'category_uuid' => $this->category->uuid]);
+
+        $product = $make(['stock_status_uuid' => $status->uuid]);
+        $this->assertSame($status->uuid, $product->stock_status_uuid);
+        $this->assertSame('Pre-order', $product->stockStatus->title);
+
+        // not a stock status, or no such record: no status
+        $this->assertNull($make(['stock_status_uuid' => $payment->uuid])->stock_status_uuid);
+        $this->assertNull($make(['stock_status_uuid' => '01a20e92-a8f9-7388-beaa-630dc89e85bf'])->stock_status_uuid);
+        $this->assertNull($this->service->update($product, ['stock_status_uuid' => ''])->stock_status_uuid);
+
+        // a removed status is taken off the products
+        $product = $this->service->update($product, ['stock_status_uuid' => $status->uuid]);
+        $references->delete($status);
+        $this->assertNull($product->fresh()->stock_status_uuid);
+    }
 }

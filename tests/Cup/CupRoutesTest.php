@@ -196,6 +196,25 @@ class CupRoutesTest extends CupTestCase
         $payment = $this->getService(\App\Domain\Service\Reference\ReferenceService::class)->create(['type' => 'payment', 'title' => 'Card', 'description' => 'Keep me']);
         $this->cup('POST', "/cup/reference/payments/{$payment->uuid}/edit", ['form_params' => ['title' => 'Card', 'order' => 1, 'status' => 'yes']]);
         $this->assertSame('Keep me', $payment->fresh()->description);
+
+        // while the payments form has its own description field
+        $this->cup('POST', "/cup/reference/payments/{$payment->uuid}/edit", ['form_params' => ['title' => 'Card', 'description' => 'Visa only', 'order' => 1, 'status' => 'yes']]);
+        $this->assertSame('Visa only', $payment->fresh()->description);
+        $this->assertStringContainsString('Visa only', (string) $this->cup('GET', "/cup/reference/payments/{$payment->uuid}/edit")->getBody());
+    }
+
+    public function testProductFormSavesItsStockStatus(): void
+    {
+        $status = $this->getService(\App\Domain\Service\Reference\ReferenceService::class)->create(['type' => 'stock_status', 'title' => 'On request']);
+        $category = $this->getService(\App\Domain\Service\Catalog\CategoryService::class)->create(['title' => 'Cat', 'address' => 'cat']);
+        $product = $this->getService(\App\Domain\Service\Catalog\ProductService::class)->create(['title' => 'Thing', 'address' => 'thing', 'category_uuid' => $category->uuid]);
+
+        $this->cup('POST', "/cup/catalog/product/{$product->uuid}/edit", ['form_params' => [
+            'category' => $category->uuid, 'title' => 'Thing', 'address' => 'thing', 'stock_status' => $status->uuid,
+        ]]);
+
+        $this->assertSame($status->uuid, $product->fresh()->stock_status_uuid);
+        $this->assertMatchesRegularExpression('/<option[^>]*value="' . $status->uuid . '"[^>]*selected/', (string) $this->cup('GET', "/cup/catalog/product/{$product->uuid}/edit")->getBody());
     }
 
     public function testAnUnknownKindOfReferenceIsNotAPage(): void

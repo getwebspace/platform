@@ -26,6 +26,7 @@ class ProductUpdateAction extends CatalogAction
                     try {
                         $product = $this->catalogProductService->update($product, [
                             'category_uuid' => $this->getParam('category'),
+                            'stock_status_uuid' => $this->getParam('stock_status'),
                             'title' => $this->getParam('title'),
                             'type' => $this->getParam('type'),
                             'description' => $this->getParam('description'),

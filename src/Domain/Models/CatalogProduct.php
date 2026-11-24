@@ -27,6 +27,8 @@ use Illuminate\Support\Collection;
  * @property string $address
  * @property string $type
  * @property string $category_uuid
+ * @property null|string $stock_status_uuid
+ * @property null|Reference $stockStatus
  * @property string $vendorcode
  * @property string $barcode
  * @property float $tax
@@ -73,6 +75,7 @@ class CatalogProduct extends Model
         'address',
         'type',
         'category_uuid',
+        'stock_status_uuid',
         'vendorcode',
         'barcode',
         'tax',
@@ -107,6 +110,7 @@ class CatalogProduct extends Model
         'address' => AddressUrl::class,
         'type' => ProductType::class,
         'category_uuid' => Uuid::class,
+        'stock_status_uuid' => 'string',
         'vendorcode' => 'string',
         'barcode' => 'string',
         'tax' => Decimal::class,
@@ -172,6 +176,14 @@ class CatalogProduct extends Model
         // toArray() below adds a depth-limited `relations` key instead
         'relations',
     ];
+
+    /**
+     * Stock status from the reference ("In stock", "Pre-order"...), null when the product has none
+     */
+    public function stockStatus(): HasOne
+    {
+        return $this->hasOne(Reference::class, 'uuid', 'stock_status_uuid');
+    }
 
     public function category(): HasOne
     {
@@ -364,6 +376,10 @@ class CatalogProduct extends Model
                 ] : null,
                 'attributes' => $this->getRelationValue('attributes')->keyBy('address'),
                 'relations' => $relations,
+                'stock_status' => $this->relationLoaded('stockStatus') && $this->stockStatus ? [
+                    'uuid' => $this->stockStatus->uuid,
+                    'title' => $this->stockStatus->title,
+                ] : null,
                 'files' => $this->files,
             ],
         );

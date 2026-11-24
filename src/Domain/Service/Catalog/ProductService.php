@@ -71,6 +71,7 @@ class ProductService extends AbstractService
             throw new AddressAlreadyExistsException();
         }
 
+        $this->normalizeStockStatus($product);
         $this->assertAttributesExist($data['attributes']);
 
         $product->save();
@@ -245,6 +246,7 @@ class ProductService extends AbstractService
                 }
             }
 
+            $this->normalizeStockStatus($entity);
             $this->assertAttributesExist($data['attributes'] ?? []);
 
             $entity->save();
@@ -338,6 +340,20 @@ class ProductService extends AbstractService
             ->each(fn (CatalogProduct $p) => $p->setAttribute('together', (int) $ranked[(string) $p->uuid]))
             ->sortBy(fn (CatalogProduct $p) => array_search((string) $p->uuid, $ranked->keys()->all(), true))
             ->values();
+    }
+
+    /**
+     * A stock status is a record of the stock status reference; anything else is no status
+     */
+    private function normalizeStockStatus(CatalogProduct $product): void
+    {
+        if (blank($product->stock_status_uuid) || !\App\Domain\Models\Reference::query()
+            ->whereKey($product->stock_status_uuid)
+            ->where('type', \App\Domain\Casts\Reference\Type::STOCK_STATUS)
+            ->exists()
+        ) {
+            $product->stock_status_uuid = null;
+        }
     }
 
     /**

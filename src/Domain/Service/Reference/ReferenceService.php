@@ -159,6 +159,11 @@ class ReferenceService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, Reference::class)) {
+            // a removed stock status leaves its products without one
+            if ($entity->type === \App\Domain\Casts\Reference\Type::STOCK_STATUS) {
+                \App\Domain\Models\CatalogProduct::query()->toBase()->where('stock_status_uuid', $entity->uuid)->update(['stock_status_uuid' => null]);
+            }
+
             $entity->delete();
 
             return true;

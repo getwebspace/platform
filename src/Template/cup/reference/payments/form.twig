@@ -50,6 +50,19 @@
                             </div>
                         </div>
                         <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Description'|locale,
+                                    'type': 'textarea',
+                                    'name': 'description',
+                                    'args': {
+                                        'value': item.description,
+                                        'rows': 3,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Enabled'|locale,
