@@ -30,6 +30,17 @@
 <style>
     /* the theme makes small form controls 42px tall, buttons and links in the bar follow */
     [data-filterbar] .btn { height: 42px; display: inline-flex; align-items: center; padding-top: 0; padding-bottom: 0; }
+
+    /* a phone: the search and its button take the first row, the selects and dates share the rows below in pairs */
+    @media (max-width: 575.98px) {
+        [data-filterbar] { width: 100%; flex: 1 1 100% !important; }
+        [data-filterbar] > input[type="search"] { order: 0; flex: 1 1 calc(100% - 52px); width: auto !important; min-width: 0; }
+        [data-filterbar] > button[type="submit"] { order: 1; flex: 0 0 auto; }
+        [data-filterbar] > .select2-container,
+        [data-filterbar] > input[type="date"] { order: 2; flex: 1 1 calc(50% - 4px); width: auto !important; min-width: 0; }
+        [data-filterbar] > a { order: 3; flex: 1 1 100%; justify-content: center; }
+        [data-filterbar] > [hidden] { display: none !important; }
+    }
 </style>
 
 <script type="text/javascript">

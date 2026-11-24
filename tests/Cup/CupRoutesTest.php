@@ -49,6 +49,7 @@ class CupRoutesTest extends CupTestCase
         'cup:catalog:attribute:delete' => 'Catalog',
         'cup:catalog:order:delete' => 'Catalog',
         'cup:catalog:order:dispatch' => 'Catalog',
+        'cup:catalog:order:status' => 'Catalog',
         'cup:catalog:review:delete' => 'Reviews',
         'cup:catalog:question:delete' => 'Reviews',
         'cup:guestbook:delete' => 'Content',

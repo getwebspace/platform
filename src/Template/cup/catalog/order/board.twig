@@ -1,0 +1,312 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Orders board'|locale }} ({{ board.orders|length }})</h2>
+            </div>
+            <div class="ml-md-auto py-2 py-md-0">
+                <div class="btn-group">
+                    <a href="/cup/catalog/order" class="btn btn-white btn-border btn-icon" title="{{ 'List of orders'|locale }}">
+                        <i class="fas fa-list"></i>
+                    </a>
+                    <a href="/cup/catalog/order/board" class="btn btn-white  btn-icon" title="{{ 'Orders board'|locale }}">
+                        <i class="fas fa-columns"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% set board_data = board|merge({
+        'url': '/cup/catalog/order',
+        'noStatus': 'No status'|locale,
+        'error': 'The order was not moved'|locale,
+    }) %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex flex-wrap align-items-center" style="gap: 8px">
+                        {% set period_names = {'today': 'Today'|locale, 'week': 'Week'|locale, '14days': '14 days'|locale, 'month': 'Month'|locale, '30days': '30 days'|locale, 'all': 'All time'|locale, 'custom': 'Custom period'|locale} %}
+                        {% include 'cup/filterbar.twig' with {
+                            'fields': [
+                                {'type': 'search', 'name': 'q', 'value': q, 'label': 'Search'|locale, 'placeholder': '# / ' ~ ('Client'|locale) ~ ' / ' ~ ('Phone'|locale) ~ ' / E-Mail'},
+                                {'type': 'select', 'name': 'period', 'label': 'Period'|locale, 'value': period, 'default': '14days', 'options': period_names},
+                                {'type': 'date', 'name': 'date[from]', 'value': date.from, 'label': 'Date From'|locale, 'hidden': period != 'custom'},
+                                {'type': 'date', 'name': 'date[to]', 'value': date.to, 'label': 'Date To'|locale, 'hidden': period != 'custom'},
+                                {'type': 'select', 'name': 'payment', 'label': 'Payment method'|locale, 'value': payment, 'options': {'': 'Payment method'|locale}|merge(payment_list.pluck('title', 'uuid').all())},
+                            ],
+                            'reset': '/cup/catalog/order/board',
+                            'active': (q ? 1 : 0) + (period != '14days' ? 1 : 0) + (payment ? 1 : 0),
+                        } %}
+
+
+                        <a href="/cup/catalog/order/add" class="btn btn-primary btn-round">
+                            <i class="fa fa-plus"></i>
+                            {{ 'Create order'|locale }}
+                        </a>
+                    </div>
+                </div>
+
+                {% if cut %}
+                    <div class="alert alert-warning mx-3 mt-3 mb-0">
+                        {{ 'The board shows the newest %d orders, narrow the period or the search'|locale|format(limit) }}
+                    </div>
+                {% endif %}
+
+                <div class="card-body px-2 px-md-4" x-data='orderBoard({{ board_data|json_encode|e('html_attr') }})' x-cloak>
+                    {# phones show a column at a time: the tabs pick it #}
+                    <div class="kb-tabs d-md-none mb-3">
+                        <template x-for="col in columns" :key="col.uuid">
+                            <button type="button" class="kb-tab" :data-drop="col.uuid"
+                                    :class="{'is-active': tab === col.uuid, 'is-over': over === col.uuid || hover === col.uuid, 'is-droppable': dragging || held}"
+                                    @click="tab = col.uuid"
+                                    @dragover.prevent="over = col.uuid" @dragleave="over === col.uuid && (over = null)" @drop.prevent="drop(col)">
+                                <span x-text="col.title"></span>
+                                <span class="badge badge-secondary" x-text="items(col).length"></span>
+                            </button>
+                        </template>
+                    </div>
+
+                    <div class="kb-board">
+                        <template x-for="col in columns" :key="col.uuid">
+                            <section class="kb-col" :class="{'is-active': tab === col.uuid, 'is-over': over === col.uuid}"
+                                     @dragover.prevent="over = col.uuid" @dragleave="over === col.uuid && (over = null)" @drop.prevent="drop(col)">
+                                <header class="kb-col-head" :style="col.color ? 'border-top-color:' + col.color : ''">
+                                    <b class="kb-col-title" x-text="col.title"></b>
+                                    <span class="badge badge-secondary" x-text="items(col).length"></span>
+                                    <div class="kb-col-sum" x-text="money(sum(col))"></div>
+                                </header>
+
+                                <div class="kb-cards">
+                                    <template x-for="order in items(col)" :key="order.uuid">
+                                        <article class="kb-card" :class="{'is-dragged': dragging === order.uuid || held === order.uuid, 'is-busy': busy[order.uuid]}"
+                                                 draggable="true" @dragstart="start($event, order)" @dragend="end()"
+                                                 @touchstart.passive="touchStart($event, order)" @touchmove="touchMove($event)" @touchend="touchEnd()" @touchcancel="touchReset()"
+                                                 @contextmenu="held && $event.preventDefault()">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <a :href="url + '/' + order.uuid + '/edit'" class="kb-serial">#<span x-text="order.serial"></span></a>
+                                                <b x-text="money(order.total)"></b>
+                                            </div>
+                                            <div class="kb-client" x-text="order.client || order.phone"></div>
+                                            <div class="kb-meta">
+                                                <span x-text="order.date"></span>
+                                                <span x-show="order.count"><i class="fas fa-box"></i> <span x-text="order.count"></span></span>
+                                                <span x-show="order.payment" x-text="order.payment"></span>
+                                            </div>
+                                        </article>
+                                    </template>
+                                    <div class="kb-empty" x-show="!items(col).length">—</div>
+                                </div>
+                            </section>
+                        </template>
+                    </div>
+
+                    <div class="kb-ghost d-md-none" x-show="held" :style="'left:' + ghost.x + 'px;top:' + ghost.y + 'px'">#<span x-text="heldOrder() && heldOrder().serial"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        [x-cloak] { display: none !important; }
+
+        /* the board takes the whole width of the panel, not the column of the other pages */
+        .page-inner.container-xl { max-width: none; width: 100%; float: none; }
+
+        .kb-board { display: flex; gap: 12px; align-items: flex-start; overflow-x: auto; padding-bottom: 12px; }
+        .kb-col { flex: 1 0 270px; max-width: 420px; background: #f1f3f6; border-radius: 6px; transition: background .15s; }
+        .kb-col.is-over { background: #dde6f5; }
+        .kb-col-head { padding: 10px 12px; border-top: 3px solid #adb5bd; border-radius: 6px 6px 0 0; }
+        .kb-col-title { margin-right: 4px; }
+        .kb-col-sum { font-size: 13px; color: #6c757d; margin-top: 2px; }
+        .kb-cards { padding: 0 8px 8px; min-height: 60px; }
+        .kb-card { background: #fff; border-radius: 5px; padding: 10px; margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0, 0, 0, .12); cursor: grab; }
+        .kb-card.is-dragged { opacity: .4; }
+        .kb-card.is-busy { opacity: .6; pointer-events: none; }
+        .kb-serial { font-weight: 600; }
+        .kb-client { margin-top: 4px; word-break: break-word; }
+        .kb-meta { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 4px; font-size: 12px; color: #6c757d; }
+        .kb-empty { text-align: center; color: #adb5bd; padding: 10px 0; }
+
+        .kb-card { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+        .kb-ghost { position: fixed; z-index: 1070; pointer-events: none; transform: translate(-50%, -130%); background: #1572e8; color: #fff; border-radius: 16px; padding: 4px 12px; font-weight: 600; box-shadow: 0 4px 12px rgba(0, 0, 0, .3); }
+
+        .kb-tabs { position: sticky; top: 62px; z-index: 1030; background: #fff; padding-top: 8px; margin-top: -8px; display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+        .kb-tab { flex: 0 0 auto; border: 1px solid #dee2e6; background: #fff; border-radius: 18px; padding: 6px 12px; white-space: nowrap; }
+        .kb-tab.is-droppable { border-style: dashed; border-color: #1572e8; }
+        .kb-tab.is-over { background: #dde6f5; border-style: solid; transform: scale(1.06); }
+        .kb-tab.is-active.is-over { background: #1572e8; }
+        .kb-tab.is-active { background: #1572e8; border-color: #1572e8; color: #fff; }
+
+        @media (max-width: 767.98px) {
+            .kb-board { display: block; overflow: visible; }
+            .kb-col { display: none; width: 100%; max-width: none; }
+            .kb-col.is-active { display: block; }
+            .kb-card { cursor: default; }
+        }
+    </style>
+{% endblock %}
+
+{% block script %}
+    <script src="/assets/js/core/alpine.3.14.9.min.js?v={{ SHA }}" defer></script>
+    <script>
+        // back from an order shows the page as it was left: the statuses may have changed there
+        window.addEventListener('pageshow', (e) => {
+            const nav = performance.getEntriesByType('navigation')[0];
+            if (e.persisted || (nav && nav.type === 'back_forward')) {
+                location.reload();
+            }
+        });
+
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('orderBoard', (init) => ({
+                url: init.url,
+                orders: init.orders,
+                dragging: null,
+                over: null,
+                held: null,
+                hover: null,
+                ghost: {x: 0, y: 0},
+                press: null,
+                busy: {},
+                tab: init.columns.length ? init.columns[0].uuid : '',
+
+                get columns() {
+                    // the orders of no status (or of a status that is off) get a column of their own, only while there are some
+                    const rest = this.orders.some((o) => !o.status_uuid) ? [{uuid: '', title: init.noStatus, color: null}] : [];
+                    return init.columns.concat(rest);
+                },
+
+                items(col) {
+                    return this.orders.filter((o) => o.status_uuid === col.uuid);
+                },
+
+                sum(col) {
+                    return this.items(col).reduce((s, o) => s + o.total, 0);
+                },
+
+                money(value) {
+                    return Number(value || 0).toLocaleString(document.documentElement.lang || undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                },
+
+                start(e, order) {
+                    this.dragging = order.uuid;
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('text/plain', order.uuid);
+                },
+
+                end() {
+                    this.dragging = null;
+                    this.over = null;
+                },
+
+                drop(col) {
+                    const order = this.orders.find((o) => o.uuid === this.dragging);
+                    this.end();
+                    if (order) {
+                        this.move(order, col.uuid);
+                    }
+                },
+
+                heldOrder() {
+                    return this.orders.find((o) => o.uuid === this.held);
+                },
+
+
+                // a finger cannot use the browser's drag and drop: hold a card for a moment, and it can be carried
+                touchStart(e, order) {
+                    if (window.matchMedia('(min-width: 768px)').matches || this.busy[order.uuid]) {
+                        return;
+                    }
+
+                    const t = e.touches[0];
+                    this.touchReset();
+                    this.press = {x: t.clientX, y: t.clientY, timer: setTimeout(() => {
+                        this.held = order.uuid;
+                        this.ghost = {x: this.press.x, y: this.press.y};
+                        navigator.vibrate && navigator.vibrate(20);
+                    }, 350)};
+                },
+
+                touchMove(e) {
+                    if (!this.press) {
+                        return;
+                    }
+
+                    const t = e.touches[0];
+                    if (!this.held) {
+                        // the finger went before the card was picked up: the page is being scrolled
+                        if (Math.abs(t.clientX - this.press.x) > 8 || Math.abs(t.clientY - this.press.y) > 8) {
+                            this.touchReset();
+                        }
+                        return;
+                    }
+
+                    e.preventDefault();
+                    this.press.x = t.clientX;
+                    this.press.y = t.clientY;
+                    this.ghost = {x: t.clientX, y: t.clientY};
+
+                    const zone = document.elementFromPoint(t.clientX, t.clientY);
+                    const target = zone && zone.closest('[data-drop]');
+                    this.hover = target ? target.dataset.drop : null;
+                },
+
+                touchEnd() {
+                    const order = this.heldOrder();
+                    const status = this.hover;
+                    this.touchReset();
+
+                    if (order && status !== null) {
+                        this.move(order, status);
+                    }
+                },
+
+                touchReset() {
+                    if (this.press) {
+                        clearTimeout(this.press.timer);
+                    }
+                    this.press = null;
+                    this.held = null;
+                    this.hover = null;
+                },
+
+                async move(order, status) {
+                    const previous = order.status_uuid;
+                    if (status === previous) {
+                        return;
+                    }
+
+                    // the card is already there while the server answers, and goes back if it refuses
+                    order.status_uuid = status;
+                    this.busy[order.uuid] = true;
+                    this.tab = status;
+
+                    try {
+                        const res = await fetch(this.url + '/' + order.uuid + '/status', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json'},
+                            body: new URLSearchParams({status_uuid: status}),
+                        });
+                        const body = await res.json().catch(() => ({}));
+                        if (!res.ok || !body.ok) {
+                            throw new Error(body.error || init.error);
+                        }
+                    } catch (e) {
+                        order.status_uuid = previous;
+                        this.tab = previous;
+                        window.jQuery && $.notify ? $.notify({message: e.message || init.error}, {type: 'danger'}) : alert(e.message || init.error);
+                    } finally {
+                        delete this.busy[order.uuid];
+                    }
+                },
+            }));
+        });
+    </script>
+{% endblock %}

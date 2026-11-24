@@ -105,6 +105,104 @@ class CupOrdersTest extends CupTestCase
         $this->assertSame(['today', 'week'], $shown('?period=custom&date[from]=' . date('Y-m-d', strtotime('-5 days')) . '&date[to]=' . date('Y-m-d')));
     }
 
+    // ---------------------------------------------------------------------- board
+
+    public function testTheBoardHasAColumnPerStatusWithTheSumsOfItsOrders(): void
+    {
+        $category = $this->category();
+        $phone = $this->product($category, 'Phone', 10);
+        $new = $this->orderStatus('New');
+        $done = $this->orderStatus('Done');
+        $this->order(['email' => 'one@example.com', 'status_uuid' => $new->uuid, 'products' => [$phone->uuid => ['count' => 3]]]);
+        $this->order(['email' => 'two@example.com', 'status_uuid' => $done->uuid]);
+        $this->order(['email' => 'none@example.com']);
+
+        $response = $this->cup('GET', '/cup/catalog/order/board');
+        $this->assertRenders($response, 'board');
+
+        $body = html_entity_decode((string) $response->getBody());
+        $this->assertStringContainsString('"title":"New"', $body);
+        $this->assertStringContainsString('"title":"Done"', $body);
+        $this->assertStringContainsString('"total":30', $body);
+        $this->assertStringContainsString('one@example.com', $body);
+        $this->assertStringContainsString('none@example.com', $body);
+        $this->assertStringContainsString('alpine.3.14.9.min.js', $body);
+        $this->assertStringContainsString('kb-tab', $body);
+    }
+
+    public function testTheBoardKeepsThePeriodAndTheSearchOfTheList(): void
+    {
+        $old = $this->order(['email' => 'old@example.com']);
+        $this->order(['email' => 'recent@example.com']);
+        CatalogOrder::where('uuid', $old->uuid)->update(['date' => date('Y-m-d H:i:s', strtotime('-60 days'))]);
+
+        $body = html_entity_decode((string) $this->cup('GET', '/cup/catalog/order/board')->getBody());
+        $this->assertStringContainsString('recent@example.com', $body);
+        $this->assertStringNotContainsString('old@example.com', $body);
+
+        $body = html_entity_decode((string) $this->cup('GET', '/cup/catalog/order/board?period=all&q=old@')->getBody());
+        $this->assertStringContainsString('old@example.com', $body);
+        $this->assertStringNotContainsString('recent@example.com', $body);
+    }
+
+    public function testTheBoardShowsTwoWeeksUntilAnotherPeriodIsChosen(): void
+    {
+        $recent = $this->order(['email' => 'recent@example.com']);
+        $older = $this->order(['email' => 'older@example.com']);
+        CatalogOrder::where('uuid', $older->uuid)->update(['date' => date('Y-m-d H:i:s', strtotime('-20 days'))]);
+
+        $show = fn (string $query): string => html_entity_decode((string) $this->cup('GET', '/cup/catalog/order/board' . $query)->getBody());
+
+        $this->assertStringContainsString('recent@example.com', $show(''));
+        $this->assertStringNotContainsString('older@example.com', $show(''));
+        $this->assertStringContainsString('older@example.com', $show('?period=30days'));
+        $this->assertStringContainsString('older@example.com', $show('?period=all'));
+        $this->assertNotNull($recent);
+    }
+
+    public function testACardDroppedIntoAColumnChangesTheStatusOfTheOrder(): void
+    {
+        $new = $this->orderStatus('New');
+        $done = $this->orderStatus('Done');
+        $order = $this->order(['status_uuid' => $new->uuid]);
+
+        $response = $this->cup('POST', '/cup/catalog/order/' . $order->uuid . '/status', ['form_params' => ['status_uuid' => $done->uuid]]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertTrue(json_decode((string) $response->getBody(), true)['ok']);
+        $this->assertSame($done->uuid, (string) CatalogOrder::find($order->uuid)->status_uuid);
+
+        // the column of no status takes the order out of every status
+        $this->cup('POST', '/cup/catalog/order/' . $order->uuid . '/status', ['form_params' => ['status_uuid' => '']]);
+        $this->assertNull(CatalogOrder::find($order->uuid)->status_uuid);
+    }
+
+    public function testAnOrderIsNotMovedToAnUnknownStatusOrFromAnUnknownOrder(): void
+    {
+        $new = $this->orderStatus('New');
+        $order = $this->order(['status_uuid' => $new->uuid]);
+
+        $unknown = $this->cup('POST', '/cup/catalog/order/' . $order->uuid . '/status', ['form_params' => ['status_uuid' => \Ramsey\Uuid\Uuid::uuid4()->toString()]]);
+        $this->assertSame(422, $unknown->getStatusCode());
+        $this->assertSame($new->uuid, (string) CatalogOrder::find($order->uuid)->status_uuid);
+
+        $missing = $this->cup('POST', '/cup/catalog/order/' . \Ramsey\Uuid\Uuid::uuid4()->toString() . '/status', ['form_params' => ['status_uuid' => $new->uuid]]);
+        $this->assertSame(404, $missing->getStatusCode());
+
+        $this->assertSame(400, $this->cup('POST', '/cup/catalog/order/not-a-uuid/status', ['form_params' => ['status_uuid' => $new->uuid]])->getStatusCode());
+    }
+
+    public function testMovingAnOrderNeedsTheToken(): void
+    {
+        $new = $this->orderStatus('New');
+        $order = $this->order();
+
+        $response = $this->cup('POST', '/cup/catalog/order/' . $order->uuid . '/status', ['form_params' => ['status_uuid' => $new->uuid], 'csrf' => false]);
+
+        $this->assertContains($response->getStatusCode(), [400, 403]);
+        $this->assertNull(CatalogOrder::find($order->uuid)->status_uuid);
+    }
+
     public function testTheOrderListCanBeSearchedAndFiltered(): void
     {
         $paid = $this->getService(ReferenceService::class)->create(['title' => 'Card', 'type' => 'payment', 'value' => ['plugin' => '']]);

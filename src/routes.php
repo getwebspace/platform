@@ -308,6 +308,10 @@ return function (App $app, Container $container): void {
 
                             $proxy->get('', \App\Application\Actions\Cup\Catalog\Order\OrderListAction::class)
                                 ->setName('cup:catalog:order:list');
+                            $proxy->get('/board', \App\Application\Actions\Cup\Catalog\Order\OrderBoardAction::class)
+                                ->setName('cup:catalog:order:board');
+                            $proxy->post('/{order}/status', \App\Application\Actions\Cup\Catalog\Order\OrderStatusAction::class)
+                                ->setName('cup:catalog:order:status');
                             $proxy->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Catalog\Order\OrderCreateAction::class)
                                 ->setName('cup:catalog:order:add');
                             $proxy->map(['GET', 'POST'], '/{order}/edit', \App\Application\Actions\Cup\Catalog\Order\OrderUpdateAction::class)

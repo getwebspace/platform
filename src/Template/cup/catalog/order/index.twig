@@ -6,6 +6,16 @@
             <div>
                 <h2 class="text-white pb-2 fw-bold">{{ 'List of orders'|locale }} ({{ list.count() }})</h2>
             </div>
+            <div class="ml-md-auto py-2 py-md-0">
+                <div class="btn-group">
+                    <a href="/cup/catalog/order" class="btn btn-white  btn-icon" title="{{ 'List of orders'|locale }}">
+                        <i class="fas fa-list"></i>
+                    </a>
+                    <a href="/cup/catalog/order/board" class="btn btn-white btn-border btn-icon" title="{{ 'Orders board'|locale }}">
+                        <i class="fas fa-columns"></i>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -33,6 +43,7 @@
                         <a href="{{ path_for('cup:catalog:order:export', [], {'status': status}|merge(date)) }}" class="btn btn-secondary btn-icon text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Export current order list'|locale }}">
                             <i class="fas fa-file-export"></i>
                         </a>
+
 
                         <a href="/cup/catalog/order/add" class="btn btn-primary btn-round">
                             <i class="fa fa-plus"></i>
