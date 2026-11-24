@@ -24,7 +24,7 @@ class CartAction extends CatalogAction
                 'system' => $this->getParam('system', ''),
 
                 'payment_uuid' => $this->getParam('payment_uuid', $this->getParam('payment')),
-                'products' => $this->getParam('products', []),
+                'products' => $this->catalogOrderService->sanitizeCartProducts((array) $this->getParam('products', [])),
             ];
 
             if (($user = $this->request->getAttribute('user', false)) !== false) {

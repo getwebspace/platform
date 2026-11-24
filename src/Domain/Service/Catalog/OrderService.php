@@ -218,6 +218,57 @@ class OrderService extends AbstractService
         return $prefix . mb_str_pad(strval($next), 3, '0', STR_PAD_LEFT);
     }
 
+    /**
+     * Reduce products posted from the public cart to what a customer may choose:
+     * only existing products on sale, a positive count, and the catalog price
+     * (the wholesale one only when the count reaches the product's threshold),
+     * or the self price, where the price posted by the customer is kept.
+     */
+    public function sanitizeCartProducts(array $products): array
+    {
+        $result = [];
+
+        foreach ($products as $uuid => $opts) {
+            if (!is_string($uuid) || !is_array($opts)) {
+                continue;
+            }
+
+            $count = $opts['count'] ?? 0;
+            if (!is_numeric($count) || floatval($count) <= 0) {
+                continue;
+            }
+
+            /** @var ?CatalogProduct $product */
+            $product = CatalogProduct::find($uuid);
+            if (!$product || $product->status !== \App\Domain\Casts\Catalog\Status::WORK) {
+                continue;
+            }
+
+            $wholesale = $product->priceWholesaleFrom > 0
+                && $product->priceWholesale > 0
+                && floatval($count) >= $product->priceWholesaleFrom;
+
+            // the self price is a feature: the customer's own price (with discount and tax) is kept
+            if (($opts['price_type'] ?? '') === \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_SELF) {
+                $result[$uuid] = array_merge(
+                    array_intersect_key($opts, array_flip(['price', 'discount', 'tax', 'tax_included'])),
+                    ['count' => floatval($count), 'price_type' => \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_SELF]
+                );
+
+                continue;
+            }
+
+            $result[$uuid] = [
+                'count' => floatval($count),
+                'price_type' => $wholesale
+                    ? \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_WHOLESALE
+                    : \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE,
+            ];
+        }
+
+        return $result;
+    }
+
     private function products(array $products = []): array
     {
         $productsForSync = [];
@@ -226,7 +277,7 @@ class OrderService extends AbstractService
             /** @var CatalogProduct $product */
             $product = CatalogProduct::find($uuid);
 
-            if ($product) {
+            if ($product && is_array($opts) && floatval($opts['count'] ?? 0) > 0) {
                 $priceType = in_array($opts['price_type'] ?? '', \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE, true) ? $opts['price_type'] : 'price';
                 $price = match ($priceType) {
                     \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE => $product->price,

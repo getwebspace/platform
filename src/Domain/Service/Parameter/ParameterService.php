@@ -19,6 +19,7 @@ class ParameterService extends AbstractService
     {
         $parameter = new Parameter();
         $parameter->fill($data);
+        $this->normalize($parameter);
 
         if (Parameter::firstWhere(['name' => $parameter->name]) !== null) {
             throw new ParameterAlreadyExistsException();
@@ -27,6 +28,23 @@ class ParameterService extends AbstractService
         $parameter->save();
 
         return $parameter;
+    }
+
+    /**
+     * The site address is used to build links and robots.txt, so it must carry a scheme
+     * and no trailing slash: "example.com/" becomes "https://example.com"
+     */
+    private function normalize(Parameter $parameter): void
+    {
+        if ($parameter->name === 'common_homepage' && is_string($parameter->value) && trim($parameter->value) !== '') {
+            $value = trim($parameter->value);
+
+            if (!preg_match('#^https?://#i', $value)) {
+                $value = 'https://' . ltrim($value, '/');
+            }
+
+            $parameter->value = rtrim($value, '/');
+        }
     }
 
     public function read(array $data = [], mixed $fallback = null): null|Collection|Parameter
@@ -74,6 +92,7 @@ class ParameterService extends AbstractService
 
         if (is_object($entity) && is_a($entity, Parameter::class)) {
             $entity->fill($data);
+            $this->normalize($entity);
             $entity->save();
 
             return $entity;

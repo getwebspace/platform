@@ -14,35 +14,35 @@ class ListAction extends CatalogAction
 
     protected function action(): \Slim\Psr7\Response
     {
-        $args = $this->parsePath();
         $categories = $this->catalogCategoryService->read([
             'status' => \App\Domain\Casts\Catalog\Status::WORK,
             'is_hidden' => false,
         ]);
 
-        try {
-            // Catalog main
-            if ($buf = $this->prepareMain($args, $categories)) {
-                return $buf;
+        // an exact address wins over "address/page-offset" reading of a trailing number
+        foreach ($this->parsePath() as $args) {
+            try {
+                if ($buf = $this->prepareMain($args, $categories)) {
+                    return $buf;
+                }
+                if ($buf = $this->prepareCategory($args, $categories)) {
+                    return $buf;
+                }
+                if ($buf = $this->prepareProduct($args, $categories)) {
+                    return $buf;
+                }
+            } catch (CategoryNotFoundException|ProductNotFoundException $e) {
+                // nothing
             }
-
-            // Category
-            if ($buf = $this->prepareCategory($args, $categories)) {
-                return $buf;
-            }
-
-            // Product
-            if ($buf = $this->prepareProduct($args, $categories)) {
-                return $buf;
-            }
-        } catch (CategoryNotFoundException|ProductNotFoundException $e) {
-            // nothing
         }
 
         // 404
         return $this->respond('p404.twig')->withStatus(404);
     }
 
+    /**
+     * @return array<int, array{address: string, offset: int}> variants in order of priority
+     */
     private function parsePath(): array
     {
         $path = $this->request->getUri()->getPath();
@@ -53,16 +53,14 @@ class ListAction extends CatalogAction
         }
 
         $parts = explode('/', ltrim($path, '/'));
-        $offset = 0;
+        $variants = [['address' => implode('/', $parts), 'offset' => 0]];
 
         if ($parts && ctype_digit(end($parts))) {
             $offset = (int) array_pop($parts);
+            $variants[] = ['address' => implode('/', $parts), 'offset' => $offset];
         }
 
-        return [
-            'address' => implode('/', $parts),
-            'offset' => $offset,
-        ];
+        return $variants;
     }
 
     /**

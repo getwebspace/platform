@@ -160,6 +160,28 @@ class OrderServiceTest extends TestCase
         }
     }
 
+    public function testSanitizeCartProducts(): void
+    {
+        $product = $this->getRandomProduct();
+        $product->update(['priceWholesale' => 5, 'priceWholesaleFrom' => 10]);
+        $deleted = $this->getRandomProduct();
+        $deleted->update(['status' => \App\Domain\Casts\Catalog\Status::DELETE]);
+
+        $result = $this->service->sanitizeCartProducts([
+            $product->uuid => ['count' => '2', 'price_type' => 'price_self', 'price' => 1],
+            $deleted->uuid => ['count' => 1],
+            'unknown' => ['count' => 1],
+        ]);
+        $this->assertSame([$product->uuid], array_keys($result));
+        $this->assertSame('price_self', $result[$product->uuid]['price_type']);
+        $this->assertSame(1, $result[$product->uuid]['price']);
+
+        $result = $this->service->sanitizeCartProducts([$product->uuid => ['count' => 10, 'price_type' => 'price']]);
+        $this->assertSame('price_wholesale', $result[$product->uuid]['price_type']);
+
+        $this->assertSame([], $this->service->sanitizeCartProducts([$product->uuid => ['count' => -3]]));
+    }
+
     public function testReadSuccess1(): void
     {
         $data = [

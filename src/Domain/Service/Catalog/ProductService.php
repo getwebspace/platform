@@ -57,7 +57,7 @@ class ProductService extends AbstractService
 
         // if address generation is enabled
         if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {
-            $product->address = implode('/', array_filter([$product->category->address ?? '', $product->title ?? uniqid()], fn ($el) => (bool) $el));
+            $product->address = $this->uniqueAddress(implode('/', array_filter([$product->category->address ?? '', $product->title ?? uniqid()], fn ($el) => (bool) $el)), $product);
         }
 
         // check unique
@@ -229,7 +229,7 @@ class ProductService extends AbstractService
 
             // if address generation is enabled
             if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && (!isset($data['address']) || blank($data['address']))) {
-                $entity->address = implode('/', array_filter([$entity->category->address ?? '', $entity->title ?? uniqid()], fn ($el) => (bool) $el));
+                $entity->address = $this->uniqueAddress(implode('/', array_filter([$entity->category->address ?? '', $entity->title ?? uniqid()], fn ($el) => (bool) $el)), $entity);
             }
 
             if ($entity->isDirty('category_uuid') || $entity->isDirty('address') || $entity->isDirty('dimension') || $entity->isDirty('external_id')) {
@@ -292,5 +292,31 @@ class ProductService extends AbstractService
         }
 
         throw new ProductNotFoundException();
+    }
+
+    /**
+     * An address a product is found by must belong to one product only: a generated one that
+     * is taken gets the vendor code (or external id) as a suffix, then a counter
+     */
+    private function uniqueAddress(string $address, CatalogProduct $product): string
+    {
+        $taken = fn (string $candidate): bool => CatalogProduct::query()
+            ->where('address', $candidate)
+            ->when($product->exists, fn ($q) => $q->where('uuid', '!=', $product->uuid))
+            ->exists();
+
+        if (!$taken($address)) {
+            return $address;
+        }
+
+        $suffix = trim((string) preg_replace('/[^\p{L}\p{N}]+/u', '-', (string) ($product->vendorcode ?: $product->external_id)), '-');
+        $base = $suffix !== '' ? $address . '-' . mb_strtolower($suffix) : $address;
+        $candidate = $base;
+
+        for ($i = 2; $taken($candidate); ++$i) {
+            $candidate = $base . '-' . $i;
+        }
+
+        return $candidate;
     }
 }
