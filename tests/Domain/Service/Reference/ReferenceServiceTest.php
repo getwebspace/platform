@@ -167,4 +167,25 @@ class ReferenceServiceTest extends TestCase
 
         $this->service->delete(null);
     }
+
+    public function testDeliveryHasADescriptionAndAKindFromTheList(): void
+    {
+        $delivery = $this->service->create([
+            'type' => \App\Domain\Casts\Reference\Type::DELIVERY,
+            'title' => 'Courier today',
+            'kind' => \App\Domain\References\Delivery::KIND_COURIER,
+            'description' => 'Within the city, 2 hours',
+        ]);
+        $this->assertSame('courier', $delivery->kind);
+        $this->assertSame('Within the city, 2 hours', $delivery->description);
+
+        // a kind the delivery does not know is not kept
+        $this->assertSame('', $this->service->update($delivery, ['kind' => 'teleport'])->kind);
+        $this->assertSame('Within the city, 2 hours', $delivery->description, 'an update without a description keeps it');
+
+        // other references have no kinds
+        $payment = $this->service->create(['type' => \App\Domain\Casts\Reference\Type::PAYMENT, 'title' => 'Card', 'kind' => 'courier', 'description' => 'Visa, Mastercard']);
+        $this->assertSame('', $payment->kind);
+        $this->assertSame('Visa, Mastercard', $payment->description);
+    }
 }

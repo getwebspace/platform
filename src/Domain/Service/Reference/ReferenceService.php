@@ -23,6 +23,7 @@ class ReferenceService extends AbstractService
     {
         $reference = new Reference();
         $reference->fill($data);
+        $this->normalize($reference);
 
         if (!$reference->title) {
             throw new MissingTitleValueException();
@@ -39,6 +40,23 @@ class ReferenceService extends AbstractService
         $reference->save();
 
         return $reference;
+    }
+
+    /**
+     * An empty description, and a kind that the type does not know, are saved as empty
+     */
+    private function normalize(Reference $reference): void
+    {
+        $reference->description = (string) $reference->description;
+
+        $kinds = match ($reference->type) {
+            \App\Domain\Casts\Reference\Type::DELIVERY => \App\Domain\References\Delivery::KIND,
+            default => [],
+        };
+
+        if (!in_array($reference->kind, $kinds, true)) {
+            $reference->kind = '';
+        }
     }
 
     /**
@@ -102,6 +120,7 @@ class ReferenceService extends AbstractService
 
         if (is_object($entity) && is_a($entity, Reference::class)) {
             $entity->fill($data);
+            $this->normalize($entity);
 
             // as when it was made: a record cannot be left without a title
             if (!$entity->title) {

@@ -29,7 +29,7 @@ class ReferenceUpdateAction extends ReferenceAction
                             'value' => $this->getParam('value', []),
                             'order' => $this->getParam('order'),
                             'status' => $this->getParam('status'),
-                        ]);
+                        ] + $this->referenceExtras());
 
                         $this->container->get(\App\Application\PubSub::class)->publish('cup:reference:edit', $ref);
 

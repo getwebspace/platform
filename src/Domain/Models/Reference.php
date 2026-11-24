@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $uuid
  * @property string $type
  * @property string $title
+ * @property string $description
+ * @property string $kind subtype inside the type, for a delivery: pickup, courier or carrier
  * @property array $value
  * @property int $order
  * @property bool $status
@@ -30,6 +32,8 @@ class Reference extends Model
     protected $fillable = [
         'type',
         'title',
+        'description',
+        'kind',
         'value',
         'order',
         'status',
@@ -40,6 +44,8 @@ class Reference extends Model
     protected $casts = [
         'type' => ReferenceType::class,
         'title' => 'string',
+        'description' => 'string',
+        'kind' => 'string',
         'value' => Json::class,
         'order' => 'int',
         'status' => Boolean::class,
@@ -48,6 +54,8 @@ class Reference extends Model
     protected $attributes = [
         'type' => '',
         'title' => '',
+        'description' => '',
+        'kind' => '',
         'value' => '{}',
         'order' => 1,
         'status' => true,

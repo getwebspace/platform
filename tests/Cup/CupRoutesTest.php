@@ -173,6 +173,31 @@ class CupRoutesTest extends CupTestCase
         }
     }
 
+    public function testDeliveryFormSavesItsTypeAndDescription(): void
+    {
+        $response = $this->cup('POST', '/cup/reference/deliveries/add', ['form_params' => [
+            'title' => 'Pickup point',
+            'kind' => 'pickup',
+            'description' => 'Open 9-18',
+            'order' => 1,
+            'status' => 'yes',
+        ]]);
+        $this->assertEquals(302, $response->getStatusCode());
+
+        $delivery = \App\Domain\Models\Reference::firstWhere(['title' => 'Pickup point']);
+        $this->assertSame('pickup', $delivery->kind);
+        $this->assertSame('Open 9-18', $delivery->description);
+
+        $form = (string) $this->cup('GET', "/cup/reference/deliveries/{$delivery->uuid}/edit")->getBody();
+        $this->assertStringContainsString('Open 9-18', $form);
+        $this->assertMatchesRegularExpression('/<option[^>]*value="pickup"[^>]*selected/', $form);
+
+        // a form that has no such fields (the payments one) leaves them alone
+        $payment = $this->getService(\App\Domain\Service\Reference\ReferenceService::class)->create(['type' => 'payment', 'title' => 'Card', 'description' => 'Keep me']);
+        $this->cup('POST', "/cup/reference/payments/{$payment->uuid}/edit", ['form_params' => ['title' => 'Card', 'order' => 1, 'status' => 'yes']]);
+        $this->assertSame('Keep me', $payment->fresh()->description);
+    }
+
     public function testAnUnknownKindOfReferenceIsNotAPage(): void
     {
         foreach (['nothing', '..%2f..%2feditor', '%2e%2e'] as $kind) {

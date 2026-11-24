@@ -11,6 +11,17 @@ abstract class ReferenceAction extends AbstractAction
 {
     protected ReferenceService $referenceService;
 
+    /**
+     * Description and kind, only if the form has them: a form of another reference
+     * must not wipe what an API client or another form saved
+     *
+     * @return array<string, mixed>
+     */
+    protected function referenceExtras(): array
+    {
+        return array_intersect_key($this->getParams(), array_flip(['description', 'kind']));
+    }
+
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);

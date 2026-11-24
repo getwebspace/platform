@@ -35,6 +35,31 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
+                                    'label': 'Delivery type'|locale,
+                                    'type': 'select',
+                                    'name': 'kind',
+                                    'args': {
+                                        'option': {'': '---', 'pickup': 'Pickup'|locale, 'courier': 'Courier'|locale, 'carrier': 'Transport company'|locale},
+                                        'selected': item.kind,
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Description'|locale,
+                                    'type': 'textarea',
+                                    'name': 'description',
+                                    'args': {
+                                        'value': item.description,
+                                        'rows': 3,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
                                     'label': 'Enabled'|locale,
                                     'type': 'select',
                                     'name': 'status',
