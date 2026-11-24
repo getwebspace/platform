@@ -34,6 +34,20 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
+                                    'label': 'Status kind'|locale,
+                                    'type': 'select',
+                                    'name': 'kind',
+                                    'args': {
+                                        'option': {'': '---', 'canceled': 'Canceled'|locale},
+                                        'selected': item.kind,
+                                    }
+                                } %}
+                                <small class="form-text text-muted">{{ 'Orders in a canceled status are not counted in "bought together"'|locale }}</small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
                                     'label': 'Enabled'|locale,
                                     'type': 'select',
                                     'name': 'status',

@@ -167,6 +167,10 @@ falls back to displaying the raw key string, never an error.
 
 ## Gotchas
 
+- **`price_self` in the public cart** is charged the client's own price, so
+  it works only with `catalog_order_price_self = on` (off by default); the
+  cart otherwise charges the catalog price.
+
 - **Image and CPU.** Tagged images are built for `linux/amd64` and
   `linux/arm64` (native runners in parallel, then one multi-arch manifest;
   `.github/workflows/docker.yml`). An amd64 image run on an arm64 host is

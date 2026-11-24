@@ -51,6 +51,7 @@ class ReferenceService extends AbstractService
 
         $kinds = match ($reference->type) {
             \App\Domain\Casts\Reference\Type::DELIVERY => \App\Domain\References\Delivery::KIND,
+            \App\Domain\Casts\Reference\Type::ORDER_STATUS => \App\Domain\References\OrderStatus::KIND,
             default => [],
         };
 

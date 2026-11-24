@@ -222,7 +222,7 @@ class OrderService extends AbstractService
      * Reduce products posted from the public cart to what a customer may choose:
      * only existing products on sale, a positive count, and the catalog price
      * (the wholesale one only when the count reaches the product's threshold),
-     * or the self price, where the price posted by the customer is kept.
+     * or the self price when the shop allows it (`catalog_order_price_self`, off by default).
      */
     public function sanitizeCartProducts(array $products): array
     {
@@ -248,8 +248,12 @@ class OrderService extends AbstractService
                 && $product->priceWholesale > 0
                 && floatval($count) >= $product->priceWholesaleFrom;
 
-            // the self price is a feature: the customer's own price (with discount and tax) is kept
-            if (($opts['price_type'] ?? '') === \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_SELF) {
+            // the self price is the customer's own price (with discount and tax), taken as posted:
+            // it is kept only where the shop switched it on, otherwise the catalog price is charged
+            if (
+                ($opts['price_type'] ?? '') === \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_SELF
+                && $this->parameter('catalog_order_price_self', 'off') === 'on'
+            ) {
                 $result[$uuid] = array_merge(
                     array_intersect_key($opts, array_flip(['price', 'discount', 'tax', 'tax_included'])),
                     ['count' => floatval($count), 'price_type' => \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_SELF]

@@ -1224,6 +1224,17 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Customer sets the price',
+                                                    'description': 'Cart lines with the price type "price_self" are charged the price sent by the customer (an order for 1 is possible). Keep it off unless the cart is a quotation tool',
+                                                    'type': 'select',
+                                                    'name': 'catalog[order_price_self]',
+                                                    'args': {
+                                                        'option': _(['off', 'on']),
+                                                        'selected': 'off'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Address lines in cart',
                                                     'description': 'Allows you to pass the address as a numbered array of strings',
                                                     'type': 'select',

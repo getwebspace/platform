@@ -188,4 +188,11 @@ class ReferenceServiceTest extends TestCase
         $this->assertSame('', $payment->kind);
         $this->assertSame('Visa, Mastercard', $payment->description);
     }
+
+    public function testOrderStatusMayBeOfTheCanceledKindOnly(): void
+    {
+        $status = $this->service->create(['type' => \App\Domain\Casts\Reference\Type::ORDER_STATUS, 'title' => 'Returned', 'kind' => 'canceled']);
+        $this->assertSame('canceled', $status->kind);
+        $this->assertSame('', $this->service->update($status, ['kind' => 'pickup'])->kind, 'a delivery kind is no kind of a status');
+    }
 }

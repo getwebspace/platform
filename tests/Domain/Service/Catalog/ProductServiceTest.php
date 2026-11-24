@@ -117,6 +117,23 @@ class ProductServiceTest extends TestCase
         $this->service->create();
     }
 
+    public function testGeneratedAddressKeepsVariantsTogetherAndSeparatesOthers(): void
+    {
+        $this->getService(\App\Domain\Service\Parameter\ParameterService::class)->create(['name' => 'common_auto_generate_address', 'value' => 'yes']);
+        $this->getService(\Illuminate\Cache\ArrayStore::class)->flush();
+        $make = fn (string $title, array $extra = []) => $this->service->create($extra + ['title' => $title, 'category_uuid' => $this->category->uuid]);
+
+        $base = $make('Shirt', ['vendorcode' => 'S-1', 'external_id' => '1']);
+        // the same title in the same category is a variant: it shares the page of the product
+        $blue = $make('Shirt', ['vendorcode' => 'S-2', 'external_id' => '2']);
+        $this->assertSame($base->address, $blue->address);
+
+        // another product that would get the same address is told apart
+        $other = $make('Shirt!', ['vendorcode' => 'S-3', 'external_id' => '3']);
+        $this->assertNotSame($base->address, $other->address);
+        $this->assertStringContainsString('s-3', $other->address);
+    }
+
     public function testCreateWithAddressExistent(): void
     {
         $this->expectException(AddressAlreadyExistsException::class);

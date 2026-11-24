@@ -298,7 +298,7 @@ class ProductService extends AbstractService
 
     /**
      * Products that customers bought together with the given one: those found in the same
-     * orders, the most frequent first. Only what the site shows (a product on sale, of a shown
+     * orders (not in a canceled status: a status of kind `canceled`), the most frequent first. Only what the site shows (a product on sale, of a shown
      * category, not a service) and never the product itself. Each product carries `together`,
      * the number of orders it shares with the given one.
      *
@@ -320,7 +320,10 @@ class ProductService extends AbstractService
             ->join('catalog_order_product as b', 'a.order_uuid', '=', 'b.order_uuid')
             ->join('catalog_product as p', 'p.uuid', '=', 'b.product_uuid')
             ->join('catalog_category as c', 'c.uuid', '=', 'p.category_uuid')
+            ->join('catalog_order as o', 'o.uuid', '=', 'a.order_uuid')
+            ->leftJoin('reference as r', 'r.uuid', '=', 'o.status_uuid')
             ->where('a.product_uuid', $uuid)
+            ->where(fn ($q) => $q->whereNull('r.kind')->orWhere('r.kind', '!=', \App\Domain\References\OrderStatus::KIND_CANCELED))
             ->where('b.product_uuid', '!=', $uuid)
             ->where('p.status', \App\Domain\Casts\Catalog\Status::WORK)
             ->where('p.type', \App\Domain\Casts\Catalog\Product\Type::PRODUCT)
@@ -358,21 +361,31 @@ class ProductService extends AbstractService
 
     /**
      * An address a product is found by must belong to one product only: a generated one that
-     * is taken gets the vendor code (or external id) as a suffix, then a counter
+     * is taken by a different product gets the vendor code (or external id) as a suffix, then a
+     * counter. The same title in the same category keeps the address: that is a variant.
      */
     private function uniqueAddress(string $address, CatalogProduct $product): string
     {
+        // products of one category with one title are variants of a product that share its page
+        // (the page lists every product of its address), so they are not "another" owner
         $taken = fn (string $candidate): bool => CatalogProduct::query()
             ->where('address', $candidate)
             ->when($product->exists, fn ($q) => $q->where('uuid', '!=', $product->uuid))
+            ->where(fn ($q) => $q
+                ->where('title', '!=', $product->title)
+                ->orWhere('category_uuid', '!=', $product->getAttributes()['category_uuid'] ?? ''))
             ->exists();
+
+        // what the cast of the model makes of it is what ends up stored, and what must be compared
+        $normalize = fn (string $value): string => (new \App\Domain\Casts\AddressUrl())->set($product, 'address', $value, []);
+        $address = $normalize($address);
 
         if (!$taken($address)) {
             return $address;
         }
 
         $suffix = trim((string) preg_replace('/[^\p{L}\p{N}]+/u', '-', (string) ($product->vendorcode ?: $product->external_id)), '-');
-        $base = $suffix !== '' ? $address . '-' . mb_strtolower($suffix) : $address;
+        $base = $suffix !== '' ? $normalize($address . '-' . $suffix) : $address;
         $candidate = $base;
 
         for ($i = 2; $taken($candidate); ++$i) {

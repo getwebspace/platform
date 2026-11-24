@@ -173,8 +173,16 @@ class OrderServiceTest extends TestCase
             'unknown' => ['count' => 1],
         ]);
         $this->assertSame([$product->uuid], array_keys($result));
+        $this->assertSame('price', $result[$product->uuid]['price_type'], 'the customer cannot name his price unless the shop allows it');
+        $this->assertArrayNotHasKey('price', $result[$product->uuid]);
+
+        // switched on: the posted price is kept, with its discount and tax
+        $this->getService(\App\Domain\Service\Parameter\ParameterService::class)->create(['name' => 'catalog_order_price_self', 'value' => 'on']);
+        $this->getService(\Illuminate\Cache\ArrayStore::class)->flush();
+        $result = $this->service->sanitizeCartProducts([$product->uuid => ['count' => '2', 'price_type' => 'price_self', 'price' => 1, 'tax' => 5]]);
         $this->assertSame('price_self', $result[$product->uuid]['price_type']);
         $this->assertSame(1, $result[$product->uuid]['price']);
+        $this->assertSame(5, $result[$product->uuid]['tax']);
 
         $result = $this->service->sanitizeCartProducts([$product->uuid => ['count' => 10, 'price_type' => 'price']]);
         $this->assertSame('price_wholesale', $result[$product->uuid]['price_type']);
@@ -204,10 +212,18 @@ class OrderServiceTest extends TestCase
         $order([$main, $often]);
         $order([$often, $once]); // without the main one
 
+        // a canceled order does not count
+        $canceled = $this->getService(ReferenceService::class)->create(['type' => ReferenceType::ORDER_STATUS, 'title' => 'Canceled', 'kind' => 'canceled']);
+        $withStatus = $this->service->create(['status_uuid' => $canceled->uuid, 'products' => [
+            $main->uuid => ['count' => 1, 'price_type' => 'price'],
+            $once->uuid => ['count' => 1, 'price_type' => 'price'],
+            $often->uuid => ['count' => 1, 'price_type' => 'price'],
+        ]]);
+
         $result = $products->boughtTogether($main, 10);
 
         $this->assertSame(['often', 'once'], $result->map(fn ($p) => $p->title)->all(), 'the most frequent first; no services, removed or hidden products, not itself');
-        $this->assertSame([2, 1], $result->map(fn ($p) => $p->together)->all());
+        $this->assertSame([2, 1], $result->map(fn ($p) => $p->together)->all(), 'the canceled order is not among the shared ones');
         $this->assertSame(['often'], $products->boughtTogether($main->uuid, 1)->map(fn ($p) => $p->title)->all());
         $this->assertCount(0, $products->boughtTogether('not-a-uuid'));
         $this->assertCount(0, $products->boughtTogether($main, 0));
