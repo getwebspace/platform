@@ -292,6 +292,18 @@ class TwigExtensionTest extends TestCase
         $this->assertSame('', $this->render("{{ catalog_category_tree('nope')|map(c => c.title)|join(',') }}"));
     }
 
+    public function testVariantsOfAProductAreReachableFromATemplate(): void
+    {
+        $category = $this->getService(CategoryService::class)->create(['title' => 'Mugs', 'address' => 'mugs']);
+        $products = $this->getService(ProductService::class);
+        $a = $products->create(['title' => 'Mug', 'address' => 'mugs/mug', 'category_uuid' => $category->uuid, 'external_id' => '1', 'variant_title' => 'White']);
+        $products->create(['title' => 'Mug', 'address' => 'mugs/mug', 'category_uuid' => $category->uuid, 'external_id' => '2', 'variant_title' => 'Black']);
+
+        $this->assertSame('White,Black', $this->render("{{ catalog_product_variants('" . $a->uuid . "')|map(p => p.variant_label())|join(',') }}"));
+        $this->assertSame('', $this->render("{{ catalog_product_variants('00000000-0000-0000-0000-000000000000')|map(p => p.title)|join(',') }}"));
+        $this->assertSame('', $this->render('{{ catalog_product_variants(null)|map(p => p.title)|join(",") }}'));
+    }
+
     public function testBoughtTogetherIsSafeToCallFromATemplate(): void
     {
         $this->assertSame('0', $this->render('{{ catalog_product_bought_together(null)|length }}'), 'no product on the page: nothing to show');

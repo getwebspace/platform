@@ -162,6 +162,7 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('catalog_product_count', [$this, 'catalog_product_count']),
             new TwigFunction('catalog_product_price_type', [$this, 'catalog_product_price_type'], ['needs_context' => true]),
             new TwigFunction('catalog_product_popular', [$this, 'catalog_product_popular']),
+            new TwigFunction('catalog_product_variants', [$this, 'catalog_product_variants']),
             new TwigFunction('catalog_product_bought_together', [$this, 'catalog_product_bought_together']),
             new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
             new TwigFunction('catalog_product_dimensional_weight', [$this, 'catalog_product_dimensional_weight'], ['needs_context' => true]),
@@ -648,6 +649,20 @@ class TwigExtension extends AbstractExtension
         }
 
         return \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE;
+    }
+
+    // the group of variants of a product (a model or its uuid): its products on sale at the same address, in a fixed order
+    public function catalog_product_variants(mixed $product): Collection
+    {
+        if (is_string($product)) {
+            try {
+                $product = $this->container->get(CatalogProductService::class)->read(['uuid' => $product]);
+            } catch (\App\Domain\Service\Catalog\Exception\ProductNotFoundException $e) {
+                return new Collection();
+            }
+        }
+
+        return $product instanceof \App\Domain\Models\CatalogProduct ? $product->variants() : new Collection();
     }
 
     // products bought in the same orders as the given one (a model or its uuid), the most frequent first

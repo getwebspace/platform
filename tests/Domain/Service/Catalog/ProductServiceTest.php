@@ -358,4 +358,98 @@ class ProductServiceTest extends TestCase
         $references->delete($status);
         $this->assertNull($product->fresh()->stock_status_uuid);
     }
+
+    private function make(string $title, array $extra = []): CatalogProduct
+    {
+        return $this->service->create($extra + ['title' => $title, 'address' => 'shop/' . uniqid(), 'category_uuid' => $this->category->uuid]);
+    }
+
+    public function testUrlOfAProductAndOfAVariant(): void
+    {
+        CatalogProduct::flushRuntimeCache();
+        $alone = $this->make('Alone', ['address' => 'shop/alone', 'external_id' => 'x']);
+        $this->assertFalse($alone->has_variants());
+        $this->assertSame('/catalog/shop/alone', $alone->url(), 'no ?v= for a product on its own');
+
+        $a = $this->make('A', ['address' => 'shop/group', 'external_id' => 'A 1/2']);
+        $b = $this->make('B', ['address' => 'shop/group', 'external_id' => '']);
+        CatalogProduct::flushRuntimeCache();
+
+        $this->assertTrue($a->has_variants());
+        $this->assertSame('/catalog/shop/group?v=A%201%2F2', $a->url(), 'the external id is encoded');
+        $this->assertSame('/catalog/shop/group?v=' . $b->uuid, $b->url(), 'the uuid when there is no external id');
+        $this->assertSame('/catalog/shop/group', $a->canonical_url());
+        $this->assertSame($a->url(), $a->toArray()['url']);
+        $this->assertSame('/catalog/shop/group', $a->toArray()['canonical_url']);
+
+        // the search puts the prefix into the address for the themes: the link does not double it
+        $searched = CatalogProduct::find($a->uuid)->prefixAddress();
+        $this->assertSame('catalog/shop/group', $searched->address);
+        $this->assertSame('/catalog/shop/group?v=A%201%2F2', $searched->url());
+        $this->assertTrue($searched->has_variants());
+
+        // a removed one is no variant
+        $b->update(['status' => \App\Domain\Casts\Catalog\Status::DELETE]);
+        CatalogProduct::flushRuntimeCache();
+        $this->assertFalse(CatalogProduct::find($a->uuid)->has_variants());
+
+        // the catalog_address parameter is the prefix
+        $this->getService(\App\Domain\Service\Parameter\ParameterService::class)->create(['name' => 'catalog_address', 'value' => 'shop']);
+        CatalogProduct::flushRuntimeCache();
+        $this->assertSame('/shop/shop/alone', CatalogProduct::find($alone->uuid)->url());
+        CatalogProduct::flushRuntimeCache();
+    }
+
+    public function testTheLabelOfAVariant(): void
+    {
+        CatalogProduct::flushRuntimeCache();
+        $attributes = $this->getService(\App\Domain\Service\Catalog\AttributeService::class);
+        $size = $attributes->create(['title' => 'Size', 'address' => 'size', 'type' => \App\Domain\Casts\Catalog\Attribute\Type::STRING]);
+        $brand = $attributes->create(['title' => 'Brand', 'address' => 'brand', 'type' => \App\Domain\Casts\Catalog\Attribute\Type::STRING]);
+        $only = $attributes->create(['title' => 'Only', 'address' => 'only', 'type' => \App\Domain\Casts\Catalog\Attribute\Type::STRING]);
+
+        $m = $this->make('T', ['address' => 'shop/t', 'external_id' => '1', 'vendorcode' => 'T-M', 'attributes' => [$size->uuid => 'M', $brand->uuid => 'Acme', $only->uuid => 'x']]);
+        $l = $this->make('T', ['address' => 'shop/t', 'external_id' => '2', 'vendorcode' => 'T-L', 'attributes' => [$size->uuid => 'L', $brand->uuid => 'Acme']]);
+        $own = $this->make('T', ['address' => 'shop/t', 'external_id' => '3', 'vendorcode' => 'T-S', 'variant_title' => 'Small one', 'attributes' => [$size->uuid => 'S', $brand->uuid => 'Acme']]);
+        CatalogProduct::flushRuntimeCache();
+
+        $this->assertSame('Small one', CatalogProduct::find($own->uuid)->variant_label(), 'its own title first');
+        $this->assertSame('M', CatalogProduct::find($m->uuid)->variant_label(), 'the attribute filled for all with different values: size, not brand (same) or only (not for all)');
+        $this->assertSame('L', CatalogProduct::find($l->uuid)->variant_label());
+
+        $plain = $this->make('P', ['address' => 'shop/p', 'external_id' => '1', 'vendorcode' => 'P-1']);
+        $plain2 = $this->make('P', ['address' => 'shop/p', 'external_id' => '2']);
+        CatalogProduct::flushRuntimeCache();
+        $this->assertSame('P-1', CatalogProduct::find($plain->uuid)->variant_label(), 'the vendor code');
+        $this->assertSame('2', CatalogProduct::find($plain2->uuid)->variant_label(), 'the external id');
+    }
+
+    public function testTheCardsOfAPageCostOneQueryForTheirGroups(): void
+    {
+        CatalogProduct::flushRuntimeCache();
+        for ($i = 0; $i < 50; ++$i) {
+            $this->make('Card ' . $i, ['address' => 'shop/card-' . ($i % 25), 'external_id' => (string) $i]);
+        }
+        CatalogProduct::flushRuntimeCache();
+
+        $connection = CatalogProduct::query()->getConnection();
+        $connection->enableQueryLog();
+        $connection->flushQueryLog();
+
+        $products = $this->service->read(['category_uuid' => $this->category->uuid]);
+        $afterRead = count($connection->getQueryLog());
+        foreach ($products as $product) {
+            $product->url();
+            $product->has_variants();
+        }
+        $afterLinks = count($connection->getQueryLog());
+        $connection->disableQueryLog();
+
+        $this->assertCount(50, $products);
+        $this->assertSame($afterRead, $afterLinks, 'the links of 50 cards ask nothing more');
+        $queries = array_column($connection->getQueryLog(), 'query');
+        $this->assertCount(1, array_filter($queries, fn (string $q) => str_contains($q, 'group by "address"')), 'the groups of all the cards: one query');
+        $this->assertCount(1, array_filter($queries, fn (string $q) => str_contains($q, 'from "params"')), 'the prefix: once');
+        CatalogProduct::flushRuntimeCache();
+    }
 }

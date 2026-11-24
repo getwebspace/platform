@@ -56,6 +56,27 @@ class CatalogProductAPITest extends TestCase
         $this->assertEquals(201, $response->getStatusCode());
     }
 
+    public function testAPIGivesTheVariantFieldsAndTheLinkOfAProduct(): void
+    {
+        $category = $this->getCategory();
+        $create = fn (array $data) => json_decode($this->createRequest()->put('/api/v1/catalog/product', [
+            'headers' => ['key' => $this->apikey],
+            'form_params' => $data + ['category_uuid' => $category, 'export' => 'api'],
+        ])->getBody()->getContents(), true)['data'];
+
+        $first = $create(['title' => 'Mug', 'address' => 'mugs/mug', 'external_id' => 'm1', 'variant_title' => 'White']);
+        $create(['title' => 'Mug', 'address' => 'mugs/mug', 'external_id' => 'm2']);
+
+        $read = json_decode($this->createRequest()->get('/api/v1/catalog/product?uuid=' . $first['uuid'], [
+            'headers' => ['key' => $this->apikey],
+        ])->getBody()->getContents(), true)['data'];
+
+        $this->assertSame('White', $read['variant_title']);
+        $this->assertSame('White', $read['variant_label']);
+        $this->assertSame('/catalog/mugs/mug?v=m1', $read['url']);
+        $this->assertSame('/catalog/mugs/mug', $read['canonical_url']);
+    }
+
     public function testAPIReadSuccess(): void
     {
         // create

@@ -50,7 +50,7 @@ class ProductCreateAction extends CatalogAction
 
                     'attributes' => $this->getParam('attributes', []),
                     'relations' => $this->getParam('relations', []),
-                ]);
+                ] + array_intersect_key($this->getParams(), ['variant_title' => true]));
                 $product = $this->processEntityFiles($product);
 
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:product:create', $product);

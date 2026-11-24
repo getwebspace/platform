@@ -416,4 +416,23 @@ class OrderServiceTest extends TestCase
 
         $this->service->delete(null);
     }
+
+    public function testBoughtTogetherLeavesOutTheVariantsOfTheSameProduct(): void
+    {
+        $products = $this->getService(ProductService::class);
+        $category = $this->getRandomCategory();
+        $make = fn (string $title, string $address) => $products->create(['title' => $title, 'address' => $address, 'category_uuid' => $category->uuid, 'external_id' => $title]);
+        $main = $make('main', 'shop/main');
+        $variant = $make('main blue', 'shop/main');
+        $other = $make('other', 'shop/other');
+
+        foreach ([[$main, $variant, $other], [$main, $variant]] as $items) {
+            $this->service->create(['products' => array_combine(
+                array_map(fn ($p) => $p->uuid, $items),
+                array_map(fn () => ['count' => 1, 'price_type' => 'price'], $items)
+            )]);
+        }
+
+        $this->assertSame(['other'], $products->boughtTogether($main, 10)->map(fn ($p) => $p->title)->all());
+    }
 }

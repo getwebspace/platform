@@ -197,7 +197,12 @@ class ProductService extends AbstractService
                 return $catalogProduct ?: throw new ProductNotFoundException();
 
             default:
-                return $this->buildQuery(CatalogProduct::query(), $criteria, $data)->get();
+                $products = $this->buildQuery(CatalogProduct::query(), $criteria, $data)->get();
+
+                // the groups of variants of the whole list in one query
+                CatalogProduct::primeVariants($products);
+
+                return $products;
         }
     }
 
@@ -314,6 +319,9 @@ class ProductService extends AbstractService
             return new Collection();
         }
 
+        // a variant of the same product is no recommendation: it is on the same page
+        $address = $product instanceof CatalogProduct ? (string) $product->address : (string) CatalogProduct::query()->whereKey($uuid)->value('address');
+
         $ranked = CatalogProduct::query()
             ->toBase()
             ->from('catalog_order_product as a')
@@ -325,6 +333,7 @@ class ProductService extends AbstractService
             ->where('a.product_uuid', $uuid)
             ->where(fn ($q) => $q->whereNull('r.kind')->orWhere('r.kind', '!=', \App\Domain\References\OrderStatus::KIND_CANCELED))
             ->where('b.product_uuid', '!=', $uuid)
+            ->when($address !== '', fn ($q) => $q->where('p.address', '!=', $address))
             ->where('p.status', \App\Domain\Casts\Catalog\Status::WORK)
             ->where('p.type', \App\Domain\Casts\Catalog\Product\Type::PRODUCT)
             ->where('c.status', \App\Domain\Casts\Catalog\Status::WORK)
@@ -338,6 +347,7 @@ class ProductService extends AbstractService
 
         /** @var Collection<int, CatalogProduct> $found */
         $found = CatalogProduct::query()->whereIn('uuid', $ranked->keys())->get();
+        CatalogProduct::primeVariants($found);
 
         return $found
             ->each(fn (CatalogProduct $p) => $p->setAttribute('together', (int) $ranked[(string) $p->uuid]))

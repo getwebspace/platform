@@ -14,7 +14,7 @@ class Catalog
     ];
 
     public const IMPORT_FIELDS = [
-        'uuid', 'external_id',
+        'uuid', 'external_id', 'variant_title',
         'title', 'description', 'extra',
         'address', 'type',
         'barcode', 'vendorcode',
@@ -26,7 +26,7 @@ class Catalog
     ];
 
     public const EXPORT_FIELDS = [
-        'uuid', 'external_id',
+        'uuid', 'external_id', 'variant_title',
         'title', 'description', 'extra',
         'address', 'type',
         'barcode', 'vendorcode',

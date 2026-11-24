@@ -54,6 +54,92 @@ class CatalogPagesTest extends TestCase
 
     // ------------------------------------------------------------------ the shop
 
+    // -------------------------------------------------------------------- variants
+
+    /**
+     * The product page the visitor sees at the address, for `?v=` (a string, or a ready array)
+     *
+     * @return array{0: string, 1: array<int, string>} the title of the chosen one, the titles of the group
+     */
+    private function variantPage(string $address, array|string|null $v = null): array
+    {
+        $query = $v === null ? '' : '&' . http_build_query(['v' => $v]);
+        $data = $this->json($this->http('GET', '/catalog/' . $address . '?format=json' . $query))['data'];
+
+        return [$data['product']['title'], array_column($data['products'], 'title')];
+    }
+
+    public function testAVariantIsChosenByItsExternalIdThenByUuidInsideItsGroupOnly(): void
+    {
+        $shirts = $this->category('Shirts');
+        $red = $this->product('Red', $shirts, ['address' => 'shirts/shirt', 'external_id' => 'R-1', 'order' => 2]);
+        $blue = $this->product('Blue', $shirts, ['address' => 'shirts/shirt', 'external_id' => 'B-1', 'order' => 1]);
+        $green = $this->product('Green', $shirts, ['address' => 'shirts/shirt', 'external_id' => 'G-1', 'order' => 1]);
+        $other = $this->product('Other', $shirts, ['address' => 'shirts/other', 'external_id' => 'O-1']);
+
+        // the order is fixed: order, then title: the first one is always Blue
+        [$first, $group] = $this->variantPage('shirts/shirt');
+        $this->assertSame('Blue', $first);
+        $this->assertSame(['Blue', 'Green', 'Red'], $group, 'the whole group stays in the list');
+        $this->assertSame($group, $this->variantPage('shirts/shirt')[1], 'and in the same order every time');
+
+        $this->assertSame('Red', $this->variantPage('shirts/shirt', 'R-1')[0], 'by external id');
+        $this->assertSame('Green', $this->variantPage('shirts/shirt', (string) $green->uuid)[0], 'by uuid');
+        $this->assertSame('Blue', $this->variantPage('shirts/shirt', 'no-such')[0], 'an unknown one: the first');
+        $this->assertSame('Blue', $this->variantPage('shirts/shirt', '')[0], 'an empty one: the first');
+        $this->assertSame('Blue', $this->variantPage('shirts/shirt', ['R-1'])[0], 'a list: the first');
+        $this->assertSame('Blue', $this->variantPage('shirts/shirt', 'O-1')[0], 'of another group: the first');
+        $this->assertSame('Blue', $this->variantPage('shirts/shirt', (string) $other->uuid)[0]);
+        $this->assertSame('R-1', $red->external_id);
+        $this->assertSame((string) $blue->uuid, (string) \App\Domain\Models\CatalogProduct::firstWhere('external_id', 'B-1')->uuid);
+    }
+
+    public function testTheCategoryOfThePageIsTheOneOfTheChosenVariant(): void
+    {
+        $left = $this->category('Left');
+        $right = $this->category('Right');
+        $this->product('A', $left, ['address' => 'shared/thing', 'external_id' => '1']);
+        $this->product('B', $right, ['address' => 'shared/thing', 'external_id' => '2', 'order' => 5]);
+
+        $data = $this->json($this->http('GET', '/catalog/shared/thing?format=json&v=2'))['data'];
+
+        $this->assertSame('B', $data['product']['title']);
+        $this->assertSame('Right', $data['category']['title']);
+    }
+
+    public function testHiddenAndRemovedVariantsAreNeitherOpenedNorListed(): void
+    {
+        $shirts = $this->category('Shirts');
+        $secret = $this->category('Secret', ['is_hidden' => true]);
+        $this->product('Visible', $shirts, ['address' => 'shirts/shirt', 'external_id' => 'V']);
+        $this->product('In hidden', $secret, ['address' => 'shirts/shirt', 'external_id' => 'H']);
+        $this->product('Removed', $shirts, ['address' => 'shirts/shirt', 'external_id' => 'D', 'status' => \App\Domain\Casts\Catalog\Status::DELETE]);
+
+        [$chosen, $group] = $this->variantPage('shirts/shirt', 'H');
+        $this->assertSame('Visible', $chosen);
+        $this->assertSame(['Visible'], $group);
+        $this->assertSame('Visible', $this->variantPage('shirts/shirt', 'D')[0]);
+    }
+
+    public function testAVariantAndAPageNumberAtTheEndOfTheAddressWorkTogether(): void
+    {
+        $shirts = $this->category('Shirts');
+        $this->product('One', $shirts, ['address' => 'shirts/shirt/2', 'external_id' => 'a', 'order' => 1]);
+        $this->product('Two', $shirts, ['address' => 'shirts/shirt/2', 'external_id' => 'b', 'order' => 2]);
+
+        $this->assertSame('Two', $this->variantPage('shirts/shirt/2', 'b')[0], 'the whole path is the address first');
+    }
+
+    public function testVMeansNothingToTheAttributeFilter(): void
+    {
+        $shirts = $this->category('Shirts');
+        $color = $this->getService(AttributeService::class)->create(['title' => 'Color', 'address' => 'color', 'type' => \App\Domain\Casts\Catalog\Attribute\Type::STRING, 'is_filter' => true]);
+        $shirts->attributes()->attach($color->uuid);
+        $this->product('Plain', $shirts);
+
+        $this->assertSame(['Plain'], $this->shown('/catalog/shirts?v=anything'));
+    }
+
     public function testTheCatalogListsTheProductsOfVisibleCategoriesOnly(): void
     {
         $phones = $this->category('Phones');

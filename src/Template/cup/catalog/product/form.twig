@@ -579,6 +579,23 @@
                                     </p>
                                 </small>
 
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Variant title'|locale,
+                                            'type': 'text',
+                                            'name': 'variant_title',
+                                            'args': {
+                                                'value': item.variant_title,
+                                                'placeholder': 'Blue, XL, 500 ml',
+                                            }
+                                        } %}
+                                        <small class="form-text text-muted">
+                                            {{ 'Empty: the attribute that tells the variants apart, then the vendor code'|locale }}
+                                        </small>
+                                    </div>
+                                </div>
+
                                 {% if item.uuid %}
                                     {% set variants = catalog_product({'address': [item.address]}, {'order': 'asc'}, 100) %}
 
@@ -591,7 +608,7 @@
                                                     {% else %}
                                                         <a href="/cup/catalog/product/{{ variant.uuid }}/edit">{{ variant.title }}</a>
                                                     {% endif %}
-                                                    {% if variant.vendorcode %}<small class="text-muted">{{ variant.vendorcode }}</small>{% endif %}
+                                                    <small class="text-muted">{{ variant.variant_label() }}</small>
                                                 </span>
                                                 <span>{{ variant.price|number_format(2, '.', ' ') }} &middot; {{ variant.stock|number_format(0, '.', ' ') }}</span>
                                             </li>

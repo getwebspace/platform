@@ -19,7 +19,9 @@ class SearchAction extends AbstractAction
 
         // links of the catalog start with its prefix, the themes build them from the address
         $result = $items->map(function (array $item) {
-            if (str_starts_with($item['type'], 'catalog_')) {
+            if ($item['model'] instanceof \App\Domain\Models\CatalogProduct) {
+                $item['model']->prefixAddress();
+            } elseif (str_starts_with($item['type'], 'catalog_')) {
                 $item['model']->address = 'catalog/' . $item['model']->address;
             }
 

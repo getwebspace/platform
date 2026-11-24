@@ -10,7 +10,8 @@ use Slim\Psr7\Response;
 
 class ListAction extends CatalogAction
 {
-    private array $attributes_filter = ['price', 'country', 'manufacturer', 'order', 'direction'];
+    // `v` picks a variant on the page of a product, it is no attribute
+    private array $attributes_filter = ['price', 'country', 'manufacturer', 'order', 'direction', 'v'];
 
     protected function action(): \Slim\Psr7\Response
     {
@@ -172,6 +173,7 @@ class ListAction extends CatalogAction
 
             $pagination = $this->parameter('catalog_category_pagination', 10);
             $filtered = $products->forPage(max(1, $args['offset']), $pagination)->get();
+            \App\Domain\Models\CatalogProduct::primeVariants($filtered);
 
             return $this->respond($this->parameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
@@ -285,6 +287,7 @@ class ListAction extends CatalogAction
             }
 
             $filtered = $products->forPage(max(1, $args['offset']), $category->pagination)->get();
+            \App\Domain\Models\CatalogProduct::primeVariants($filtered);
 
             return $this->respond($category->template['category'] ?? $this->parameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
@@ -317,10 +320,13 @@ class ListAction extends CatalogAction
         $products = $products->filter(fn (\App\Domain\Models\CatalogProduct $product) => $categories->contains('uuid', $product->category_uuid));
 
         if ($products->count()) {
+            // always the same order, so that the first one is always the same product
+            $products = $products->sortBy([['order', 'asc'], ['title', 'asc'], ['external_id', 'asc'], ['uuid', 'asc']])->values();
+
             /**
              * @var \App\Domain\Models\CatalogProduct $product
              */
-            $product = $products->first();
+            $product = $this->pickVariant($products);
 
             return $this->respond($product->category->template['product'] ?? $this->parameter('catalog_product_template', 'catalog.product.twig'), [
                 'categories' => $categories,
@@ -332,5 +338,22 @@ class ListAction extends CatalogAction
         }
 
         return null;
+    }
+
+    /**
+     * The variant `?v=` names (its external id, then its uuid), among the products of the address
+     * only; the first one for no `v`, an unknown one or a list (`?v[]=`)
+     */
+    private function pickVariant(Collection $products): \App\Domain\Models\CatalogProduct
+    {
+        $v = $this->getParam('v');
+
+        if (is_string($v) && $v !== '') {
+            return $products->first(fn (\App\Domain\Models\CatalogProduct $product) => (string) $product->external_id === $v)
+                ?? $products->first(fn (\App\Domain\Models\CatalogProduct $product) => (string) $product->uuid === $v)
+                ?? $products->first();
+        }
+
+        return $products->first();
     }
 }

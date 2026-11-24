@@ -168,7 +168,8 @@ falls back to displaying the raw key string, never an error.
 ## Gotchas
 
 - **Variants are products that share an address** (the product page lists
-  them all); they must differ by `external_id` or `dimension`, the unique key
+  them all and `?v=<external_id|uuid>` picks one, see `CatalogProduct::url()`;
+  a theme's canonical link must be `canonical_url()`, without `?v=`); they must differ by `external_id` or `dimension`, the unique key
   is category + address + dimension + external_id. The panel's product form
   has a *Variants* tab that lists the siblings and "Add variant"
   (`/cup/catalog/product/add?variant_of=<uuid>`) opens a new product form

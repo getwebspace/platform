@@ -22,6 +22,7 @@ use Illuminate\Support\Collection;
 /**
  * @property string $uuid
  * @property string $title
+ * @property string $variant_title
  * @property string $description
  * @property string $extra
  * @property string $address
@@ -76,6 +77,7 @@ class CatalogProduct extends Model
         'type',
         'category_uuid',
         'stock_status_uuid',
+        'variant_title',
         'vendorcode',
         'barcode',
         'tax',
@@ -111,6 +113,7 @@ class CatalogProduct extends Model
         'type' => ProductType::class,
         'category_uuid' => Uuid::class,
         'stock_status_uuid' => 'string',
+        'variant_title' => 'string',
         'vendorcode' => 'string',
         'barcode' => 'string',
         'tax' => Decimal::class,
@@ -143,6 +146,7 @@ class CatalogProduct extends Model
         'address' => '',
         'type' => \App\Domain\Casts\Catalog\Product\Type::PRODUCT,
         'category_uuid' => null,
+        'variant_title' => '',
         'vendorcode' => '',
         'barcode' => '',
         'tax' => 0.0,
@@ -376,6 +380,9 @@ class CatalogProduct extends Model
                 ] : null,
                 'attributes' => $this->getRelationValue('attributes')->keyBy('address'),
                 'relations' => $relations,
+                'url' => $this->url(),
+                'canonical_url' => $this->canonical_url(),
+                'variant_label' => $this->variant_label(),
                 'stock_status' => $this->relationLoaded('stockStatus') && $this->stockStatus ? [
                     'uuid' => $this->stockStatus->uuid,
                     'title' => $this->stockStatus->title,
@@ -383,6 +390,236 @@ class CatalogProduct extends Model
                 'files' => $this->files,
             ],
         );
+    }
+
+    // ------------------------------------------------------------------ variants
+    //
+    // Variants are products that share an address: one page of the shop lists them all and the
+    // visitor picks one (`?v=<external_id or uuid>`). A "group" is the products of the address
+    // that are on sale (status work, type product), in a fixed order.
+
+    /**
+     * @var array<string, int> address => number of products of the group, filled by one query per
+     *                         batch of products ({@see primeVariants()}) and kept to the end of the request
+     */
+    private static array $groupSizes = [];
+
+    /**
+     * @var array<string, array<string, string>> address => [uuid => value of the attribute that tells the group apart]
+     */
+    private static array $differing = [];
+
+    private static ?string $catalogPrefix = null;
+
+    /**
+     * Set by {@see prefixAddress()}: the address of this model carries the catalog prefix
+     */
+    private bool $addressPrefixed = false;
+
+    /**
+     * Forget what was learned during the request (a long running process, a test)
+     */
+    public static function flushRuntimeCache(): void
+    {
+        self::$groupSizes = [];
+        self::$differing = [];
+        self::$catalogPrefix = null;
+    }
+
+    /**
+     * Learn the size of the groups of many products with one query, so that has_variants() and
+     * url() of every card of a page cost nothing more
+     *
+     * @param iterable<mixed> $products
+     */
+    public static function primeVariants(iterable $products): void
+    {
+        $wanted = [];
+
+        foreach ($products as $product) {
+            if ($product instanceof self) {
+                $address = $product->baseAddress();
+
+                if ($address !== '' && !isset(self::$groupSizes[$address])) {
+                    $wanted[$address] = $address;
+                }
+            }
+        }
+
+        foreach (array_chunk(array_values($wanted), 500) as $chunk) {
+            $found = self::query()
+                ->toBase()
+                ->selectRaw('address, count(*) as total')
+                ->whereIn('address', $chunk)
+                ->where('status', CatalogStatus::WORK)
+                ->where('type', ProductType::PRODUCT)
+                ->groupBy('address')
+                ->pluck('total', 'address');
+
+            foreach ($chunk as $address) {
+                self::$groupSizes[$address] = (int) ($found[$address] ?? 0);
+            }
+        }
+    }
+
+    private static function catalogPrefix(): string
+    {
+        return self::$catalogPrefix ??= trim((string) (\App\Domain\Models\Parameter::query()->where('name', 'catalog_address')->value('value') ?: 'catalog'), '/');
+    }
+
+    /**
+     * Puts the catalog prefix in front of the address, as the search does for the themes that build
+     * a link from it; url() and the other methods know and keep it out of their way
+     */
+    public function prefixAddress(): static
+    {
+        if (!$this->addressPrefixed) {
+            $this->address = self::catalogPrefix() . '/' . ltrim((string) $this->address, '/');
+            $this->addressPrefixed = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * The address without the catalog prefix
+     */
+    private function baseAddress(): string
+    {
+        $address = ltrim((string) $this->address, '/');
+        $prefix = self::catalogPrefix() . '/';
+
+        return $this->addressPrefixed && str_starts_with($address, $prefix) ? substr($address, strlen($prefix)) : $address;
+    }
+
+    /**
+     * Are there other products on sale at the same address?
+     */
+    public function has_variants(): bool
+    {
+        $address = $this->baseAddress();
+
+        if ($address === '') {
+            return false;
+        }
+        if (!isset(self::$groupSizes[$address])) {
+            self::primeVariants([$this]);
+        }
+
+        $self = $this->status === CatalogStatus::WORK && $this->type === ProductType::PRODUCT ? 1 : 0;
+
+        return self::$groupSizes[$address] - $self > 0;
+    }
+
+    /**
+     * The group: every product on sale at the address, in a fixed order, hidden categories left out
+     *
+     * @return Collection<int, CatalogProduct>
+     */
+    public function variants(): Collection
+    {
+        $address = $this->baseAddress();
+
+        if ($address === '') {
+            return new Collection([$this]);
+        }
+
+        /** @var Collection<int, CatalogProduct> $group */
+        $group = self::query()
+            ->with(['files', 'attributes', 'category'])
+            ->where('address', $address)
+            ->where('status', CatalogStatus::WORK)
+            ->where('type', ProductType::PRODUCT)
+            ->whereIn('category_uuid', CatalogCategory::query()
+                ->where('status', CatalogStatus::WORK)
+                ->where('is_hidden', false)
+                ->select('uuid'))
+            ->get();
+
+        return $group->sortBy([['order', 'asc'], ['title', 'asc'], ['external_id', 'asc'], ['uuid', 'asc']])->values();
+    }
+
+    /**
+     * Address of the page: `/catalog/<address>`, and for a group `?v=<external id, or uuid
+     * without one>` that opens this very variant
+     */
+    public function url(): string
+    {
+        $url = $this->canonical_url();
+
+        if (!$this->has_variants()) {
+            return $url;
+        }
+
+        return $url . '?v=' . rawurlencode((string) ($this->external_id !== '' ? $this->external_id : $this->uuid));
+    }
+
+    /**
+     * Address of the page without the variant: what a theme puts into `rel="canonical"`
+     */
+    public function canonical_url(): string
+    {
+        return '/' . self::catalogPrefix() . '/' . $this->baseAddress();
+    }
+
+    /**
+     * Name of the variant among the others: its own title, the attribute that tells the group
+     * apart (filled for everyone, with different values), the vendor code, the external id
+     */
+    public function variant_label(): string
+    {
+        if ((string) $this->variant_title !== '') {
+            return (string) $this->variant_title;
+        }
+
+        if ($this->has_variants()) {
+            $value = $this->differingValues()[(string) $this->uuid] ?? '';
+
+            if ($value !== '') {
+                return $value;
+            }
+        }
+
+        return (string) $this->vendorcode !== '' ? (string) $this->vendorcode : (string) $this->external_id;
+    }
+
+    /**
+     * uuid => value of the attribute that tells the group apart (empty when there is none),
+     * worked out once per address
+     *
+     * @return array<string, string>
+     */
+    private function differingValues(): array
+    {
+        $address = $this->baseAddress();
+
+        if (isset(self::$differing[$address])) {
+            return self::$differing[$address];
+        }
+
+        $group = $this->variants();
+        $values = [];
+
+        foreach ($group as $item) {
+            foreach ($item->getRelationValue('attributes') as $attribute) {
+                if ((string) $attribute->pivot->value !== '') {
+                    $values[$attribute->address][(string) $item->uuid] = (string) $attribute->pivot->value;
+                }
+            }
+        }
+
+        ksort($values);
+        $found = [];
+
+        foreach ($values as $of) {
+            if (count($of) === $group->count() && count(array_unique($of)) > 1) {
+                $found = $of;
+
+                break;
+            }
+        }
+
+        return self::$differing[$address] = $found;
     }
 
     // order product functions ...
