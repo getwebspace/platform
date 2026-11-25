@@ -61,22 +61,39 @@ abstract class AbstractTask
      */
     public static function workerLock(string $action = ''): bool
     {
+        return self::tryLock($action) === 'got';
+    }
+
+    /**
+     * @return string got|busy|error
+     */
+    private static function tryLock(string $action): string
+    {
         $path = VAR_DIR . '/' . ($action ? str_replace(['/', '\\'], '-', mb_strtolower($action)) . '.' : '') . 'worker.lock';
-        $handle = @fopen($path, 'c');
+        $exists = file_exists($path);
+
+        // 'e': not inherited by the processes started from the worker
+        $handle = @fopen($path, 'ce');
 
         if ($handle === false) {
-            return false;
+            error_log("Worker lock {$path} cannot be opened");
+
+            return 'error';
+        }
+
+        if (!$exists) {
+            @chmod($path, 0o666); // cron (root) and php-fpm (www-data) both start workers
         }
 
         if (!flock($handle, LOCK_EX | LOCK_NB)) {
             fclose($handle);
 
-            return false;
+            return 'busy';
         }
 
         self::$workerLocks[$action] = $handle;
 
-        return true;
+        return 'got';
     }
 
     public static function workerUnlock(string $action = ''): void
@@ -97,13 +114,13 @@ abstract class AbstractTask
             return false; // it is this process
         }
 
-        if (self::workerLock($action)) {
-            self::workerUnlock($action);
+        $state = self::tryLock($action);
 
-            return false;
+        if ($state === 'got') {
+            self::workerUnlock($action);
         }
 
-        return true;
+        return $state === 'busy'; // a file that cannot be opened is not a live worker
     }
 
     /**
@@ -153,9 +170,9 @@ abstract class AbstractTask
 
         // remove pid file
         unlink($pidFilePath);
+
         return false;
     }
-
 
     /**
      * After work remove PID file

@@ -4,6 +4,7 @@ namespace App\Domain;
 
 use App\Domain\Service\Task\TaskService;
 use App\Domain\Traits\HasParameters;
+use Cron\CronExpression;
 use Illuminate\Cache\ArrayStore as ArrayCache;
 use Illuminate\Cache\FileStore as FileCache;
 use Illuminate\Database\Connection as DataBase;
@@ -43,63 +44,37 @@ abstract class AbstractSchedule
     abstract public function run();
 
     /**
-     * Is it time to run by a cron line; `$now` lets one pass of the worker use the same minute for every job
+     * Is the cron line valid: five fields, `@daily` and the like, `MON`-`SUN`, ranges with steps
+     */
+    public static function isValid(mixed $schedule): bool
+    {
+        return is_string($schedule) && CronExpression::isValidExpression(trim($schedule));
+    }
+
+    /**
+     * Is it time to run by a cron line; `$now` lets one pass of the worker use the same minute for every job.
+     * When both the day of the month and the day of the week are set, either one is enough (as in cron).
+     *
+     * @param mixed $schedule
      */
     public function isShouldRun($schedule, ?\DateTimeInterface $now = null): bool
     {
-        $fields = preg_split('/\s+/', trim((string) $schedule));
-
-        if (!is_array($fields) || count($fields) !== 5) {
-            return false;
-        }
-
-        $currentTime = $now ?? datetime();
-        $currentMinute = (int) $currentTime->format('i');
-        $currentHour = (int) $currentTime->format('H');
-        $currentDay = (int) $currentTime->format('j');
-        $currentMonth = (int) $currentTime->format('n');
-        $currentDayOfWeek = (int) $currentTime->format('N');
-
-        [$minute, $hour, $dayOfMonth, $month, $dayOfWeek] = $fields;
-
-        return $this->matches($minute, $currentMinute)
-            && $this->matches($hour, $currentHour)
-            && $this->matches($dayOfMonth, $currentDay)
-            && $this->matches($month, $currentMonth)
-            && $this->matches($dayOfWeek, $currentDayOfWeek);
+        return static::isValid($schedule) && (new CronExpression(trim($schedule)))->isDue($now ?? datetime());
     }
 
-    protected function matches($cronPart, $currentPart): bool
+    /**
+     * The latest moment by the cron line that is not later than `$now` (the current minute counts)
+     */
+    public static function lastDue(string $schedule, \DateTimeInterface $now): \DateTimeInterface
     {
-        if ($cronPart === '*') {
-            return true;
-        }
+        return (new CronExpression(trim($schedule)))->getPreviousRunDate($now, 0, true);
+    }
 
-        $parts = explode(',', $cronPart);
-
-        foreach ($parts as $part) {
-            if (str_contains($part, '-')) {
-                [$start, $end] = explode('-', $part);
-
-                if ($currentPart >= $start && $currentPart <= $end) {
-                    return true;
-                }
-            } elseif (str_contains($part, '/')) {
-                [$base, $interval] = explode('/', $part);
-
-                if ($base === '*') {
-                    $base = 0;
-                }
-                if ((int) $interval > 0 && ($currentPart - (int) $base) % (int) $interval === 0) {
-                    return true;
-                }
-            } else {
-                if ((int) $part === $currentPart) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+    /**
+     * The first moment after `$now`
+     */
+    public static function nextDue(string $schedule, \DateTimeInterface $now): \DateTimeInterface
+    {
+        return (new CronExpression(trim($schedule)))->getNextRunDate($now);
     }
 }

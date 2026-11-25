@@ -136,6 +136,18 @@ abstract class AbstractPlugin
     }
 
     /**
+     * Schedule a job (a class extending AbstractSchedule) by a cron line, for example `0 3 * * *`
+     *
+     * The line is checked here: a wrong one is logged and the job is not registered (false is returned).
+     * The key tells the schedules of one class apart; `$catchUp` runs the job once after a downtime
+     * if a run was missed. The times are in the time zone of the server (`TZ`).
+     */
+    protected function addSchedule(string $job, string $schedule, ?string $key = null, bool $catchUp = false): bool
+    {
+        return $this->container->get('scheduler')->register($job, $schedule, $key, $catchUp);
+    }
+
+    /**
      * Add plugin setting field
      */
     protected function addSettingsField(array $params = []): void

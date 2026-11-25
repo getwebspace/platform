@@ -139,52 +139,56 @@ class AbstractClassesTest extends TestCase
 
     // ----------------------------------------------------------------- schedule
 
-    private function schedule(): object
+    private function schedule(): AbstractSchedule
     {
         return new class($this->getService(ContainerInterface::class)) extends AbstractSchedule {
             public function run(): void {}
-
-            public function match(string $part, int $current): bool
-            {
-                return $this->matches($part, $current);
-            }
         };
     }
 
-    public static function cronParts(): array
+    #[DataProvider('cronLines')]
+    public function testACronLineIsDueOrNot(string $line, string $moment, bool $expected): void
     {
+        $this->assertSame($expected, $this->schedule()->isShouldRun($line, new \DateTime($moment)), "{$line} at {$moment}");
+    }
+
+    public static function cronLines(): array
+    {
+        // 2026-01-05 is a monday, 03:10; 2026-01-11 is a sunday
         return [
-            'every' => ['*', 7, true],
-            'a number' => ['7', 7, true],
-            'another number' => ['8', 7, false],
-            'a list' => ['1,7,9', 7, true],
-            'not in a list' => ['1,2,3', 7, false],
-            'a range' => ['5-10', 7, true],
-            'the end of a range' => ['5-7', 7, true],
-            'out of a range' => ['8-10', 7, false],
-            'every fifth' => ['*/5', 10, true],
-            'not every fifth' => ['*/5', 11, false],
-            'from two, every third' => ['2/3', 8, true],
-            'a list of kinds' => ['1,20-25,*/7', 14, true],
+            'every minute' => ['* * * * *', '2026-01-05 03:10', true],
+            'a number' => ['10 3 * * *', '2026-01-05 03:10', true],
+            'another number' => ['11 3 * * *', '2026-01-05 03:10', false],
+            'a list' => ['1,10,20 * * * *', '2026-01-05 03:10', true],
+            'a range' => ['5-15 * * * *', '2026-01-05 03:10', true],
+            'out of a range' => ['11-15 * * * *', '2026-01-05 03:10', false],
+            'every fifth' => ['*/5 * * * *', '2026-01-05 03:10', true],
+            'not every fifth' => ['*/5 * * * *', '2026-01-05 03:11', false],
+            'a step inside a range' => ['10-30/5 * * * *', '2026-01-05 03:15', true],
+            'out of a step inside a range' => ['10-30/5 * * * *', '2026-01-05 03:16', false],
+            'a step from a number is not a cron line' => ['20/10 * * * *', '2026-01-05 03:30', false],
+            'monday by name' => ['10 3 * * MON', '2026-01-05 03:10', true],
+            'sunday as 0' => ['0 0 * * 0', '2026-01-11 00:00', true],
+            'sunday as 7' => ['0 0 * * 7', '2026-01-11 00:00', true],
+            'daily' => ['@daily', '2026-01-05 00:00', true],
+            'daily, not at noon' => ['@daily', '2026-01-05 12:00', false],
+            'double space' => ['10  3 * * *', '2026-01-05 03:10', true],
+            'the day of the month or the day of the week' => ['10 3 15 * MON', '2026-01-05 03:10', true],
+            'there is no month 13' => ['* * * 13 *', '2026-01-05 03:10', false],
+            'nor minute 61' => ['61 * * * *', '2026-01-05 03:10', false],
+            'a zero step' => ['*/0 * * * *', '2026-01-05 03:10', false],
+            'garbage' => ['x * * * *', '2026-01-05 03:10', false],
+            'four fields' => ['* * * *', '2026-01-05 03:10', false],
         ];
     }
 
-    #[DataProvider('cronParts')]
-    public function testAPartOfACronLineMatches(string $part, int $current, bool $expected): void
+    public function testTheLastAndTheNextMomentOfALine(): void
     {
-        $this->assertSame($expected, $this->schedule()->match($part, $current), "{$part} at {$current}");
-    }
+        $now = new \DateTime('2026-01-05 03:10:30');
 
-    public function testAScheduleUsesTheGivenMomentAndToleratesBadLines(): void
-    {
-        $schedule = $this->schedule();
-        $now = new \DateTime('2026-01-05 03:10:00'); // monday
-
-        $this->assertTrue($schedule->isShouldRun('10 3 * * 1', $now));
-        $this->assertTrue($schedule->isShouldRun('10  3 * * *', $now), 'double space');
-        $this->assertFalse($schedule->isShouldRun('11 3 * * 1', $now));
-        $this->assertFalse($schedule->isShouldRun('* * * *', $now), 'four fields');
-        $this->assertFalse($schedule->isShouldRun('*/0 * * * *', $now), 'zero step');
+        $this->assertSame('2026-01-05 03:10', AbstractSchedule::lastDue('*/5 * * * *', $now)->format('Y-m-d H:i'), 'the current minute counts');
+        $this->assertSame('2026-01-05 03:05', AbstractSchedule::lastDue('*/5 * * * *', new \DateTime('2026-01-05 03:09'))->format('Y-m-d H:i'));
+        $this->assertSame('2026-01-05 03:15', AbstractSchedule::nextDue('*/5 * * * *', $now)->format('Y-m-d H:i'));
     }
 
     public function testAScheduleKnowsWhetherItIsTimeToRun(): void

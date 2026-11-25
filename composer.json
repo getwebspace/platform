@@ -40,7 +40,8 @@
         "symfony/var-dumper": "^8.1",
         "voku/html-min": "^5.0",
         "robmorgan/phinx": "^0.16.12",
-        "teamtnt/tntsearch": "^4.4"
+        "teamtnt/tntsearch": "^4.4",
+        "dragonmantank/cron-expression": "^3"
     },
     "require-dev": {
         "fakerphp/faker": "^2.0.x-dev",

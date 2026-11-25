@@ -1,0 +1,76 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5"></div>
+{% endblock %}
+
+{% block panelinner %}
+    <div class="container container-full">
+        <div class="page-inner page-inner-fill">
+            <div class="card mb-0">
+                <div class="card-body p-0">
+                    {% if jobs is empty %}
+                        <p class="text-muted text-center py-5 mb-0">{{ 'No scheduled jobs'|locale }}</p>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>{{ 'Job'|locale }}</th>
+                                        <th>{{ 'Schedule'|locale }}</th>
+                                        <th>{{ 'Last run'|locale }}</th>
+                                        <th>{{ 'Next run'|locale }}</th>
+                                        <th>{{ 'Status'|locale }}</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for job in jobs %}
+                                        {% set state = job.state %}
+                                        <tr>
+                                            <td>
+                                                {{ job.key }}
+                                                {% if job.catch_up %}<span class="badge badge-info ml-1">{{ 'catch-up'|locale }}</span>{% endif %}
+                                            </td>
+                                            <td><code>{{ job.schedule }}</code></td>
+                                            <td>{{ state and state.last_run ? state.last_run|date('Y-m-d H:i:s') : '-' }}</td>
+                                            <td>{{ state and not state.enabled ? '-' : job.next|date('Y-m-d H:i') }}</td>
+                                            <td>
+                                                {% if state and not state.enabled %}
+                                                    <span class="badge badge-secondary">{{ 'Disabled'|locale }}</span>
+                                                {% elseif state and state.run_now %}
+                                                    <span class="badge badge-info">{{ 'Waiting for the next minute'|locale }}</span>
+                                                {% elseif state and state.status == 'fail' %}
+                                                    <span class="badge badge-danger">{{ 'Failed'|locale }} &times;{{ state.failures }}</span>
+                                                    <div class="small text-danger">{{ state.error }}</div>
+                                                {% elseif state and state.status == 'ok' %}
+                                                    <span class="badge badge-success">OK</span>
+                                                    <span class="small text-muted">{{ state.duration }} s</span>
+                                                {% elseif state and state.status == 'running' %}
+                                                    <span class="badge badge-warning">{{ 'Running'|locale }}</span>
+                                                {% else %}
+                                                    <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-right text-nowrap">
+                                                <form method="post" class="d-inline">
+                                                    <input type="hidden" name="key" value="{{ job.key }}">
+                                                    <button type="submit" name="do" value="run" class="btn btn-sm btn-primary">{{ 'Run'|locale }}</button>
+                                                    {% if state and not state.enabled %}
+                                                        <button type="submit" name="do" value="enable" class="btn btn-sm btn-success">{{ 'Enable'|locale }}</button>
+                                                    {% else %}
+                                                        <button type="submit" name="do" value="disable" class="btn btn-sm btn-secondary">{{ 'Disable'|locale }}</button>
+                                                    {% endif %}
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

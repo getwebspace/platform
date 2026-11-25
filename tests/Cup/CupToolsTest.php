@@ -236,6 +236,17 @@ class CupToolsTest extends CupTestCase
         file_put_contents($path, implode("\n", $lines) . "\n");
     }
 
+    public function testTheScheduledJobsPageRendersAndIgnoresUnknownJobs(): void
+    {
+        $response = $this->cup('GET', '/cup/schedule');
+        $this->assertRenders($response);
+        $this->assertStringContainsString('Scheduled jobs', (string) $response->getBody(), 'the link of the menu');
+
+        $response = $this->cup('POST', '/cup/schedule', ['form_params' => ['key' => 'no-such-job', 'do' => 'run'], 'allow_redirects' => false]);
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame('/cup/schedule', $response->getHeaderLine('Location'));
+    }
+
     public function testTheLogPageShowsTheFilesNewestFirstWithTheirProblems(): void
     {
         $this->log('app-2001-01-01.log', ['[2001-01-01 10:00:00] WSE.INFO: old line {} []']);

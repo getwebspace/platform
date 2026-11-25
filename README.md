@@ -111,6 +111,25 @@ Built on open source technology, it provides both flexibility and accessibility.
 </details>
 
 <details>
+  <summary>Scheduled jobs (for plugin authors)</summary>
+
+  A job is a class extending `App\Domain\AbstractSchedule` with a `run()` method. A plugin schedules it in its constructor:
+
+  ```php
+  $this->addSchedule(\MyPlugin\Jobs\Cleanup::class, '0 3 * * *');                 // every night at 03:00
+  $this->addSchedule(\MyPlugin\Jobs\Sync::class, '*/15 * * * MON-FRI', 'sync-work');  // a key: several schedules of one class
+  $this->addSchedule(\MyPlugin\Jobs\Report::class, '@daily', null, true);          // catch up once after a downtime
+  ```
+
+  - The cron line is checked when the job is registered; a wrong one is logged and the job is not registered.
+  - Times are in the time zone of the server (`TZ`, UTC by default).
+  - A job that throws does not stop the other jobs; a job still running is not started twice.
+  - A long task (`AbstractTask`) should call `setProgress()`: it is the sign of life, a task silent for 10 minutes is removed.
+  - The state of the jobs (last and next run, error, switch on/off, run now) is in the panel: `/cup/schedule`.
+  - After 3 failures in a row the channel `cron:job:failed` is published (`PubSub`) and a critical record is logged.
+</details>
+
+<details>
   <summary>Verified addons (plugins)</summary>
 
   | Themes                                                                | Plugins                                                                   | Languages                                                           |

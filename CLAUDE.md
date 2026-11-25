@@ -139,6 +139,21 @@ sign-a-JWT-instead-of-storing-a-code pattern, each bound to something that
 changes when the flow completes (password hash, e-mail address) so the link
 self-invalidates without a cleanup job.
 
+## Scheduler and workers
+
+- `bin/cron_worker.php` (cron, every minute) → `App\Application\Cron::pass()`. Jobs are registered on the
+  `'scheduler'` container entry (`register($job, $cronLine, ?$key, $catchUp)`, or `addSchedule()` in a plugin);
+  the line is validated by `dragonmantank/cron-expression` at registration (bad → logged, `false`), and the job
+  object is made when it runs. Day of month and day of week are joined by OR, as in cron. State per job key is
+  in the `schedule` table (`ScheduleService`): `last_run` guards against a second run in the same minute and
+  drives `catch_up` (once after a downtime, never before the first run); `run_now` is set from `/cup/schedule`
+  and picked up by the next pass. A job is guarded by `flock` on `var/cron-<md5 key>.lock`.
+- Task workers (`bin/task_worker.php`): `AbstractTask::workerLock()` is a non-blocking `flock` on
+  `var/<action>.worker.lock` (the PID-file methods are deprecated). A working task is stuck when its
+  `heartbeat` (set on state change and in `setProgress()`) is older than 10 minutes. Lock files are created
+  `0666`: cron (root) and php-fpm (www-data) both start workers. `flock` is not enforced between processes on
+  a macOS bind mount, so the two-process tests skip there.
+
 ## Twig / theming
 
 Two independent tree roots feed the same Twig loader: `src/Template/`

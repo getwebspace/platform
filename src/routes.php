@@ -396,6 +396,10 @@ return function (App $app, Container $container): void {
                     $proxy->get('/logs', \App\Application\Actions\Cup\LogPageAction::class)
                         ->setName('cup:logs');
 
+                    // scheduled jobs: state, run now, switch on and off
+                    $proxy->map(['GET', 'POST'], '/schedule', \App\Application\Actions\Cup\SchedulePageAction::class)
+                        ->setName('cup:schedule');
+
                     // task add to queue
                     $proxy->post('/task/run', \App\Application\Actions\Cup\TaskRunAction::class)
                         ->setName('cup:task:run');

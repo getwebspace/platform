@@ -104,47 +104,46 @@ return function (ContainerBuilder $containerBuilder): void {
                 /**
                  * Register job
                  *
-                 * @param mixed $schedule
+                 * @param mixed       $schedule cron line
+                 * @param null|string $key      name of the job, the class by default; several schedules of one class need keys
+                 * @param bool        $catchUp  run once after a downtime if a run was missed (not before the first run ever)
                  */
-                final public function register(\App\Domain\AbstractSchedule|string $job, $schedule = '* * * * *'): bool
+                final public function register(\App\Domain\AbstractSchedule|string $job, $schedule = '* * * * *', ?string $key = null, bool $catchUp = false): bool
                 {
                     $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
+                    $class_name = is_object($job) ? get_class($job) : $job;
+                    $key ??= $class_name;
 
-                    if (count(preg_split('/\s+/', trim((string) $schedule)) ?: []) !== 5) {
-                        $logger->error('Schedule: wrong cron line, job not registered', [
-                            'job' => is_object($job) ? get_class($job) : $job,
-                            'schedule' => $schedule,
-                        ]);
-
-                        return false;
-                    }
-
-                    try {
-                        if (is_object($job)) {
-                            $class_name = get_class($job);
-                        } else {
-                            $class_name = $job;
-                            $job = new $job($this->container);
-                        }
-                    } catch (\Throwable $e) {
-                        $logger->error('Schedule: job not registered', [
-                            'job' => $class_name ?? $job,
-                            'message' => $e->getMessage(),
-                        ]);
+                    if (!\App\Domain\AbstractSchedule::isValid($schedule)) {
+                        $logger->error('Schedule: wrong cron line, job not registered', ['job' => $key, 'schedule' => $schedule]);
 
                         return false;
                     }
 
-                    if (!$this->jobs->has($class_name)) {
-                        $this->jobs[$class_name] = [
-                            'schedule' => $schedule,
-                            'job' => $job,
-                        ];
+                    if (!is_subclass_of($class_name, \App\Domain\AbstractSchedule::class)) {
+                        $logger->error('Schedule: unknown job class, job not registered', ['job' => $key, 'class' => $class_name]);
 
-                        return true;
+                        return false;
                     }
 
-                    return false;
+                    if ($this->jobs->has($key)) {
+                        return false;
+                    }
+
+                    // the object is made when the job runs, not on every request
+                    $this->jobs[$key] = [
+                        'schedule' => trim($schedule),
+                        'job' => $job,
+                        'class' => $class_name,
+                        'catch_up' => $catchUp,
+                    ];
+
+                    return true;
+                }
+
+                final public function make(array $scheduled): \App\Domain\AbstractSchedule
+                {
+                    return is_object($scheduled['job']) ? $scheduled['job'] : new $scheduled['job']($this->container);
                 }
 
                 final public function get(): Collection
