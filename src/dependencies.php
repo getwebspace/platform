@@ -433,7 +433,8 @@ return function (ContainerBuilder $containerBuilder): void {
             $settings = $c->get('logger');
 
             $logger = new \Monolog\Logger($settings['name']);
-            $rotatingHandler = new \Monolog\Handler\RotatingFileHandler($settings['path'], 5, $settings['level']);
+            // cron (root) and php-fpm (www-data) write to the same file, whoever creates it
+            $rotatingHandler = new \Monolog\Handler\RotatingFileHandler($settings['path'], 5, $settings['level'], true, 0o666);
 
             $dateFormat = 'Y-m-d H:i:s';
             $outputFormat = "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n";
