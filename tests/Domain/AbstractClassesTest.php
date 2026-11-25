@@ -175,6 +175,18 @@ class AbstractClassesTest extends TestCase
         $this->assertSame($expected, $this->schedule()->match($part, $current), "{$part} at {$current}");
     }
 
+    public function testAScheduleUsesTheGivenMomentAndToleratesBadLines(): void
+    {
+        $schedule = $this->schedule();
+        $now = new \DateTime('2026-01-05 03:10:00'); // monday
+
+        $this->assertTrue($schedule->isShouldRun('10 3 * * 1', $now));
+        $this->assertTrue($schedule->isShouldRun('10  3 * * *', $now), 'double space');
+        $this->assertFalse($schedule->isShouldRun('11 3 * * 1', $now));
+        $this->assertFalse($schedule->isShouldRun('* * * *', $now), 'four fields');
+        $this->assertFalse($schedule->isShouldRun('*/0 * * * *', $now), 'zero step');
+    }
+
     public function testAScheduleKnowsWhetherItIsTimeToRun(): void
     {
         $schedule = $this->schedule();

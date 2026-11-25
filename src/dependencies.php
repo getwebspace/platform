@@ -108,11 +108,31 @@ return function (ContainerBuilder $containerBuilder): void {
                  */
                 final public function register(\App\Domain\AbstractSchedule|string $job, $schedule = '* * * * *'): bool
                 {
-                    if (is_object($job)) {
-                        $class_name = get_class($job);
-                    } else {
-                        $class_name = $job;
-                        $job = new $job($this->container);
+                    $logger = $this->container->get(\Psr\Log\LoggerInterface::class);
+
+                    if (count(preg_split('/\s+/', trim((string) $schedule)) ?: []) !== 5) {
+                        $logger->error('Schedule: wrong cron line, job not registered', [
+                            'job' => is_object($job) ? get_class($job) : $job,
+                            'schedule' => $schedule,
+                        ]);
+
+                        return false;
+                    }
+
+                    try {
+                        if (is_object($job)) {
+                            $class_name = get_class($job);
+                        } else {
+                            $class_name = $job;
+                            $job = new $job($this->container);
+                        }
+                    } catch (\Throwable $e) {
+                        $logger->error('Schedule: job not registered', [
+                            'job' => $class_name ?? $job,
+                            'message' => $e->getMessage(),
+                        ]);
+
+                        return false;
                     }
 
                     if (!$this->jobs->has($class_name)) {

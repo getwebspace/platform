@@ -79,7 +79,7 @@ if ($queue->count()) {
                 $task->run();
             } else {
                 // remove task by time
-                if (datetime()->diff($entity->date)->i >= 10) {
+                if ((datetime()->getTimestamp() - $entity->date->getTimestamp()) >= 600) {
                     $task->setStatusDelete('Removed by time');
                     $logger->info('Task removed by time', [
                         'uuid' => $entity->uuid,

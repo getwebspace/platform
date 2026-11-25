@@ -32,14 +32,31 @@ $scheduler = $container->get('scheduler');
 // add jobs
 // $scheduler->register(\App\Domain\Schedules\Test::class, '*/5 * * * *');
 
+// one moment for the whole pass: a slow job does not shift the minute of the next one
+$now = datetime();
+
 // check jobs
-foreach ($scheduler->get() as $scheduled) {
+foreach ($scheduler->get() as $name => $scheduled) {
     $schedule = $scheduled['schedule'];
 
     /** @var \App\Domain\AbstractSchedule $job */
     $job = $scheduled['job'];
 
-    if ($job->isShouldRun($schedule)) {
+    try {
+        if (!$job->isShouldRun($schedule, $now)) {
+            continue;
+        }
+
+        $started = microtime(true);
+        $logger->info('Cron job start', ['job' => $name, 'schedule' => $schedule]);
         $job->run();
+        $logger->info('Cron job done', ['job' => $name, 'seconds' => round(microtime(true) - $started, 3)]);
+    } catch (Throwable $e) {
+        $logger->error('Cron job failed', [
+            'job' => $name,
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ]);
     }
 }

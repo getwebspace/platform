@@ -42,16 +42,25 @@ abstract class AbstractSchedule
 
     abstract public function run();
 
-    public function isShouldRun($schedule): bool
+    /**
+     * Is it time to run by a cron line; `$now` lets one pass of the worker use the same minute for every job
+     */
+    public function isShouldRun($schedule, ?\DateTimeInterface $now = null): bool
     {
-        $currentTime = datetime();
+        $fields = preg_split('/\s+/', trim((string) $schedule));
+
+        if (!is_array($fields) || count($fields) !== 5) {
+            return false;
+        }
+
+        $currentTime = $now ?? datetime();
         $currentMinute = (int) $currentTime->format('i');
         $currentHour = (int) $currentTime->format('H');
         $currentDay = (int) $currentTime->format('j');
         $currentMonth = (int) $currentTime->format('n');
         $currentDayOfWeek = (int) $currentTime->format('N');
 
-        [$minute, $hour, $dayOfMonth, $month, $dayOfWeek] = explode(' ', $schedule);
+        [$minute, $hour, $dayOfMonth, $month, $dayOfWeek] = $fields;
 
         return $this->matches($minute, $currentMinute)
             && $this->matches($hour, $currentHour)
@@ -81,7 +90,7 @@ abstract class AbstractSchedule
                 if ($base === '*') {
                     $base = 0;
                 }
-                if (($currentPart - $base) % $interval === 0) {
+                if ((int) $interval > 0 && ($currentPart - (int) $base) % (int) $interval === 0) {
                     return true;
                 }
             } else {
