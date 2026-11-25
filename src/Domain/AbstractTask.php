@@ -52,7 +52,78 @@ abstract class AbstractTask
         @exec('php ' . BIN_DIR . '/task_worker.php ' . addslashes($action) . ' > /dev/null 2>&1 &');
     }
 
+    /** @var array<string, resource> locks of the workers of this process */
+    private static array $workerLocks = [];
+
     /**
+     * Take the exclusive right to be the worker of the action; false if another process has it.
+     * The lock is released by the system when the process ends, however it ends.
+     */
+    public static function workerLock(string $action = ''): bool
+    {
+        $path = VAR_DIR . '/' . ($action ? str_replace(['/', '\\'], '-', mb_strtolower($action)) . '.' : '') . 'worker.lock';
+        $handle = @fopen($path, 'c');
+
+        if ($handle === false) {
+            return false;
+        }
+
+        if (!flock($handle, LOCK_EX | LOCK_NB)) {
+            fclose($handle);
+
+            return false;
+        }
+
+        self::$workerLocks[$action] = $handle;
+
+        return true;
+    }
+
+    public static function workerUnlock(string $action = ''): void
+    {
+        if (isset(self::$workerLocks[$action])) {
+            flock(self::$workerLocks[$action], LOCK_UN);
+            fclose(self::$workerLocks[$action]);
+            unset(self::$workerLocks[$action]);
+        }
+    }
+
+    /**
+     * Does another process hold the worker of the action right now
+     */
+    public static function workerIsRunning(string $action = ''): bool
+    {
+        if (isset(self::$workerLocks[$action])) {
+            return false; // it is this process
+        }
+
+        if (self::workerLock($action)) {
+            self::workerUnlock($action);
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Minutes without a sign of life after which a working task is considered stuck
+     */
+    public const STUCK_AFTER = 10;
+
+    /**
+     * Is the working task stuck: its last sign of life (heartbeat, else creation date) is too old
+     */
+    public static function isStuck(Task $entity, ?\DateTimeInterface $now = null): bool
+    {
+        $alive = $entity->heartbeat ?? $entity->date;
+
+        return $alive === null || ($now ?? datetime())->getTimestamp() - $alive->getTimestamp() >= self::STUCK_AFTER * 60;
+    }
+
+    /**
+     * @deprecated the worker is guarded by workerLock()
+     *
      * Before start work write self PID to file
      */
     public static function workerCreatePidFile(string $action = ''): void
@@ -157,6 +228,9 @@ abstract class AbstractTask
         }
         if ($value !== $this->entity->progress) {
             $this->saveStateWriteLog(\App\Domain\Casts\Task\Status::WORK, (int) $value);
+        } elseif (time() - ($this->entity->heartbeat?->getTimestamp() ?? 0) >= 30) {
+            // the progress did not move but the task is alive
+            $this->entity = $this->taskService->update($this->entity, ['heartbeat' => 'now']);
         }
     }
 
@@ -232,6 +306,7 @@ abstract class AbstractTask
             'status' => $status,
             'progress' => $progress,
             'output' => $output,
+            'heartbeat' => 'now',
         ]);
 
         $this->logger->info('Task: change state', [

@@ -18,13 +18,10 @@ set_error_handler(function (int $code, string $message, string $file, int $line)
 
 $action = $_SERVER['argv'][1] ?? null;
 
-// exit if another worker works
-if (\App\Domain\AbstractTask::workerHasPidFile($action)) {
+// exit if another worker works (the lock is atomic, two starts at once give one process)
+if (!\App\Domain\AbstractTask::workerLock((string) $action)) {
     exit;
 }
-
-// before work write self PID to file
-\App\Domain\AbstractTask::workerCreatePidFile($action);
 
 /**
  * @var \Slim\App $app
@@ -55,8 +52,8 @@ $queue = $taskService->read([
 
 // rerun worker
 register_shutdown_function(function () use ($queue, $action): void {
-    // after work remove PID file
-    \App\Domain\AbstractTask::workerRemovePidFile($action);
+    // after work release the lock
+    \App\Domain\AbstractTask::workerUnlock((string) $action);
 
     sleep(1); // timeout
 
@@ -78,8 +75,8 @@ if ($queue->count()) {
             if ($entity->status === \App\Domain\Casts\Task\Status::QUEUE) {
                 $task->run();
             } else {
-                // remove task by time
-                if ((datetime()->getTimestamp() - $entity->date->getTimestamp()) >= 600) {
+                // remove a task that gave no sign of life for too long
+                if (\App\Domain\AbstractTask::isStuck($entity) && !\App\Domain\AbstractTask::workerIsRunning($action)) {
                     $task->setStatusDelete('Removed by time');
                     $logger->info('Task removed by time', [
                         'uuid' => $entity->uuid,

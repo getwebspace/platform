@@ -117,41 +117,55 @@ class TaskLifecycleTest extends TestCase
     {
         // would otherwise fork a php process that holds the shared database
         $this->assertNull(AbstractTask::worker(SearchIndexTask::class));
-        $this->assertFalse(AbstractTask::workerHasPidFile('tests-worker'));
     }
 
-    public function testPidFileTracksARunningWorker(): void
+    public function testOnlyOneWorkerHoldsTheLock(): void
     {
         $action = 'Tests\\Worker';
-        $pidFile = VAR_DIR . '/tests-worker.worker.pid';
+        $lockFile = VAR_DIR . '/tests-worker.worker.lock';
+
+        // docker for mac does not enforce flock between processes on a bind mount
+        $probe = VAR_DIR . '/tests-probe.lock';
+        $held = fopen($probe, 'c');
+        flock($held, LOCK_EX | LOCK_NB);
+        exec(escapeshellarg(PHP_BINARY) . ' -r ' . escapeshellarg('exit(flock(fopen(' . var_export($probe, true) . ', "c"), LOCK_EX | LOCK_NB) ? 0 : 1);'), $o, $enforced);
+        fclose($held);
+        @unlink($probe);
+        if ($enforced !== 1) {
+            $this->markTestSkipped('flock is not enforced between processes on this filesystem');
+        }
 
         try {
-            AbstractTask::workerCreatePidFile($action);
-            $this->assertFileExists($pidFile);
-            $this->assertTrue(AbstractTask::workerHasPidFile($action), 'this very process is running');
+            $this->assertTrue(AbstractTask::workerLock($action));
 
-            AbstractTask::workerRemovePidFile($action);
-            $this->assertFileDoesNotExist($pidFile);
-            $this->assertFalse(AbstractTask::workerHasPidFile($action));
+            // a second process cannot take it
+            $code = 'require ' . var_export(__DIR__ . '/../../../vendor/autoload.php', true) . ';'
+                . 'exit(\\App\\Domain\\AbstractTask::workerLock(' . var_export($action, true) . ') ? 0 : 1);';
+            exec(escapeshellarg(PHP_BINARY) . ' -r ' . escapeshellarg($code) . ' 2>&1', $out, $status);
+            $this->assertSame(1, $status, implode("\n", $out));
+
+            AbstractTask::workerUnlock($action);
+            $this->assertFalse(AbstractTask::workerIsRunning($action));
+            $this->assertTrue(AbstractTask::workerLock($action), 'free again after unlock');
         } finally {
-            @unlink($pidFile);
+            AbstractTask::workerUnlock($action);
+            @unlink($lockFile);
         }
     }
 
-    public function testAStalePidFileIsRemoved(): void
+    public function testATaskIsStuckByItsLastSignOfLife(): void
     {
-        $action = 'Tests\\Stale';
-        $pidFile = VAR_DIR . '/tests-stale.worker.pid';
+        $now = new \DateTime('2026-01-05 12:00:00');
+        $task = new \App\Domain\Models\Task();
 
-        try {
-            // a pid that cannot belong to a live process
-            file_put_contents($pidFile, '99999999');
+        $task->date = new \DateTime('2026-01-05 10:55:00'); // 1 h 05 min ago
+        $this->assertTrue(AbstractTask::isStuck($task, $now));
 
-            $this->assertFalse(AbstractTask::workerHasPidFile($action));
-            $this->assertFileDoesNotExist($pidFile, 'the leftover is cleaned up');
-        } finally {
-            @unlink($pidFile);
-        }
+        $task->heartbeat = new \DateTime('2026-01-05 11:58:00');
+        $this->assertFalse(AbstractTask::isStuck($task, $now), 'alive 2 minutes ago');
+
+        $task->heartbeat = new \DateTime('2026-01-05 11:49:00');
+        $this->assertTrue(AbstractTask::isStuck($task, $now));
     }
 
     private function taskContainerForTest(): \Psr\Container\ContainerInterface

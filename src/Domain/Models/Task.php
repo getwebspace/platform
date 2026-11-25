@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property array $params
  * @property string $output
  * @property null|\DateTime $date
+ * @property null|\DateTime $heartbeat
  */
 class Task extends Model
 {
@@ -37,6 +38,7 @@ class Task extends Model
         'params',
         'output',
         'date',
+        'heartbeat',
     ];
 
     protected $guarded = [];
@@ -49,6 +51,7 @@ class Task extends Model
         'params' => Json::class,
         'output' => 'string',
         'date' => 'datetime',
+        'heartbeat' => 'datetime',
     ];
 
     protected $attributes = [

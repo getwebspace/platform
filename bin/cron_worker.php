@@ -47,6 +47,14 @@ foreach ($scheduler->get() as $name => $scheduled) {
             continue;
         }
 
+        // a run that is still going is not started twice
+        $lock = @fopen(VAR_DIR . '/cron-' . md5((string) $name) . '.lock', 'c');
+        if ($lock !== false && !flock($lock, LOCK_EX | LOCK_NB)) {
+            $logger->warning('Cron job skipped: the previous run is still going', ['job' => $name]);
+
+            continue;
+        }
+
         $started = microtime(true);
         $logger->info('Cron job start', ['job' => $name, 'schedule' => $schedule]);
         $job->run();
@@ -58,5 +66,10 @@ foreach ($scheduler->get() as $name => $scheduled) {
             'file' => $e->getFile(),
             'line' => $e->getLine(),
         ]);
+    } finally {
+        if (isset($lock) && is_resource($lock)) {
+            fclose($lock); // releases the lock
+        }
+        unset($lock);
     }
 }
